@@ -1,7 +1,28 @@
 # depslib dependency file v1.0
-1508364558 source:c:\users\andre\documents\ufrgs\argprog\pacman\main.c
+1508701678 source:c:\users\andre\documents\git\algprog-develop\conio\conio.c
 	<stdio.h>
 	<stdlib.h>
-	<stdio.h>
+	<unistd.h>
 	<windows.h>
+	<string.h>
+	<stdarg.h>
+	"conio.h"
+
+1508701678 c:\users\andre\documents\git\algprog-develop\conio\conio.h
+	<stdio.h>
+
+1508806872 source:c:\users\andre\documents\git\algprog-develop\main.c
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+	<conio.h>
+	<windows.h>
+	<ctype.h>
+
+1508812374 source:c:\users\andre\documents\git\algprog-develop\data\testalabirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
 
