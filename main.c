@@ -4,9 +4,11 @@
 #include <conio.h> //Para utilizar funções de movimentações do jogo
 #include <windows.h> //Para utilizar o tosleep();
 #include <ctype.h> //Para utilizar o tolower();
+#include <time.h>
 #include "labirinto.h"
 
-#define SPEED 160  //Velocidade padrao do jogo
+
+#define SPEED 100  //Velocidade padrao do jogo
 #define CURSOR 0 // 0 para sem cursor; 1 para cursor de caixa; 2 para cursor normal
 
 //Structs locais
@@ -41,15 +43,17 @@ void speedControl(struct lastDirection);
 char detectKey(struct lastDirection);
 
 
+
 //Variaveis Globais
 struct pacmanPosition pacman;
 char lab[30][100];
 
+
 //Constantes
 int const   TOP = 1,
             LEFT = 1,
-            HEIGHT = 24,
-            WIDTH = 80,
+            HEIGHT = 30,
+            WIDTH = 100,
             PACMAN_START_X=2,
             PACMAN_START_Y=2;
 
@@ -58,56 +62,58 @@ int const   TOP = 1,
 int main()
 {
 
-    system("mode 100, 50");
+    srand(time(NULL));
+    system("mode 100, 35");
     highvideo(); //Increased contrast on screen
     _setcursortype(CURSOR); //Makes cursor not show
     menuStartGame(); //Start message
     pacman.lives=3;
 
-
     readLab("data/labirinto.txt", lab);
+    showLab(lab);
     pacmanStart(); //The Game
 
     return EXIT_SUCCESS;
 }
 
-
-
-
 //Funções Locais
-void menuStartGame(void) //Menu de inicio de jogo
+void menuStartGame(void)
 {
-    system("color 0E");
-    printf("                  ############            \n");
-    printf("               ##################         \n");
-    printf("             ######################       \n");
-    printf("           ##################   #####     \n");
-    printf("          ###################    #####    \n");
-    printf("         ##############################   \n");
-    printf("         ###########################      \n");
-    printf("        #########################         \n");
-    printf("        ######################            \n");
-    printf("        ##################                \n");
-    printf("        ##################                \n");
-    printf("        ######################            \n");
-    printf("        #########################         \n");
-    printf("         ###########################      \n");
-    printf("         ##############################   \n");
-    printf("          ############################    \n");
-    printf("           ##########################     \n");
-    printf("             ######################       \n");
-    printf("               ##################         \n");
-    printf("                  ############            \n");
 
-    printf("\n     #####################################\n");
-    printf("                  PAC-MAN                 \n");
-    printf("       Press any key to start the game    \n");
-    printf("     #####################################\n                          ");
+    int contador=0;
+    char ch;
+    FILE *arq;
+
+    arq = fopen("data/pacman.txt", "r");
+
+    while( (ch=fgetc(arq))!=EOF)
+    {
+
+        if(contador>19)
+        {
+            textcolor(15);
+        }
+        else
+        {
+            textcolor(14);
+        }
+
+        printf("%c", ch);
+
+
+        if(ch=='\n' && contador<20)
+        {
+            contador++;
+            Sleep(25);
+        }
+    }
+
+    printf("\n");
     getch();
     clrscr();
-    system("color 0F");
 
     return;
+
 }
 
 void pacmanStart(void) //Jogo em si
@@ -119,23 +125,89 @@ void pacmanStart(void) //Jogo em si
     pacman.x=PACMAN_START_X;
     pacman.y=PACMAN_START_Y;
 
+    gotoxy(4, 31);
+    printf("Press 'space' or 'esc' to quit"); //Mensagem de saida
+
     while(flag)
     {
-
-
-        gotoxy(8, 25);
-        printf("Press 'space' or 'esc' to quit"); //Mensagem de saida
-
         if (flag_2==1)  //Mensagem de inicio
         {
-            gotoxy(12,13);
-            printf("Press any  key to start");
+            gotoxy(39, 14);
+            printf("                         ");
+            gotoxy(39,15);
+            printf(" Press any key to start  ");
+            gotoxy(39, 16);
+            printf("                         ");
         }
 
-        if (flag_2==0)
+        if(flag_2==0)
         {
-            showLab(lab);
+            gotoxy(1,14);
+            for (count=0; count<100; count++)
+            {
+                if(lab[13][count]=='#')
+                {
+                    textcolor(15);
+                    printf("%c", lab[13][count]);
+                }
+                else if(lab[13][count]=='o')
+                {
+                    textcolor(14);
+                    printf("%c", lab[13][count]);
+                }
+                else
+                {
+                    printf(" ");
+                }
+
+                gotoxy(count+2,14);
+            }
+
+            gotoxy(1,15);
+            for (count=0; count<100; count++)
+            {
+                if(lab[14][count]=='#')
+                {
+                    textcolor(15);
+                    printf("%c", lab[14][count]);
+                }
+                else if(lab[14][count]=='o')
+                {
+                    textcolor(14);
+                    printf("%c", lab[14][count]);
+                }
+                else
+                {
+                    textcolor(15);
+                    printf(" ");
+                }
+
+                gotoxy(count+2,15);
+            }
+
+            gotoxy(1,16);
+            for (count=0; count<100; count++)
+            {
+                if(lab[15][count]=='#')
+                {
+                    textcolor(15);
+                    printf("%c", lab[15][count]);
+                }
+                else if(lab[15][count]=='o')
+                {
+                    textcolor(14);
+                    printf("%c", lab[15][count]);
+                }
+                else
+                {
+                    printf(" ");
+                }
+
+                gotoxy(count+2,16);
+            }
         }
+
+
 
 
         if(kbhit())
