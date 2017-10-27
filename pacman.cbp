@@ -31,13 +31,13 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="data/testaLabirinto.c">
+		<Unit filename="data/labirinto.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="labirinto.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="testaLabirinto.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
