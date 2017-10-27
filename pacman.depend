@@ -26,3 +26,42 @@
 	<string.h>
 	<ctype.h>
 
+1509023926 source:c:\users\rafae\documents\github\algprog\main.c
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+	<conio.h>
+	<windows.h>
+	<ctype.h>
+	"labirinto.h"
+
+1508887848 c:\users\rafae\documents\github\algprog\data\testalabirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+
+1509023757 source:c:\users\rafae\documents\github\algprog\data\testalabirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	"../testaLabirinto.h"
+
+1508888115 c:\users\rafae\documents\github\algprog\testalabirinto.h
+
+1508888115 c:\users\rafae\documents\github\algprog\labirinto.h
+
+1509023927 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	"../labirinto.h"
+

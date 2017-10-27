@@ -4,12 +4,13 @@
 #include <conio.h> //Para utilizar funções de movimentações do jogo
 #include <windows.h> //Para utilizar o tosleep();
 #include <ctype.h> //Para utilizar o tolower();
+#include "labirinto.h"
 
-#define SPEED 50 //Velocidade padrao do jogo
+#define SPEED 160  //Velocidade padrao do jogo
 #define CURSOR 0 // 0 para sem cursor; 1 para cursor de caixa; 2 para cursor normal
 
 //Structs locais
-struct position
+struct lastDirection
 {
     char coordinates; //x, y ou s
     int aumenta_diminui; //1 - Aumenta; -1 - Diminui; 0 - parado
@@ -19,6 +20,7 @@ struct pacmanPosition
 {
     int x;
     int y;
+    int lives;
 };
 
 //Funções da conio.h
@@ -32,33 +34,38 @@ void menuStartGame(void);
 void pacmanStart(void);
 void pacmanPause(void);
 void pacmanEnd(void);
-void makeLastDirection(struct position last);
-void movePacman(void);
+void makeLastDirection(struct lastDirection);
+void movePacman(struct lastDirection);
 void testLimits(void);
-void speedControl(struct position last);
-char detectKey(struct position last);
+void speedControl(struct lastDirection);
+char detectKey(struct lastDirection);
 
 
 //Variaveis Globais
 struct pacmanPosition pacman;
+char lab[30][100];
 
 //Constantes
 int const   TOP = 1,
             LEFT = 1,
             HEIGHT = 24,
             WIDTH = 80,
-            PACMAN_START_X=1,
-            PACMAN_START_Y=1;
+            PACMAN_START_X=2,
+            PACMAN_START_Y=2;
 
 
 //Pac-man Main
-int main2()
+int main()
 {
 
+    system("mode 100, 50");
     highvideo(); //Increased contrast on screen
     _setcursortype(CURSOR); //Makes cursor not show
     menuStartGame(); //Start message
+    pacman.lives=3;
 
+
+    readLab("data/labirinto.txt", lab);
     pacmanStart(); //The Game
 
     return EXIT_SUCCESS;
@@ -107,14 +114,14 @@ void pacmanStart(void) //Jogo em si
 {
     int flag = 1, flag_2=1, count;
     char key;
-    struct position lastDirection; //Struct que armazena dados sobre a ultima direcao andada
+    struct lastDirection lastDirection; //Struct que armazena dados sobre a ultima direcao andada
 
     pacman.x=PACMAN_START_X;
     pacman.y=PACMAN_START_Y;
 
     while(flag)
     {
-        clrscr();
+
 
         gotoxy(8, 25);
         printf("Press 'space' or 'esc' to quit"); //Mensagem de saida
@@ -125,12 +132,19 @@ void pacmanStart(void) //Jogo em si
             printf("Press any  key to start");
         }
 
+        if (flag_2==0)
+        {
+            showLab(lab);
+        }
+
 
         if(kbhit())
         {
             //Detecta teclas pressionadas
+
+
             key = tolower(detectKey(lastDirection));
-            flag_2=0;
+            flag_2--;
 
             switch(key) //Verifica para onde será a nova direção
             {
@@ -184,7 +198,7 @@ void pacmanStart(void) //Jogo em si
 
         //TESTES E MOVIMENTAÇÕES DO JOGO
         testLimits(); //Ao chegar nos limites do mapa, vai para o outro lado
-        movePacman(); //Realiza movimentação;
+        movePacman(lastDirection); //Realiza movimentação;
         speedControl(lastDirection); //Controla a velocidade do jogo
 
     } //FIM DO WHILE
@@ -230,12 +244,12 @@ void pacmanEnd(void) //Termina o jogo
     return;
 }
 
-void makeLastDirection(struct position lastDirection) //Contabiliza a proxima posição, com base na ultima posição
+void makeLastDirection(struct lastDirection last) //Contabiliza a proxima posição, com base na ultima posição
 {
-    switch(lastDirection.coordinates) //Verifica a ultima direção que foi solicitado para andar
+    switch(last.coordinates) //Verifica a ultima direção que foi solicitado para andar
     {
     case 'x':
-        if (lastDirection.aumenta_diminui==1)
+        if (last.aumenta_diminui==1)
         {
             pacman.x++;
         }
@@ -245,7 +259,7 @@ void makeLastDirection(struct position lastDirection) //Contabiliza a proxima po
         }
         break;
     case 'y':
-        if (lastDirection.aumenta_diminui==1)
+        if (last.aumenta_diminui==1)
         {
             pacman.y++;
         }
@@ -261,8 +275,47 @@ void makeLastDirection(struct position lastDirection) //Contabiliza a proxima po
 
 }
 
-void movePacman(void) //Movimentação do PacMan
+void movePacman(struct lastDirection last) //Movimentação do PacMan
 {
+
+    switch(last.coordinates)
+    {
+    case 'y':
+        if (last.aumenta_diminui==1)
+        {
+            gotoxy(pacman.x, pacman.y-1);
+            printf(" ");
+            gotoxy(pacman.x, pacman.y);
+            printf("%c", 'C');
+            gotoxy(pacman.x, pacman.y);
+        }
+        else
+        {
+            gotoxy(pacman.x, pacman.y+1);
+            printf(" ");
+            gotoxy(pacman.x, pacman.y);
+            printf("%c", 'C');
+            gotoxy(pacman.x, pacman.y);
+        }
+        break;
+    case 'x':
+        if(last.aumenta_diminui==1)
+        {
+            gotoxy(pacman.x-1, pacman.y);
+
+            printf(" %c", 'C');
+        }
+        else
+        {
+            gotoxy(pacman.x, pacman.y);
+
+            printf("%c ", 'C');
+
+        }
+        break;
+    }
+
+
 
     gotoxy(pacman.x, pacman.y);
     printf("%c", 'C');
@@ -294,24 +347,24 @@ void testLimits(void) //Testa limites do mapa
     return;
 }
 
-void speedControl(struct position lastDirection) //Controla velocidade do jogo
+void speedControl(struct lastDirection last) //Controla velocidade do jogo
 {
 
     //Caso o computador esteja com o CMD padrao, usar esse código abaixo
-    /*if (lastDirection.coordinates=='y')
+    if (last.coordinates=='y')
     {
-        Sleep(SPEED*2); //Corrige velocidade no eixo y
+        Sleep(SPEED*1.5); //Corrige velocidade no eixo y
     }
     else
     {
         Sleep(SPEED);
-    }*/
+    }
 
     //Caso o computador esteja com o CMD alterado para ter letras quadradas, usar o código abaixo
-    Sleep(SPEED);
+    //Sleep(SPEED);
 }
 
-char detectKey(struct position last) //Detecta a tecla pressionada
+char detectKey(struct lastDirection last) //Detecta a tecla pressionada
 {
 
     char key;
@@ -352,5 +405,42 @@ char detectKey(struct position last) //Detecta a tecla pressionada
     return key;
 
 }
+
+//TODO:
+
+//CMD
+//Arrumar tamanho do buffer
+//Testar System(mode ...);
+//Arrumar impressão do labirinto
+//Transformar pacman da tela inicial em um arquivo.txt
+//Mensagem contadora dos pontos
+
+//PACMAN
+//Detecção da posição inicial do Pacman, passada para a struct  ...
+//Detecção de colisão com as paredes
+//Detecção de colisão com os fantasmas, pacman.lives--, Respawn; pacman.lives!=0? pacmanStart() : EndGame();
+//Respwan - if pacman.lives==0; not Restart;
+//Reinicio do jogo, após sua morte, por mais 2x
+
+//FANTASMAS
+//Movimentação dos fantasmas (Movimentação com SuperPastilha OFF/ON - Movimentação 30% menor)
+//Timer para ressuscitar
+//Na struct, adicionar parametro 'Alive' (0 - Morto, 1 - Vivo)
+
+//PASTILHAS
+//Criar detector de "comeu pastilha"
+//Criar contador de pontos
+
+//SUPER-PASTILHAS
+//Criar função da super-pastilha
+//Criar time - "contador" da super-pastilha
+
+//EXTRAS:
+//Dijkshtra
+//Sistema de som
+//Highscores
+//Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
+
+
 
 //FIM DO ARQUIVO
