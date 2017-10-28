@@ -11,7 +11,7 @@
 #define SPEED 100  //Velocidade padrao do jogo
 #define CURSOR 0 // 0 para sem cursor; 1 para cursor de caixa; 2 para cursor normal
 
-//Structs globais
+//Structs
 struct lastDirection
 {
     char coordinates; //'x', 'y' ou 's'
@@ -104,8 +104,8 @@ void pacmanStart(void) //Jogo em si
     char key;
     struct lastDirection lastDirection; //Struct que armazena dados sobre a ultima direcao andada
 
-    pacman.x=retornaXPacman()+1; //Bugado
-    pacman.y=retornaYPacman()+1; //Bugado
+    pacman.x=retornaXPacman()-1; //Bugado
+    pacman.y=retornaYPacman()-1; //Bugado
 
     showLab(lab);
 
@@ -283,7 +283,7 @@ void makeLastDirection(struct lastDirection last) //Contabiliza a proxima posiçã
         }else{
             pacman.y--;
         }
-    case 's':
+    default:
         break;
     }
 
@@ -300,13 +300,11 @@ void movePacman(struct lastDirection last) //Movimentação do PacMan
             printf(" ");
             gotoxy(pacman.x, pacman.y);
             printf("%c", 'C');
-            gotoxy(pacman.x, pacman.y);
         }else{
             gotoxy(pacman.x, pacman.y+1);
             printf(" ");
             gotoxy(pacman.x, pacman.y);
             printf("%c", 'C');
-            gotoxy(pacman.x, pacman.y);
         }
         break;
     case 'x':
@@ -319,10 +317,6 @@ void movePacman(struct lastDirection last) //Movimentação do PacMan
         }
         break;
     }
-
-    gotoxy(pacman.x, pacman.y);
-    printf("%c", 'C');
-    gotoxy(pacman.x, pacman.y);
 
     return;
 }
@@ -414,14 +408,15 @@ char detectKey(struct lastDirection last) //Detecta a tecla pressionada
 //CMD
 //Arrumar tamanho do buffer
 //Testar System(mode ...);
-//Arrumar impressão do labirinto
+//Arrumar impressão do labirinto - Ficam aparecendo 3 espaços em branco no inicio do labirinto
 //Mensagem contadora dos pontos
+//Mudar timer do jogo, para ser em função do tempo do Sistema
 
 //PACMAN
-//Detecção da posição inicial do Pacman, passada para a struct
+//Detecção da posição inicial do Pacman, passada para a struct - Implantada, mas bugada
 //Detecção de colisão com as paredes
 //Detecção de colisão com os fantasmas, pacman.lives--, Respawn; pacman.lives!=0? pacmanStart() : EndGame();
-//Respwan - if pacman.lives==0; not Restart;
+//Respawn - if pacman.lives==0; not Restart;
 //Reinicio do jogo, após sua morte, por mais 2x
 
 //FANTASMAS
@@ -430,8 +425,8 @@ char detectKey(struct lastDirection last) //Detecta a tecla pressionada
 //Na struct, adicionar parametro 'Alive' (0 - Morto, 1 - Vivo)
 
 //PASTILHAS
-//Criar detector de "comeu pastilha"
-//Criar contador de pontos
+//Criar detector de "comeu pastilha" -> Aumenta pontos
+//Criar variavel contadora de pontos
 
 //SUPER-PASTILHAS
 //Criar função da super-pastilha

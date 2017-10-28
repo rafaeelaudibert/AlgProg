@@ -92,15 +92,14 @@ void showLab(char lab[30][100])
     }
     iniciaLabirinto(lab);
 
-    int w = 100, h=30;
     int i, j;
 
-    gotoxy(1,1);
+    gotoxy(0,1);
 
     //Printagem do labirinto na tela
-    for(i=0; i<h; i++)
+    for(i=0; i<30; i++)
     {
-        for(j=0; j<w; j++)
+        for(j=0; j<100; j++)
         {
             if(lab[i][j]=='#')
             {
@@ -119,7 +118,7 @@ void showLab(char lab[30][100])
             }
             textcolor(15);
         }
-        if(i<h-1)
+        if(i<29)
         {
             printf("\n");
         }
@@ -180,12 +179,12 @@ void iniciaLabirinto(char lab[30][100])
 int retornaXPacman(void)
 {
 
-    return 2;
+    return pacman.x;
 }
 
 int retornaYPacman(void)
 {
 
-    return 2;
+    return pacman.y;
 }
 
