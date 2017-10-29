@@ -1,7 +1,5 @@
-
-data/testaLabirinto.exe
-data/testaLabirinto.o
+*.exe
 pacman.layout
 *.o
-bin/Debug/pacman.exe
-*.o
+
+
