@@ -1,7 +1,87 @@
 # depslib dependency file v1.0
-1508364558 source:c:\users\andre\documents\ufrgs\argprog\pacman\main.c
+1508701678 source:c:\users\andre\documents\git\algprog-develop\conio\conio.c
 	<stdio.h>
 	<stdlib.h>
-	<stdio.h>
+	<unistd.h>
 	<windows.h>
+	<string.h>
+	<stdarg.h>
+	"conio.h"
+
+1508701678 c:\users\andre\documents\git\algprog-develop\conio\conio.h
+	<stdio.h>
+
+1508806872 source:c:\users\andre\documents\git\algprog-develop\main.c
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+	<conio.h>
+	<windows.h>
+	<ctype.h>
+
+1508812374 source:c:\users\andre\documents\git\algprog-develop\data\testalabirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+
+1509202704 source:c:\users\rafae\documents\github\algprog\main.c
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+	<conio.h>
+	<windows.h>
+	<ctype.h>
+	"labirinto.h"
+
+1508887848 c:\users\rafae\documents\github\algprog\data\testalabirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+
+1509023757 source:c:\users\rafae\documents\github\algprog\data\testalabirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	"../testaLabirinto.h"
+
+1508888115 c:\users\rafae\documents\github\algprog\testalabirinto.h
+
+1509072718 c:\users\rafae\documents\github\algprog\labirinto.h
+
+1509202584 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	"../labirinto.h"
+
+1509243892 source:c:\users\andre\documents\git\algprog\main.c
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+	<conio.h>
+	<windows.h>
+	<ctype.h>
+	"labirinto.h"
+
+1509240371 c:\users\andre\documents\git\algprog\labirinto.h
+
+1509240371 source:c:\users\andre\documents\git\algprog\data\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	"../labirinto.h"
 
