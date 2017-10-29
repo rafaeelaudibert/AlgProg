@@ -25,9 +25,14 @@ struct pacmanPosition
     int lives;
 };
 
+struct {
+    char cood;
+    int valor;
+} typedef nextDirection;
+
 //Inclusão dos protópipos das funções da conio.c
 void clrscr(void); //Função que limpa a tela
-void gotoxy(int, int); //Função de movimentação de cursor
+void gotoxy2(int, int); //Função de movimentação de cursor
 void highvideo(void); //Função para aumentar contraste da tela
 void _setcursortype(int); //Função para modificar o tipo de cursor
 void textcolor(int); //Função que controla cor do texto
@@ -43,6 +48,17 @@ void testLimits(void);
 void speedControl(struct lastDirection);
 char detectKey(struct lastDirection);
 
+// Função gotoxy2, refatorada para ter limite igual ao system("mode x-1, y-1");
+// índice inicia em 0
+// vai até system(mode x-1, y-1)
+void gotoxy2(int x, int y)
+{
+  COORD coord;
+  coord.X = x-1;
+  coord.Y = y-1;
+  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
 //Variaveis Globais
 struct pacmanPosition pacman;
 char lab[30][100];
@@ -50,8 +66,8 @@ char lab[30][100];
 //Constantes
 int const   TOP = 1,
             LEFT = 1,
-            HEIGHT = 25,
-            WIDTH = 80;
+            HEIGHT = 30,
+            WIDTH = 100;
 
 //Pac-man Main
 int main()
@@ -59,11 +75,18 @@ int main()
     system("mode 100, 35"); //Define tamanho da tela
     highvideo(); //Increased contrast on screen
     _setcursortype(CURSOR); //Makes cursor not show
+    int i;
+    // gotoxy(81, 5); // limite x
+    // gotoxy(1, 25); // limite y
+    // gotoxy2(99, 34); // limite xy
+    // printf("a");
+    // gotoxy2(149, 54); // limite xy
+    // printf("a");
+
     menuStartGame(); //Start message
     pacman.lives=3; //Seta o numero inicial de vidas do PacMan
 
     pacmanStart(); //The Game
-
     return EXIT_SUCCESS;
 }
 
@@ -103,27 +126,29 @@ void pacmanStart(void) //Jogo em si
     int flag = 1, flag_2=1, count;
     char key;
     struct lastDirection lastDirection; //Struct que armazena dados sobre a ultima direcao andada
+    nextDirection nextDir;
 
     pacman.x=retornaXPacman()-1; //Bugado
     pacman.y=retornaYPacman()-1; //Bugado
 
     showLab(lab);
+    printf("até aqui ok");
 
-    gotoxy(4, 31);
+    gotoxy2(4, 31);
     printf("Press 'space' or 'esc' to quit"); //Mensagem de saida
 
     while(flag)
     {
-        gotoxy(pacman.x, pacman.y);
+        gotoxy2(pacman.x, pacman.y);
         printf("C");
 
         if (flag_2==1)  //Mensagem de inicio
         {
-            gotoxy(39, 14);
+            gotoxy2(39, 14);
             printf("                         ");
-            gotoxy(39,15);
+            gotoxy2(39,15);
             printf(" Press any key to start  ");
-            gotoxy(39, 16);
+            gotoxy2(39, 16);
             printf("                         ");
         }
 
@@ -134,7 +159,7 @@ void pacmanStart(void) //Jogo em si
             {
                 for (count=35; count<70; count++)
                 {
-                    gotoxy(count-2,contador+2);
+                    gotoxy2(count-2,contador+2);
                     if(lab[contador][count]=='#')
                     {
                         textcolor(15);
@@ -230,13 +255,13 @@ void pacmanPause(void)  //Pausa o jogo
     char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
     int count;
 
-    gotoxy(39,11);
+    gotoxy2(39,11);
     printf("                         ");
-    gotoxy(39,12);
+    gotoxy2(39,12);
     printf("       Game paused!      ");
-    gotoxy(39,13);
+    gotoxy2(39,13);
     printf("    Press 'R' to resume  ");
-    gotoxy(39,14);
+    gotoxy2(39,14);
     printf("                         ");
 
     while(key!='r'){
@@ -248,7 +273,7 @@ void pacmanPause(void)  //Pausa o jogo
     }
 
     for(count=3; count>0; count--){ //Contagem regressiva ao voltar para o jogo
-        gotoxy(46, 14);
+        gotoxy2(46, 14);
         printf("%d seconds...      ", count);
         Sleep(1000);
     }
@@ -259,7 +284,7 @@ void pacmanPause(void)  //Pausa o jogo
 void pacmanEnd(void) //Termina o jogo
 {
     clrscr();
-    gotoxy(1,1);
+    gotoxy2(1,1);
     printf("The program will be finished!\n");
 
     system("pause");
@@ -296,23 +321,23 @@ void movePacman(struct lastDirection last) //Movimentação do PacMan
     switch(last.coordinates){
     case 'y':
         if (last.aumenta_diminui==1){
-            gotoxy(pacman.x, pacman.y-1);
+            gotoxy2(pacman.x, pacman.y-1);
             printf(" ");
-            gotoxy(pacman.x, pacman.y);
+            gotoxy2(pacman.x, pacman.y);
             printf("%c", 'C');
         }else{
-            gotoxy(pacman.x, pacman.y+1);
+            gotoxy2(pacman.x, pacman.y+1);
             printf(" ");
-            gotoxy(pacman.x, pacman.y);
+            gotoxy2(pacman.x, pacman.y);
             printf("%c", 'C');
         }
         break;
     case 'x':
         if(last.aumenta_diminui==1){
-            gotoxy(pacman.x-1, pacman.y);
+            gotoxy2(pacman.x-1, pacman.y);
             printf(" %c", 'C');
         }else{
-            gotoxy(pacman.x, pacman.y);
+            gotoxy2(pacman.x, pacman.y);
             printf("%c ", 'C');
         }
         break;

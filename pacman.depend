@@ -65,3 +65,23 @@
 	<conio.h>
 	"../labirinto.h"
 
+1509243892 source:c:\users\andre\documents\git\algprog\main.c
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+	<conio.h>
+	<windows.h>
+	<ctype.h>
+	"labirinto.h"
+
+1509240371 c:\users\andre\documents\git\algprog\labirinto.h
+
+1509240371 source:c:\users\andre\documents\git\algprog\data\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	"../labirinto.h"
+
