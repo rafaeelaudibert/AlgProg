@@ -7,10 +7,6 @@
 #include <ctype.h> //Para utilizar o tolower();
 #include "labirinto.h"
 
-//DEFINES
-#define SPEED 100  //Velocidade padrao do jogo
-#define CURSOR 0 // 0 para sem cursor; 1 para cursor de caixa; 2 para cursor normal
-
 //Structs
 struct directions
 {
@@ -33,92 +29,102 @@ void _setcursortype(int); //Função para modificar o tipo de cursor
 void textcolor(int); //Função que controla cor do texto
 
 //Protótipo das funções locais
-void menuStartGame(void);
 void pacmanStart(void);
 void pacmanPause(void);
 void pacmanEnd(void);
+
+void startGameMenu(void);
+int startMessage(int);
+
 void movePacman(struct directions);
 void testLimits(void);
-void speedControl(struct directions);
-char detectKey(struct directions);
-void gotoxy2(int, int);
+void speedControl(struct directions); //PROVISÓRIO - SERÁ REMOVIDA
+
+char detectKey(void);
+void gotoXY(int, int);
 void reconstructMaze(int, int, int, int);
 
 //Variaveis Globais
-struct pacmanPosition pacman;
-char lab[30][100];
+struct pacmanPosition pacman; //Struct responsavel pelo pacman
+char lab[30][100]; //Variavel responsavel por armazenar o labirinto
 
 //Constantes
-int const   TOP = 1,
-            LEFT = 1,
-            HEIGHT = 30,
-            WIDTH = 100;
+int const   TOP = 1, //Limite superior do mapa (Nunca menor que 0)
+            LEFT = 1, //Limite esquerdo do mapa (Nunca menor que 0)
+            HEIGHT = 30, //Limite inferior do mapa
+            WIDTH = 100, //Limite direito do mapa
+            SPEED = 100, //Velocidade padrao do jogo
+            CURSOR = 0; // 0 para sem cursor; 1 para cursor de caixa; 2 para cursor normal
+
+
 
 //Pac-man Main
 int main()
 {
-    system("mode 100, 37"); //Define tamanho da tela
-    highvideo(); //Increased contrast on screen
-    _setcursortype(CURSOR); //Makes cursor not show
+    system("mode 100, 37"); //Defines screen size
+    highvideo(); //Increased contrast on the screen
+    _setcursortype(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
 
-    menuStartGame(); //Start message
+    startGameMenu(); //Start message
 
-    pacman.lives=3; //Seta o numero inicial de vidas do PacMan
-    pacmanStart(); //The Game
+    pacman.lives=3; //Sets the initial number of lives of the pacman
+    pacmanStart(); //The Game 'per se'
 
-    return EXIT_SUCCESS;
+    return EXIT_SUCCESS; //End of the program
 }
 
 
 
 //Funções Locais
-void pacmanStart(void) //Jogo em si
+
+//Jogo em si
+void pacmanStart(void)
 {
-    int flag = 1, flag_2=1;
+    int continuaJogo=1, mostraStart=1;
     char key;
     struct directions nextDirection; //Struct que armazena dados da posição a ser andada
 
-    showLab(lab);
+    pacman.lives--; //Ao iniciar o jogo, diminui uma vida do pacman
+    if(!pacman.lives)  //Se acabarem as vidas do pacman, finaliza o jogo
+    {
+        return;
+    }
 
-    gotoxy2(36, 31);
-    printf("Press 'space' or 'esc' to quit"); //Mensagem de saida
+    showLab(lab); //Carrega o labirinto na memoria, carrega a posição do pacman, pastilhas, super-pastilhas, e fantasmas
 
+    //Mensagem de saida
+    gotoXY(36, 31);
+    printf("Press 'space' or 'esc' to quit");
+
+    //Carrega posições dos objetos
     pacman.x=retornaXPacman();
     pacman.y=retornaYPacman();
 
-    while(flag)
+    //Roda o jogo
+    while(continuaJogo)
     {
-        if (flag_2==1)  //Mensagem de inicio
+        if(mostraStart>-1)
         {
-            gotoxy2(39, 14);
-            printf("                         ");
-            gotoxy2(39,15);
-            printf(" Press any key to start  ");
-            gotoxy2(39, 16);
-            printf("                         ");
-        }else if(flag_2==0) //Reconstrução do labirinto embaixo após a mensagem de início
-        {
-            reconstructMaze(13,15,38,65);
-            flag_2--;
+            mostraStart=startMessage(mostraStart); //Mostra mensagem de inicio enquanto necessario
         }
 
-
-        if(kbhit())
+        if(kbhit()) //Ao pressionar uma tecla
         {
-            //Detecta teclas pressionadas
-            key = tolower(detectKey(nextDirection));
-
-            //Flag para imprimir mensagem inicial, e limpar mensagem inicial
+            //Flag para fazer não aparecer mais a mensagem inicial
             //Primeiro faz não imprimir mais a mensagem inicial, depois reconstroi o labirinto embaixo dela
-            if(flag_2>-1)
+            if(mostraStart>-1)
             {
-                flag_2--;
+                mostraStart--;
             }
+
+
+            //Detecta tecla pressionada
+            key=tolower(detectKey());
 
             switch(key) //Verifica para onde será a nova direção
             {
             case 'w':
-                nextDirection.coordinates='y'; //Seta ultima direção no eixo y
+                nextDirection.coordinates='y'; //Seta direção no eixo y
                 nextDirection.aumenta_diminui=-1; //Seta direção negativa
                 break;
             case 'x':
@@ -126,7 +132,7 @@ void pacmanStart(void) //Jogo em si
                 nextDirection.aumenta_diminui=1; //Seta direção positiva
                 break;
             case 'a':
-                nextDirection.coordinates='x';
+                nextDirection.coordinates='x'; //Seta direção no eixo x
                 nextDirection.aumenta_diminui=-1;
                 break;
             case 'd':
@@ -141,12 +147,13 @@ void pacmanStart(void) //Jogo em si
                 pacmanPause();
                 break;
             case ' ':
-                flag = 0;
+                continuaJogo=0; //Irá fazer o programa terminar sua execução
+                nextDirection.coordinates='s'; //Faz pacman parar sua movimentação
+                nextDirection.aumenta_diminui=0;
                 break;
             }
         }
 
-        //TESTES E MOVIMENTAÇÕES DO JOGO
         movePacman(nextDirection); //Realiza movimentação;
         speedControl(nextDirection); //Controla a velocidade do jogo
 
@@ -155,21 +162,21 @@ void pacmanStart(void) //Jogo em si
     pacmanEnd(); //Finaliza o jogo
 
     return;
-
 }
 
-void pacmanPause(void)  //Pausa o jogo
+//Pausa o jogo
+void pacmanPause(void)
 {
     char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
-    int count;
+    int count; //Contador para voltar o jogo após 'count' segundos
 
-    gotoxy2(41,13);
+    gotoXY(41,13);
     printf("                     ");
-    gotoxy2(41,14);
+    gotoXY(41,14);
     printf("    Game paused!     ");
-    gotoxy2(41,15);
+    gotoXY(41,15);
     printf(" Press 'R' to resume ");
-    gotoxy2(41,16);
+    gotoXY(41,16);
     printf("                     ");
 
     while(key!='r')
@@ -183,26 +190,25 @@ void pacmanPause(void)  //Pausa o jogo
         }
     }
 
-    for(count=3; count>0; count--)  //Contagem regressiva ao voltar para o jogo
+    for(count=2; count>0; count--)  //Contagem regressiva ao voltar para o jogo
     {
-        gotoxy2(45, 16);
+        gotoXY(45, 16);
         printf("%d seconds...", count);
         Sleep(1000);
     }
 
-    reconstructMaze(12,17,40,62);
+    reconstructMaze(12,17,40,62); //Reconstroi labirinto embaixo da mensagem
 
     return;
 }
 
-void pacmanEnd(void) //Mensagem de término de jogo
+//Mensagem de término de jogo
+void pacmanEnd(void)
 {
-    int flag=1;
-
-    gotoxy2(36,31);
+    gotoXY(36,31);
     printf("The program will be finished!  ");
 
-    gotoxy2(35,32);
+    gotoXY(35,32);
     printf("Press any key to close the game");
 
     textcolor(0); //Deixa texto em preto, tornando-o invisivel
@@ -212,13 +218,76 @@ void pacmanEnd(void) //Mensagem de término de jogo
     return;
 }
 
-void movePacman(struct directions next) //Movimentação e impressão do PacMan
+
+//Apresenta menu de inicio do jogo
+void startGameMenu(void)
+{
+    int contador=0;
+    char ch;
+    FILE *arq; //Cria um ponteiro para um tipo arquivo
+
+    arq = fopen("data/pacman.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+
+    gotoXY(20, contador+1);
+    Sleep(50);
+    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    {
+        if(contador>19)
+        {
+            textcolor(15);
+        }
+        else
+        {
+            textcolor(14);
+        }
+
+        printf("%c", ch);
+
+        if(ch=='\n' && contador<25)
+        {
+            contador++;
+            gotoXY(20, contador+1);
+            Sleep((contador-25)*-8); //Acelera a impressão de cada linha aos poucos
+        }
+    }
+
+    getch();
+    clrscr();
+    return;
+}
+
+//Mensagem que aparece no inicio do jogo
+int startMessage(int flag)
 {
 
-    gotoxy2(pacman.x, pacman.y);
+    if (flag==1)  //Mensagem de inicio
+    {
+        gotoXY(39, 14);
+        printf("                         ");
+        gotoXY(39,15);
+        printf(" Press any key to start  ");
+        gotoXY(39, 16);
+        printf("                         ");
+    }
+    else if(flag==0)  //Reconstrução do labirinto embaixo após a mensagem de início
+    {
+        reconstructMaze(13,15,38,65);
+        flag--;
+    }
+
+    return flag;
+}
+
+
+
+ //Movimentação e impressão do PacMan na posição correta
+void movePacman(struct directions next)
+{
+
+    gotoXY(pacman.x, pacman.y); //Apaga a posição atual do pacman
     printf(" ");
 
-    switch(next.coordinates)
+    switch(next.coordinates) //Calcula a proxima posição do pacman
     {
     case 'y':
         pacman.y+=next.aumenta_diminui;
@@ -228,46 +297,40 @@ void movePacman(struct directions next) //Movimentação e impressão do PacMan
         break;
     }
 
-    testLimits(); //Ao chegar nos limites do mapa, vai para o outro lado
+    testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
 
-    gotoxy2(pacman.x,pacman.y);
-    printf("C");
+    gotoXY(pacman.x,pacman.y);
+    printf("C"); //Imprime a nova posição do pacman
 
     return;
 }
 
-void testLimits(void) //Testa limites do mapa
+ //Testa se pacman chegou no limite do mapa, assim podendo colocar na posição correta
+void testLimits(void)
 {
 
-    if(pacman.y < TOP) //Ao chegar nos limites do mapa, vai para o outro lado
+    if(pacman.y < TOP) //Ao chegar nos limites do mapa, posiciona pacman no outro lado
     {
-        gotoxy2(pacman.x, 1);
-        printf(" ");
         pacman.y= HEIGHT;
     }
     else if(pacman.y > HEIGHT)
     {
-        gotoxy2(pacman.x, 30);
-        printf(" ");
         pacman.y = TOP;
     }
     else if(pacman.x < LEFT)
     {
-        gotoxy2(1, pacman.y);
-        printf(" ");
         pacman.x=WIDTH;
     }
     else if(pacman.x > WIDTH)
     {
-        gotoxy2(100, pacman.y);
-        printf(" ");
         pacman.x = LEFT;
     }
 
     return;
 }
 
-void speedControl(struct directions last) //Controla velocidade do jogo
+//Controla velocidade do jogo - SERÁ ALTERADO PARA FUNCIONAR COM BASE NO TEMPO DO SISTEMA - PROVISÓRIO
+void speedControl(struct directions last)
 {
 
     //Caso o computador esteja com o CMD padrao, usar esse código abaixo
@@ -284,7 +347,10 @@ void speedControl(struct directions last) //Controla velocidade do jogo
     //Sleep(SPEED);
 }
 
-char detectKey(struct directions last) //Detecta a tecla pressionada
+
+
+//Detecta a tecla pressionada
+char detectKey(void)
 {
 
     char key;
@@ -317,7 +383,7 @@ char detectKey(struct directions last) //Detecta a tecla pressionada
     {
         key = ' ';
     }
-    else //Senão retorna qualquer tecla, assim será utilizada a ultima direção andada
+    else //Senão retorna uma letra que não significa nenhuma direção, assim será utilizada a ultima direção andada
     {
         key='m';
     }
@@ -326,46 +392,11 @@ char detectKey(struct directions last) //Detecta a tecla pressionada
 
 }
 
-void menuStartGame(void) //Apresenta menu de inicio do jogo
-{
-    int contador=0;
-    char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
 
-    arq = fopen("data/pacman.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
-
-    gotoxy2(20, contador+1);
-    Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
-    {
-        if(contador>19)
-        {
-            textcolor(15);
-        }
-        else
-        {
-            textcolor(14);
-        }
-
-        printf("%c", ch);
-
-        if(ch=='\n' && contador<25)
-        {
-            contador++;
-            gotoxy2(20, contador+1);
-            Sleep((contador-25)*-10); //Acelera a impressão de cada linha aos poucos
-        }
-    }
-
-    getch();
-    clrscr();
-    return;
-}
-
-// Função gotoxy2, tem limite igual a: system("mode 'x-1', 'y-1'");
+// Função gotoXY, tem limite igual a: system("mode 'x-1', 'y-1'");
 // índice inicia em 0
 // vai até system(mode x-1, y-1)
-void gotoxy2(int x, int y)
+void gotoXY(int x, int y)
 {
     COORD coord;
     coord.X = x-1;
@@ -373,7 +404,7 @@ void gotoxy2(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-//Função que reconstroi parte do labirinto após ter sido sobrescrito por uma palavra
+//Função que reconstroi parte do labirinto conforme parametros passados
 void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
 {
 
@@ -382,7 +413,7 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
     {
         for (count=x_inicial; count<=x_final; count++)
         {
-            gotoxy2(count+1,contador+1);
+            gotoXY(count+1,contador+1);
             if(lab[contador][count]=='#')
             {
                 textcolor(15);
@@ -401,25 +432,23 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
         }
     }
 
-    gotoxy2(pacman.x, pacman.y);
+    gotoXY(pacman.x, pacman.y);
     printf("C");
 
     return;
 }
 
 
-//TODO:
+
+//TODO LIST:
 
 //CMD
 //Mensagem contadora dos pontos
 //Mudar timer do jogo, para ser em função do tempo do Sistema
 
 //PACMAN
-//Detecção da posição inicial do Pacman, passada para a struct - Implantada, mas bugada
 //Detecção de colisão com as paredes
-//Detecção de colisão com os fantasmas, pacman.lives--, Respawn; pacman.lives!=0? pacmanStart() : EndGame();
-//Respawn - if pacman.lives==0; not Restart;
-//Reinicio do jogo, após sua morte, por mais 2x
+//Detecção de colisão com os fantasmas, pacman.lives--, Respawn;
 
 //FANTASMAS
 //Movimentação dos fantasmas (Movimentação com SuperPastilha OFF/ON - Movimentação 30% menor)
