@@ -4,7 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <conio.h>
-#include "../labirinto.h"
+#include "labirinto.h"
 
 void gotoxy(int, int);
 void textcolor(int);
@@ -174,17 +174,15 @@ void iniciaLabirinto(char lab[30][100])
     return;
 }
 
-//2 FUNÇÕES ABAIXO NÃO FUNCIONAM CORRETAMENTE
-//BUGADO
-int retornaXPacman(void)
+int retornaXPacman(void) //Retorna a posição x do pacman no labirinto, para utilizar na função main
 {
 
-    return pacman.x;
+    return pacman.x+1;
 }
 
-int retornaYPacman(void)
+int retornaYPacman(void) //Retorna a posição y do pacman no labirinto, para utilizar na função main
 {
 
-    return pacman.y;
+    return pacman.y+1;
 }
 

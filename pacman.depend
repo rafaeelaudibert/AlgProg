@@ -26,7 +26,7 @@
 	<string.h>
 	<ctype.h>
 
-1509249573 source:c:\users\rafae\documents\github\algprog\main.c
+1509327068 source:c:\users\rafae\documents\github\algprog\main.c
 	<stdio.h>
 	<stdlib.h>
 	<limits.h>
@@ -56,7 +56,7 @@
 
 1509247484 c:\users\rafae\documents\github\algprog\labirinto.h
 
-1509249329 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
+1509327136 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>

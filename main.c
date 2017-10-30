@@ -12,7 +12,7 @@
 #define CURSOR 0 // 0 para sem cursor; 1 para cursor de caixa; 2 para cursor normal
 
 //Structs
-struct lastDirection
+struct directions
 {
     char coordinates; //'x', 'y' ou 's'
     int aumenta_diminui; //1 - Aumenta; -1 - Diminui; 0 - parado
@@ -25,15 +25,9 @@ struct pacmanPosition
     int lives;
 };
 
-struct
-{
-    char cood;
-    int valor;
-} typedef nextDirection;
 
 //Inclusão dos protópipos das funções da conio.c
 void clrscr(void); //Função que limpa a tela
-void gotoxy2(int, int); //Função de movimentação de cursor
 void highvideo(void); //Função para aumentar contraste da tela
 void _setcursortype(int); //Função para modificar o tipo de cursor
 void textcolor(int); //Função que controla cor do texto
@@ -43,23 +37,12 @@ void menuStartGame(void);
 void pacmanStart(void);
 void pacmanPause(void);
 void pacmanEnd(void);
-void makeLastDirection(struct lastDirection);
-void movePacman(struct lastDirection);
+void movePacman(struct directions);
 void testLimits(void);
-void speedControl(struct lastDirection);
-char detectKey(struct lastDirection);
+void speedControl(struct directions);
+char detectKey(struct directions);
+void gotoxy2(int, int);
 void reconstructMaze(int, int, int, int);
-
-// Função gotoxy2, refatorada para ter limite igual ao system("mode x-1, y-1");
-// índice inicia em 0
-// vai até system(mode x-1, y-1)
-void gotoxy2(int x, int y)
-{
-    COORD coord;
-    coord.X = x-1;
-    coord.Y = y-1;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
 
 //Variaveis Globais
 struct pacmanPosition pacman;
@@ -74,75 +57,37 @@ int const   TOP = 1,
 //Pac-man Main
 int main()
 {
-    system("mode 100, 35"); //Define tamanho da tela
+    system("mode 100, 37"); //Define tamanho da tela
     highvideo(); //Increased contrast on screen
     _setcursortype(CURSOR); //Makes cursor not show
 
     menuStartGame(); //Start message
-    pacman.lives=3; //Seta o numero inicial de vidas do PacMan
 
+    pacman.lives=3; //Seta o numero inicial de vidas do PacMan
     pacmanStart(); //The Game
+
     return EXIT_SUCCESS;
 }
 
+
+
 //Funções Locais
-void menuStartGame(void)
-{
-    int contador=0;
-    char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
-
-    arq = fopen("data/pacman.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
-
-    gotoxy2(20, contador+1);
-    Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
-    {
-        if(contador>19)
-        {
-            textcolor(15);
-        }
-        else
-        {
-            textcolor(14);
-        }
-
-        printf("%c", ch);
-
-        if(ch=='\n' && contador<25)
-        {
-            contador++;
-            gotoxy2(20, contador+1);
-            Sleep((contador-25)*-15); //Acelera a impressão de cada linha aos poucos
-        }
-    }
-
-    printf("\n");
-    getch();
-    fflush(stdin);
-    clrscr();
-    return;
-}
-
 void pacmanStart(void) //Jogo em si
 {
     int flag = 1, flag_2=1;
     char key;
-    struct lastDirection lastDirection; //Struct que armazena dados sobre a ultima direcao andada
-
-    pacman.x=3; //Bugado
-    pacman.y=3; //Bugado
+    struct directions nextDirection; //Struct que armazena dados da posição a ser andada
 
     showLab(lab);
 
     gotoxy2(36, 31);
     printf("Press 'space' or 'esc' to quit"); //Mensagem de saida
 
+    pacman.x=retornaXPacman();
+    pacman.y=retornaYPacman();
+
     while(flag)
     {
-        gotoxy2(pacman.x, pacman.y);
-        printf("C");
-
         if (flag_2==1)  //Mensagem de inicio
         {
             gotoxy2(39, 14);
@@ -153,7 +98,7 @@ void pacmanStart(void) //Jogo em si
             printf("                         ");
         }else if(flag_2==0) //Reconstrução do labirinto embaixo após a mensagem de início
         {
-            reconstructMaze(13,15,35,70);
+            reconstructMaze(13,15,38,65);
             flag_2--;
         }
 
@@ -161,7 +106,7 @@ void pacmanStart(void) //Jogo em si
         if(kbhit())
         {
             //Detecta teclas pressionadas
-            key = tolower(detectKey(lastDirection));
+            key = tolower(detectKey(nextDirection));
 
             //Flag para imprimir mensagem inicial, e limpar mensagem inicial
             //Primeiro faz não imprimir mais a mensagem inicial, depois reconstroi o labirinto embaixo dela
@@ -173,28 +118,24 @@ void pacmanStart(void) //Jogo em si
             switch(key) //Verifica para onde será a nova direção
             {
             case 'w':
-                pacman.y--;
-                lastDirection.coordinates='y'; //Seta ultima direção no eixo y
-                lastDirection.aumenta_diminui=-1; //Seta direção negativa
+                nextDirection.coordinates='y'; //Seta ultima direção no eixo y
+                nextDirection.aumenta_diminui=-1; //Seta direção negativa
                 break;
             case 'x':
-                pacman.y++;
-                lastDirection.coordinates='y';
-                lastDirection.aumenta_diminui=1; //Seta direção positiva
+                nextDirection.coordinates='y';
+                nextDirection.aumenta_diminui=1; //Seta direção positiva
                 break;
             case 'a':
-                pacman.x--;
-                lastDirection.coordinates='x';
-                lastDirection.aumenta_diminui=-1;
+                nextDirection.coordinates='x';
+                nextDirection.aumenta_diminui=-1;
                 break;
             case 'd':
-                pacman.x++;
-                lastDirection.coordinates='x';
-                lastDirection.aumenta_diminui=1;
+                nextDirection.coordinates='x';
+                nextDirection.aumenta_diminui=1;
                 break;
             case 's':
-                lastDirection.coordinates='s';
-                lastDirection.aumenta_diminui=0;
+                nextDirection.coordinates='s';
+                nextDirection.aumenta_diminui=0;
                 break;
             case 'p': //Pausa o jogo ao pressionar 'P'
                 pacmanPause();
@@ -202,20 +143,12 @@ void pacmanStart(void) //Jogo em si
             case ' ':
                 flag = 0;
                 break;
-            default:
-                makeLastDirection(lastDirection); //Se clicarmos em qualquer outra tecla, continua indo na ultima direcao
             }
         }
-        else
-        {
-            makeLastDirection(lastDirection); //Ao nao clicarmos em nenhuma outra tecla, continua indo na ultima direcao
-        }
-
 
         //TESTES E MOVIMENTAÇÕES DO JOGO
-        testLimits(); //Ao chegar nos limites do mapa, vai para o outro lado
-        movePacman(lastDirection); //Realiza movimentação;
-        speedControl(lastDirection); //Controla a velocidade do jogo
+        movePacman(nextDirection); //Realiza movimentação;
+        speedControl(nextDirection); //Controla a velocidade do jogo
 
     } //FIM DO WHILE
 
@@ -230,14 +163,14 @@ void pacmanPause(void)  //Pausa o jogo
     char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
     int count;
 
-    gotoxy2(39,11);
-    printf("                         ");
-    gotoxy2(39,12);
-    printf("       Game paused!      ");
-    gotoxy2(39,13);
-    printf("    Press 'R' to resume  ");
-    gotoxy2(39,14);
-    printf("                         ");
+    gotoxy2(41,13);
+    printf("                     ");
+    gotoxy2(41,14);
+    printf("    Game paused!     ");
+    gotoxy2(41,15);
+    printf(" Press 'R' to resume ");
+    gotoxy2(41,16);
+    printf("                     ");
 
     while(key!='r')
     {
@@ -252,78 +185,53 @@ void pacmanPause(void)  //Pausa o jogo
 
     for(count=3; count>0; count--)  //Contagem regressiva ao voltar para o jogo
     {
-        gotoxy2(46, 14);
-        printf("%d seconds...      ", count);
+        gotoxy2(45, 16);
+        printf("%d seconds...", count);
         Sleep(1000);
     }
 
-    reconstructMaze(11,14,38,70);
+    reconstructMaze(12,17,40,62);
 
     return;
 }
 
-void pacmanEnd(void) //Termina o jogo
+void pacmanEnd(void) //Mensagem de término de jogo
 {
-    gotoxy2(36,32);
-    printf("The program will be finished!");
+    int flag=1;
 
-    gotoxy2(31,33);
+    gotoxy2(36,31);
+    printf("The program will be finished!  ");
+
+    gotoxy2(35,32);
+    printf("Press any key to close the game");
+
+    textcolor(0); //Deixa texto em preto, tornando-o invisivel
     system("pause");
+    textcolor(15);
 
     return;
 }
 
-void makeLastDirection(struct lastDirection last) //Contabiliza a proxima posição, com base na ultima posição
+void movePacman(struct directions next) //Movimentação e impressão do PacMan
 {
-    switch(last.coordinates)  //Verifica a ultima direção que foi solicitado para andar
+
+    gotoxy2(pacman.x, pacman.y);
+    printf(" ");
+
+    switch(next.coordinates)
     {
-    case 'x':
-        pacman.x+=last.aumenta_diminui;
-        break;
     case 'y':
-        pacman.y+=last.aumenta_diminui;
+        pacman.y+=next.aumenta_diminui;
         break;
-    default:
+    case 'x':
+        pacman.x+=next.aumenta_diminui;
         break;
     }
 
-    return;
-}
+    testLimits(); //Ao chegar nos limites do mapa, vai para o outro lado
 
-void movePacman(struct lastDirection last) //Movimentação do PacMan
-{
-
-    switch(last.coordinates)
-    {
-    case 'y':
-        if (last.aumenta_diminui==1)
-        {
-            gotoxy2(pacman.x, pacman.y-1);
-            printf(" ");
-            gotoxy2(pacman.x, pacman.y);
-            printf("%c", 'C');
-        }
-        else
-        {
-            gotoxy2(pacman.x, pacman.y+1);
-            printf(" ");
-            gotoxy2(pacman.x, pacman.y);
-            printf("%c", 'C');
-        }
-        break;
-    case 'x':
-        if(last.aumenta_diminui==1)
-        {
-            gotoxy2(pacman.x-1, pacman.y);
-            printf(" %c", 'C');
-        }
-        else
-        {
-            gotoxy2(pacman.x, pacman.y);
-            printf("%c ", 'C');
-        }
-        break;
-    }
+    gotoxy2(pacman.x,pacman.y);
+    printf("C");
 
     return;
 }
@@ -333,25 +241,33 @@ void testLimits(void) //Testa limites do mapa
 
     if(pacman.y < TOP) //Ao chegar nos limites do mapa, vai para o outro lado
     {
+        gotoxy2(pacman.x, 1);
+        printf(" ");
         pacman.y= HEIGHT;
     }
     else if(pacman.y > HEIGHT)
     {
+        gotoxy2(pacman.x, 30);
+        printf(" ");
         pacman.y = TOP;
     }
     else if(pacman.x < LEFT)
     {
+        gotoxy2(1, pacman.y);
+        printf(" ");
         pacman.x=WIDTH;
     }
     else if(pacman.x > WIDTH)
     {
+        gotoxy2(100, pacman.y);
+        printf(" ");
         pacman.x = LEFT;
     }
 
     return;
 }
 
-void speedControl(struct lastDirection last) //Controla velocidade do jogo
+void speedControl(struct directions last) //Controla velocidade do jogo
 {
 
     //Caso o computador esteja com o CMD padrao, usar esse código abaixo
@@ -368,7 +284,7 @@ void speedControl(struct lastDirection last) //Controla velocidade do jogo
     //Sleep(SPEED);
 }
 
-char detectKey(struct lastDirection last) //Detecta a tecla pressionada
+char detectKey(struct directions last) //Detecta a tecla pressionada
 {
 
     char key;
@@ -410,6 +326,54 @@ char detectKey(struct lastDirection last) //Detecta a tecla pressionada
 
 }
 
+void menuStartGame(void) //Apresenta menu de inicio do jogo
+{
+    int contador=0;
+    char ch;
+    FILE *arq; //Cria um ponteiro para um tipo arquivo
+
+    arq = fopen("data/pacman.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+
+    gotoxy2(20, contador+1);
+    Sleep(50);
+    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    {
+        if(contador>19)
+        {
+            textcolor(15);
+        }
+        else
+        {
+            textcolor(14);
+        }
+
+        printf("%c", ch);
+
+        if(ch=='\n' && contador<25)
+        {
+            contador++;
+            gotoxy2(20, contador+1);
+            Sleep((contador-25)*-10); //Acelera a impressão de cada linha aos poucos
+        }
+    }
+
+    getch();
+    clrscr();
+    return;
+}
+
+// Função gotoxy2, tem limite igual a: system("mode 'x-1', 'y-1'");
+// índice inicia em 0
+// vai até system(mode x-1, y-1)
+void gotoxy2(int x, int y)
+{
+    COORD coord;
+    coord.X = x-1;
+    coord.Y = y-1;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+//Função que reconstroi parte do labirinto após ter sido sobrescrito por uma palavra
 void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
 {
 
@@ -442,6 +406,7 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
 
     return;
 }
+
 
 //TODO:
 
