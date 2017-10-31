@@ -92,7 +92,10 @@ void pacmanStart(void)
         return;
     }
 
-    showLab(lab); //Carrega o labirinto na memoria, carrega a posição do pacman, pastilhas, super-pastilhas, e fantasmas
+    if(showLab(lab)){ //Carrega o labirinto na memoria, carrega a posição do pacman, pastilhas, super-pastilhas, e fantasmas
+        system("Pause");
+        return 0; //Se der erro ao carregar, encera o programa
+    }
 
     //Mensagem de saida
     gotoXY(36, 31);
@@ -348,11 +351,22 @@ void testColision(void)
             break;
         }
 
+        if(nextDirection.coordinates!=lastDirection.coordinates)
+        {
+            switch(lastDirection.coordinates)
+            {
+            case 'y':
+                pacman.y+=lastDirection.aumenta_diminui;
+                break;
+            case 'x':
+                pacman.x+=lastDirection.aumenta_diminui;
+                break;
+            }
+        }
 
-            //Faz programa continuar correndo na ultima direção andada na proxima iteração
+        //Faz programa continuar correndo na ultima direção andada na proxima iteração
         nextDirection.aumenta_diminui=lastDirection.aumenta_diminui;
         nextDirection.coordinates=lastDirection.coordinates;
-
 
     }
     else

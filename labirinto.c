@@ -85,10 +85,10 @@ int readLab(char lab[30][100])
     return 0;
 }
 
-void showLab(char lab[30][100])
+int showLab(char lab[30][100])
 {
     if(readLab(lab)){
-        return;
+        return 1;
     }
     iniciaLabirinto(lab);
 
@@ -127,7 +127,7 @@ void showLab(char lab[30][100])
         }
     }
 
-    return;
+    return 0;
 }
 
 // inicia e carrega as structs
