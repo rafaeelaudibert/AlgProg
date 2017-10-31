@@ -38,7 +38,7 @@ int startMessage(int);
 
 void movePacman(struct directions);
 void testLimits(void);
-void testColision(struct directions);
+void testColision(void);
 void speedControl(struct directions); //PROVISÓRIO - SERÁ REMOVIDA
 
 char detectKey(void);
@@ -48,6 +48,8 @@ void reconstructMaze(int, int, int, int);
 //Variaveis Globais
 struct pacmanPosition pacman; //Struct responsavel pelo pacman
 char lab[30][100]; //Variavel responsavel por armazenar o labirinto
+struct directions nextDirection; //Struct que armazena dados da posição a ser andada
+struct directions lastDirection; //Struct que armazena dados da ultima posição andada
 
 //Constantes
 int const   TOP = 1, //Limite superior do mapa (Nunca menor que 0)
@@ -83,7 +85,6 @@ void pacmanStart(void)
 {
     int continuaJogo=1, mostraStart=1;
     char key;
-    struct directions nextDirection; //Struct que armazena dados da posição a ser andada
 
     pacman.lives--; //Ao iniciar o jogo, diminui uma vida do pacman
     if(!pacman.lives)  //Se acabarem as vidas do pacman, finaliza o jogo
@@ -157,6 +158,7 @@ void pacmanStart(void)
 
         movePacman(nextDirection); //Realiza movimentação;
         speedControl(nextDirection); //Controla a velocidade do jogo
+
 
     } //FIM DO WHILE
 
@@ -299,7 +301,7 @@ void movePacman(struct directions next)
     }
 
     testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
-    testColision(next);
+    testColision();
 
     gotoXY(pacman.x,pacman.y);
     printf("C"); //Imprime a nova posição do pacman
@@ -331,21 +333,35 @@ void testLimits(void)
     return;
 }
 
-void testColision(struct directions next)
+void testColision(void)
 {
 
     if(lab[pacman.y-1][pacman.x-1]=='#')
     {
-        switch(next.coordinates) //Calcula a proxima posição do pacman
+        switch(nextDirection.coordinates) //Calcula a proxima posição do pacman
         {
         case 'y':
-            pacman.y-=next.aumenta_diminui;
+            pacman.y-=nextDirection.aumenta_diminui;
             break;
         case 'x':
-            pacman.x-=next.aumenta_diminui;
+            pacman.x-=nextDirection.aumenta_diminui;
             break;
         }
+
+
+            //Faz programa continuar correndo na ultima direção andada na proxima iteração
+        nextDirection.aumenta_diminui=lastDirection.aumenta_diminui;
+        nextDirection.coordinates=lastDirection.coordinates;
+
+
     }
+    else
+    {
+        lastDirection.coordinates=nextDirection.coordinates;
+        lastDirection.aumenta_diminui=nextDirection.aumenta_diminui;
+    }
+
+
 
     return;
 
