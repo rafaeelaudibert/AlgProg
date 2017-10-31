@@ -111,7 +111,10 @@ void showLab(char lab[30][100])
                 textcolor(14);
                 printf("%c", lab[i][j]);
             }
-            else
+            else if(lab[i][j]=='*'){
+                textcolor(13);
+                printf("%c", lab[i][j]);
+            }else
             {
                 textcolor(0);
                 printf(" ");
