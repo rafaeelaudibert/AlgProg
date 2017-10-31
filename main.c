@@ -38,6 +38,7 @@ int startMessage(int);
 
 void movePacman(struct directions);
 void testLimits(void);
+void testColision(struct directions);
 void speedControl(struct directions); //PROVISÓRIO - SERÁ REMOVIDA
 
 char detectKey(void);
@@ -280,7 +281,7 @@ int startMessage(int flag)
 
 
 
- //Movimentação e impressão do PacMan na posição correta
+//Movimentação e impressão do PacMan na posição correta
 void movePacman(struct directions next)
 {
 
@@ -298,6 +299,7 @@ void movePacman(struct directions next)
     }
 
     testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
+    testColision(next);
 
     gotoXY(pacman.x,pacman.y);
     printf("C"); //Imprime a nova posição do pacman
@@ -305,7 +307,7 @@ void movePacman(struct directions next)
     return;
 }
 
- //Testa se pacman chegou no limite do mapa, assim podendo colocar na posição correta
+//Testa se pacman chegou no limite do mapa, assim podendo colocar na posição correta
 void testLimits(void)
 {
 
@@ -327,6 +329,26 @@ void testLimits(void)
     }
 
     return;
+}
+
+void testColision(struct directions next)
+{
+
+    if(lab[pacman.y-1][pacman.x-1]=='#')
+    {
+        switch(next.coordinates) //Calcula a proxima posição do pacman
+        {
+        case 'y':
+            pacman.y-=next.aumenta_diminui;
+            break;
+        case 'x':
+            pacman.x-=next.aumenta_diminui;
+            break;
+        }
+    }
+
+    return;
+
 }
 
 //Controla velocidade do jogo - SERÁ ALTERADO PARA FUNCIONAR COM BASE NO TEMPO DO SISTEMA - PROVISÓRIO

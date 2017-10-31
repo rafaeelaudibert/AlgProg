@@ -85,3 +85,12 @@
 	<conio.h>
 	"../labirinto.h"
 
+1509335396 source:c:\users\rafae\documents\github\algprog\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	"labirinto.h"
+
