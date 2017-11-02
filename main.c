@@ -37,7 +37,7 @@ void pacmanEnd(void);
 
 void startGameMenu(void);
 int startMessage(int);
-void printPoints(void);
+void checkPacDots(void);
 
 void setDirection(char, int*);
 void movePacman(struct directions);
@@ -134,7 +134,7 @@ void pacmanStart(void)
         }
 
         movePacman(nextDirection); //Realiza movimentação;
-        printPoints();
+        checkPacDots();
         speedControl(nextDirection); //Controla a velocidade do jogo
 
 
@@ -259,14 +259,14 @@ int startMessage(int flag)
     return flag;
 }
 
-void printPoints(void){
+void checkPacDots(void){
 
     if(lab[pacman.y-1][pacman.x-1]=='o')
     {
         lab[pacman.y-1][pacman.x-1]=' ';
         contaPontos+=10;
-        printf("\a");
-        //Beep(500, 30); - Comentado até sabermos se utilizaremos isso ou não
+        //printf("\a");
+        //Beep(500, 30); //- Comentado até sabermos se utilizaremos isso ou não
 
         gotoXY(46, 32);
         printf("Pontos: %d", contaPontos);
