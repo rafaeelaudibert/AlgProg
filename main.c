@@ -43,6 +43,7 @@ void setDirection(char, int*);
 void movePacman(struct directions);
 void testLimits(void);
 void testColision(void);
+void getPacmanPos(void);
 void speedControl(struct directions); //PROVISÓRIO - SERÁ REMOVIDA
 
 char detectKey(void);
@@ -109,8 +110,7 @@ void pacmanStart(void)
     printf("Pontos: 0");
 
     //Carrega posições dos objetos
-    pacman.x=retornaXPacman();
-    pacman.y=retornaYPacman();
+    getPacmanPos();
 
     //Roda o jogo
     while(continuaJogo)
@@ -411,6 +411,14 @@ void testColision(void)
         lastDirection.coordinates=nextDirection.coordinates;
         lastDirection.aumenta_diminui=nextDirection.aumenta_diminui;
     }
+
+    return;
+}
+
+void getPacmanPos(void){
+
+    pacman.x=retornaXPacman();
+    pacman.y=retornaYPacman();
 
     return;
 }
