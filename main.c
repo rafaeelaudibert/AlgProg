@@ -59,7 +59,7 @@ pacmanPosition pacman; //Struct responsavel pelo pacman
 char lab[30][100]; //Variavel responsavel por armazenar o labirinto
 int points=0;
 clock_t inicio, fim;
-float speed2=100;
+float speed2=100; //VARIAVEL PROBLEMATICA - TENTAR CORRIGIR
 
 
 //Constantes
