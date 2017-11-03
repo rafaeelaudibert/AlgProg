@@ -5,6 +5,7 @@
 #include <conio.h> //Para utilizar funções de movimentações do jogo
 #include <windows.h> //Para detectar keystrokes
 #include <ctype.h> //Para utilizar o tolower();
+#include <time.h> //Para utilizar função clock();
 
 //Includes de headers locais
 #include "labirinto.h"
@@ -47,7 +48,7 @@ void movePacman(directions*, directions*);
 void testLimits(void);
 void testColision(directions*, directions*);
 void getPacmanPos(void);
-void speedControl(directions); //PROVISÓRIO - SERÁ REMOVIDA
+void pacmanControl(directions*, directions*);
 
 char detectKey(void);
 void gotoXY(int, int);
@@ -57,10 +58,12 @@ void reconstructMaze(int, int, int, int);
 pacmanPosition pacman; //Struct responsavel pelo pacman
 char lab[30][100]; //Variavel responsavel por armazenar o labirinto
 int points=0;
+clock_t inicio, fim;
+float speed2=100;
 
 
 //Constantes
-int const   TOP = 1, //Limite superior do mapa (Nunca menor que 0)
+int    TOP = 1, //Limite superior do mapa (Nunca menor que 0)
             LEFT = 1, //Limite esquerdo do mapa (Nunca menor que 0)
             HEIGHT = 30, //Limite inferior do mapa
             WIDTH = 100, //Limite direito do mapa
@@ -119,6 +122,9 @@ void pacmanStart(void)
     //Carrega posições dos objetos
     getPacmanPos();
 
+    //Starta o timer
+    inicio=clock();
+
     //Roda o jogo
     while(continuaJogo)
     {
@@ -140,11 +146,7 @@ void pacmanStart(void)
             setDirection(key, point_continua, pNextDirection); //Decodifica tecla pressionada
         }
 
-        movePacman(pNextDirection, pLastDirection); //Realiza movimentação;
-        checkPacDots();
-        checkPowerPellets();
-        speedControl(nextDirection); //Controla a velocidade do jogo
-
+        pacmanControl(pNextDirection, pLastDirection);
 
     } //FIM DO WHILE
 
@@ -450,22 +452,30 @@ void getPacmanPos(void)
     return;
 }
 
-//Controla velocidade do jogo - SERÁ ALTERADO PARA FUNCIONAR COM BASE NO TEMPO DO SISTEMA - PROVISÓRIO
-void speedControl(directions last)
+//Controla velocidade do jogo
+void pacmanControl(directions* next, directions* last)
 {
 
-    //Caso o computador esteja com o CMD padrao, usar esse código abaixo
-    if (last.coordinates=='y')
+    float velocidade;
+
+    if ((*last).coordinates=='y')
     {
-        Sleep(SPEED*1.5); //Corrige velocidade no eixo y
+        velocidade=SPEED*1.5;
     }
     else
     {
-        Sleep(SPEED);
+        velocidade=SPEED;
+
     }
 
-    //Caso o computador esteja com o CMD alterado para ter letras quadradas, usar o código abaixo
-    //Sleep(SPEED);
+    fim=clock();
+    if(fim-inicio>velocidade)
+    {
+        inicio=fim;
+        movePacman(next, last); //Realiza movimentação;
+        checkPacDots();
+        checkPowerPellets();
+    }
 }
 
 
@@ -564,10 +574,9 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
 //TODO LIST:
 
 //CMD
-//Mudar timer do jogo, para ser em função do tempo do Sistema
+//Verificar para timer funcionar a base de uma variavel, e não de uma constante
 
 //PACMAN
-//Transformar direções do pacman em variaveis locais, e utilizar ponteiros
 //Detecção de colisão com os fantasmas, pacman.lives--, Respawn;
 
 //FANTASMAS
@@ -584,7 +593,6 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
 
 //EXTRAS:
 //Dijkshtra
-//Sistema de som
 //Highscores
 //Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
 
