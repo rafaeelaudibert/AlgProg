@@ -40,6 +40,7 @@ void pacmanEnd(void);
 void startGameMenu(void);
 int startMessage(int);
 void checkPacDots(void);
+void checkPowerPellets(void);
 
 void setDirection(char, int*, directions*);
 void movePacman(directions*, directions*);
@@ -141,6 +142,7 @@ void pacmanStart(void)
 
         movePacman(pNextDirection, pLastDirection); //Realiza movimentação;
         checkPacDots();
+        checkPowerPellets();
         speedControl(nextDirection); //Controla a velocidade do jogo
 
 
@@ -272,6 +274,22 @@ void checkPacDots(void)
     {
         lab[pacman.y-1][pacman.x-1]=' ';
         points+=10;
+        //printf("\a");
+        //Beep(500, 30); //- Comentado até sabermos se utilizaremos isso ou não
+
+        gotoXY(46, 32);
+        printf("Pontos: %d", points);
+    }
+
+}
+
+void checkPowerPellets(void)
+{
+
+    if(lab[pacman.y-1][pacman.x-1]=='*')
+    {
+        lab[pacman.y-1][pacman.x-1]=' ';
+        points+=50;
         //printf("\a");
         //Beep(500, 30); //- Comentado até sabermos se utilizaremos isso ou não
 
