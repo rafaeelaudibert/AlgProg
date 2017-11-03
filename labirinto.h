@@ -7,7 +7,7 @@
 int readLab(char lab[30][100]);
 
 // Função que imprime o lab original
-void showLab(char lab[30][100]);
+int showLab(char lab[30][100]);
 
 // Carrega o labirinto e carrega as structs
 void iniciaLabirinto(char lab[30][100]);
