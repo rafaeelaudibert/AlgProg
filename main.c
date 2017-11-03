@@ -11,18 +11,20 @@
 
 
 //Structs
-struct directions //Armazena eixo andado, e direção no eixo
+
+
+struct //Armazena eixo andado, e direção no eixo
 {
     char coordinates; //'x', 'y' ou 's'
     int aumenta_diminui; //1 - Aumenta; -1 - Diminui; 0 - parado
-};
+} typedef directions;
 
-struct pacmanPosition //Armazena posição do pacman, e suas informações
+struct //Armazena posição do pacman, e suas informações
 {
     int x;
     int y;
     int lives;
-};
+} typedef pacmanPosition;
 
 
 //Inclusão dos protópipos das funções da conio.c
@@ -39,23 +41,21 @@ void startGameMenu(void);
 int startMessage(int);
 void checkPacDots(void);
 
-void setDirection(char, int*);
-void movePacman(struct directions);
+void setDirection(char, int*, directions*);
+void movePacman(directions*, directions*);
 void testLimits(void);
-void testColision(void);
+void testColision(directions*, directions*);
 void getPacmanPos(void);
-void speedControl(struct directions); //PROVISÓRIO - SERÁ REMOVIDA
+void speedControl(directions); //PROVISÓRIO - SERÁ REMOVIDA
 
 char detectKey(void);
 void gotoXY(int, int);
 void reconstructMaze(int, int, int, int);
 
 //Variaveis Globais
-struct pacmanPosition pacman; //Struct responsavel pelo pacman
+pacmanPosition pacman; //Struct responsavel pelo pacman
 char lab[30][100]; //Variavel responsavel por armazenar o labirinto
-struct directions nextDirection; //Struct que armazena dados da posição a ser andada
-struct directions lastDirection; //Struct que armazena dados da ultima posição andada
-int contaPontos=0;
+int points=0;
 
 
 //Constantes
@@ -92,13 +92,19 @@ void pacmanStart(void)
     int continuaJogo=1, mostraStart=1, *point_continua=&continuaJogo;
     char key; //Tecla pressionada
 
+    //Structs
+    directions nextDirection; //Struct que armazena dados da posição a ser andada
+    directions lastDirection; //Struct que armazena dados da ultima posição andada
+    directions *pNextDirection=&nextDirection, *pLastDirection=&lastDirection;
+
     pacman.lives--; //Ao iniciar o jogo, diminui uma vida do pacman
     if(!pacman.lives)  //Se acabarem as vidas do pacman, finaliza o jogo
     {
         return;
     }
 
-    if(showLab(lab)){ //Carrega o labirinto na memoria, carrega a posição do pacman, pastilhas, super-pastilhas, e fantasmas
+    if(showLab(lab))  //Carrega o labirinto na memoria, carrega a posição do pacman, pastilhas, super-pastilhas, e fantasmas
+    {
         system("Pause");
         return; //Se der erro ao carregar, encera o programa
     }
@@ -130,10 +136,10 @@ void pacmanStart(void)
             }
 
             key=tolower(detectKey()); //Detecta tecla pressionada
-            setDirection(key, point_continua); //Decodifica tecla pressionada
+            setDirection(key, point_continua, pNextDirection); //Decodifica tecla pressionada
         }
 
-        movePacman(nextDirection); //Realiza movimentação;
+        movePacman(pNextDirection, pLastDirection); //Realiza movimentação;
         checkPacDots();
         speedControl(nextDirection); //Controla a velocidade do jogo
 
@@ -259,77 +265,79 @@ int startMessage(int flag)
     return flag;
 }
 
-void checkPacDots(void){
+void checkPacDots(void)
+{
 
     if(lab[pacman.y-1][pacman.x-1]=='o')
     {
         lab[pacman.y-1][pacman.x-1]=' ';
-        contaPontos+=10;
+        points+=10;
         //printf("\a");
         //Beep(500, 30); //- Comentado até sabermos se utilizaremos isso ou não
 
         gotoXY(46, 32);
-        printf("Pontos: %d", contaPontos);
+        printf("Pontos: %d", points);
     }
 
 }
 
 
-void setDirection(char key, int* pointer){
+void setDirection(char key, int* pointer, directions* next)
+{
 
-     switch(key) //Verifica para onde será a nova direção
-            {
-            case 'w':
-                nextDirection.coordinates='y'; //Seta direção no eixo y
-                nextDirection.aumenta_diminui=-1; //Seta direção negativa
-                break;
-            case 'x':
-                nextDirection.coordinates='y';
-                nextDirection.aumenta_diminui=1; //Seta direção positiva
-                break;
-            case 'a':
-                nextDirection.coordinates='x'; //Seta direção no eixo x
-                nextDirection.aumenta_diminui=-1;
-                break;
-            case 'd':
-                nextDirection.coordinates='x';
-                nextDirection.aumenta_diminui=1;
-                break;
-            case 's':
-                nextDirection.coordinates='s';
-                nextDirection.aumenta_diminui=0;
-                break;
-            case 'p': //Pausa o jogo ao pressionar 'P'
-                pacmanPause();
-                break;
-            case ' ':
-                *pointer=0; //Irá fazer o programa terminar sua execução
-                nextDirection.coordinates='s'; //Faz pacman parar sua movimentação
-                nextDirection.aumenta_diminui=0;
-                break;
-            }
+    switch(key) //Verifica para onde será a nova direção
+    {
+    case 'w':
+        (*next).coordinates='y'; //Seta direção no eixo y
+        (*next).aumenta_diminui=-1; //Seta direção negativa
+        break;
+    case 'x':
+        (*next).coordinates='y';
+        (*next).aumenta_diminui=1; //Seta direção positiva
+        break;
+    case 'a':
+        (*next).coordinates='x'; //Seta direção no eixo x
+        (*next).aumenta_diminui=-1;
+        break;
+    case 'd':
+        (*next).coordinates='x';
+        (*next).aumenta_diminui=1;
+        break;
+    case 's':
+        (*next).coordinates='s';
+        (*next).aumenta_diminui=0;
+        break;
+    case 'p': //Pausa o jogo ao pressionar 'P'
+        pacmanPause();
+        break;
+    case ' ':
+        *pointer=0; //Irá fazer o programa terminar sua execução
+        (*next).coordinates='s'; //Faz pacman parar sua movimentação
+        (*next).aumenta_diminui=0;
+        break;
+    }
 
 }
 
 //Movimentação e impressão do PacMan na posição correta
-void movePacman(struct directions next)
+void movePacman(directions* next, directions* last)
 {
 
     gotoXY(pacman.x, pacman.y); //Apaga a posição atual do pacman
     printf(" ");
 
-    switch(next.coordinates) //Calcula a proxima posição do pacman
+    switch((*next).coordinates) //Calcula a proxima posição do pacman
     {
     case 'y':
-        pacman.y+=next.aumenta_diminui;
+        pacman.y+=(*next).aumenta_diminui;
         break;
     case 'x':
-        pacman.x+=next.aumenta_diminui;
+        pacman.x+=(*next).aumenta_diminui;
         break;
     }
 
     testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
-    testColision(); //Caso comando coloque o pacman dentro de uma parede, tira ele de lá
+    testColision(next, last); //Caso comando coloque o pacman dentro de uma parede, tira ele de lá
 
     gotoXY(pacman.x,pacman.y);
     printf("C"); //Imprime a nova posição do pacman
@@ -361,61 +369,62 @@ void testLimits(void)
     return;
 }
 
-void testColision(void)
+void testColision(directions* next, directions* last)
 {
 
     if(lab[pacman.y-1][pacman.x-1]=='#') //Testa a colisão caso esteja dentro de um campo de 'parede'
     {
-        switch(nextDirection.coordinates) //Volta a ultima posição andada
+        switch((*next).coordinates) //Volta a ultima posição andada
         {
         case 'y':
-            pacman.y-=nextDirection.aumenta_diminui;
+            pacman.y-=(*next).aumenta_diminui;
             break;
         case 'x':
-            pacman.x-=nextDirection.aumenta_diminui;
+            pacman.x-=(*next).aumenta_diminui;
             break;
         }
 
-        if(nextDirection.coordinates!=lastDirection.coordinates) //Faz continuar andando na ultima posição andada nessa iteração
+        if((*next).coordinates!=(*last).coordinates) //Faz continuar andando na ultima posição andada nessa iteração
         {
-            switch(lastDirection.coordinates)
+            switch((*last).coordinates)
             {
             case 'y':
-                pacman.y+=lastDirection.aumenta_diminui;
+                pacman.y+=(*last).aumenta_diminui;
                 break;
             case 'x':
-                pacman.x+=lastDirection.aumenta_diminui;
+                pacman.x+=(*last).aumenta_diminui;
                 break;
             }
         }
         //Faz programa continuar correndo na ultima direção andada na proxima iteração
-        nextDirection.aumenta_diminui=lastDirection.aumenta_diminui;
-        nextDirection.coordinates=lastDirection.coordinates;
+        (*next).aumenta_diminui=(*last).aumenta_diminui;
+        (*next).coordinates=(*last).coordinates;
 
         if(lab[pacman.y-1][pacman.x-1]=='#') //Caso ja esteja em uma esquina, faz não entrar na parede, caso seja forçado
-    {
-        switch(nextDirection.coordinates)
         {
-        case 'y':
-            pacman.y-=nextDirection.aumenta_diminui;
-            break;
-        case 'x':
-            pacman.x-=nextDirection.aumenta_diminui;
-            break;
+            switch((*next).coordinates)
+            {
+            case 'y':
+                pacman.y-=(*next).aumenta_diminui;
+                break;
+            case 'x':
+                pacman.x-=(*next).aumenta_diminui;
+                break;
+            }
         }
-    }
 
     }
     else //Senão, confirma que ocorreu um movimento valido, e seta a ultima posição para ser igual a atual, para funcionar a proxima iteração
     {
-        lastDirection.coordinates=nextDirection.coordinates;
-        lastDirection.aumenta_diminui=nextDirection.aumenta_diminui;
+        (*last).coordinates=(*next).coordinates;
+        (*last).aumenta_diminui=(*next).aumenta_diminui;
     }
 
     return;
 }
 
-void getPacmanPos(void){
+void getPacmanPos(void)
+{
 
     pacman.x=retornaXPacman();
     pacman.y=retornaYPacman();
@@ -424,7 +433,7 @@ void getPacmanPos(void){
 }
 
 //Controla velocidade do jogo - SERÁ ALTERADO PARA FUNCIONAR COM BASE NO TEMPO DO SISTEMA - PROVISÓRIO
-void speedControl(struct directions last)
+void speedControl(directions last)
 {
 
     //Caso o computador esteja com o CMD padrao, usar esse código abaixo
