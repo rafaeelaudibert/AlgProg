@@ -21,5 +21,5 @@
 
      #####################################
                   PAC-MAN
-       Press any key to start the game
+        Press any key to start the game
      #####################################

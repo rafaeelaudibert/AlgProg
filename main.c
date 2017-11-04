@@ -10,6 +10,7 @@
 #include "labirinto.h"
 
 
+
 //Structs
 struct //Armazena eixo andado, e direção no eixo
 {
@@ -27,29 +28,31 @@ struct //Armazena posição do pacman, e suas informações
 
 
 //Inclusão dos protópipos das funções da conio.c
-void clrscr(void); //Função que limpa a tela
 void _setcursortype(int); //Função para modificar o tipo de cursor
 void textcolor(int); //Função que controla cor do texto
 
 //Protótipo das funções locais
-void pacmanStart(void);
-void pacmanPause(void);
-void pacmanEnd(void);
+void gameStart(void);
+void pacmanControl(directions*, directions*, int*);
 
-void startGameMenu(void);
-int startMessage(int);
+void gamePause(void);
+void gameEnd(void);
+void gameWin(void);
+void gameLost(void);
+char detectKey(void);
+
+void movePacman(directions*, directions*);
 void checkPacDots(int*);
 void checkPowerPellets(void);
-
-void pacmanControl(directions*, directions*, int*);
-void setDirection(char, int*, directions*);
-void movePacman(directions*, directions*);
 void testLimits(void);
 void testColision(directions*, directions*);
+void setDirection(char, int*, directions*);
 
-char detectKey(void);
-void gotoXY(int, int);
+void startMenu(void);
+int startMessage(int);
 void reconstructMaze(int, int, int, int);
+void gotoXY(int, int);
+
 
 
 //Constantes
@@ -63,8 +66,8 @@ int  const  TOP = 1, //Limite superior do mapa (Nunca menor que 0)
 pacmanPosition pacman; //Struct responsavel pelo pacman
 char lab[30][100]; //Variavel responsavel por armazenar o labirinto
 int points=0; //Contador de pontos
-clock_t pacmanStartTimer, pacmanEndTimer; //Timers do jogo
 int pacDotActive, speed; //Variaveis responsaveis por guardar estado de poder do pacman, e sua velocidade
+clock_t pacmanStartTimer, pacmanEndTimer; //Timers do jogo
 
 
 
@@ -74,22 +77,20 @@ int main()
     system("mode 100, 37"); //Defines screen size
     _setcursortype(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
 
-    startGameMenu(); //Start message
+    startMenu(); //Start message
 
     pacman.lives=3; //Sets the initial number of lives of the pacman
     speed=100; //Sets the initial speed of the game
     pacDotActive=0;
-    pacmanStart(); //The Game 'per se'
+    gameStart(); //The Game 'per se'
 
     return EXIT_SUCCESS; //End of the program
 }
 
 
 
-//Funções Locais
-
-//Jogo em si
-void pacmanStart(void)
+//Controlador do jogo
+void gameStart(void)
 {
     int mostraStart=1; //Flag para mensagem inicial
     int continuaJogo=1, *point_continua=&continuaJogo; //Flag para loop do jogo
@@ -104,6 +105,7 @@ void pacmanStart(void)
     pacman.lives--; //Ao iniciar o jogo, diminui uma vida do pacman
     if(!pacman.lives)  //Se acabarem as vidas do pacman, finaliza o jogo
     {
+        gameLost();
         return;
     }
 
@@ -146,19 +148,45 @@ void pacmanStart(void)
 
         if(qtdePastilhasComidas==qtdePastilhasTotal) //Ao comer todas pastilhas, termina o jogo
         {
-            pacmanEnd();
+            gameWin();
             return;
         }
 
     } //FIM DO WHILE
 
-    pacmanEnd(); //Finaliza o jogo
+    gameEnd(); //Finaliza o jogo
 
     return;
 }
 
+//Controlador do Pacman
+void pacmanControl(directions* next, directions* last, int* qtde_pacdots)
+{
+    float velocidade;
+
+    if ((*last).coordinates=='y')
+    {
+        velocidade=speed*1.4; //Correção da distorção das letras
+    }
+    else
+    {
+        velocidade=speed;
+    }
+
+    pacmanEndTimer=clock(); //Seta para verificar tempo atual do sistema
+    if((pacmanEndTimer-pacmanStartTimer)>velocidade) //Ao ter passado tempo igual a velocidade, executa o loop
+    {
+        pacmanStartTimer=pacmanEndTimer; //"Zera" o contador inicio
+        movePacman(next, last);
+        checkPacDots(qtde_pacdots);
+        checkPowerPellets();
+    }
+}
+
+
+
 //Pausa o jogo
-void pacmanPause(void)
+void gamePause(void)
 {
     char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
     int count;
@@ -198,35 +226,34 @@ void pacmanPause(void)
     return;
 }
 
-//Mensagem de término de jogo
-void pacmanEnd(void)
+//Mensagem de término de jogo, caso jogador simplesmente desista
+void gameEnd(void)
 {
     gotoXY(36,31);
     printf("The program will be finished!  ");
     gotoXY(35,32);
     printf("Press any key to close the game");
     gotoXY(29,33);
-    printf("                                   ");
+    printf("                                              ");
 
     textcolor(0); //Deixa texto em preto, tornando-o invisivel
     gotoXY(1,33);
     system("pause");
     textcolor(15);
 
-    return;
 }
 
-
-//Apresenta menu de inicio do jogo
-void startGameMenu(void)
+//Mensagem de término de jogo, caso player ganhe o jogo
+void gameWin(void)
 {
     int contador=0;
     char ch;
     FILE *arq; //Cria um ponteiro para um tipo arquivo
 
-    arq = fopen("data/pacman.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+    arq = fopen("data/pacmanWin.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
 
-    gotoXY(20, contador+1);
+    system("cls");
+    gotoXY(26, contador+6);
     Sleep(50);
     while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
     {
@@ -244,36 +271,125 @@ void startGameMenu(void)
         if(ch=='\n' && contador<25)
         {
             contador++;
-            gotoXY(20, contador+1);
-            Sleep((contador-25)*-6); //Acelera a impressão de cada linha aos poucos
+            gotoXY(26, contador+6);
+            Sleep(10); //Imprime uma linha por vez
         }
     }
 
     getch();
-    clrscr();
+    printf("\n\n");
+    system("pause");
     return;
 }
 
-//Mensagem que aparece no inicio do jogo
-int startMessage(int flag)
+//Mensagem de término de jogo, caso player perca o jogo
+void gameLost(void)
+{
+    int contador=0;
+    char ch;
+    FILE *arq; //Cria um ponteiro para um tipo arquivo
+
+    arq = fopen("data/pacmanLost.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+
+    system("cls");
+    gotoXY(26, contador+6);
+    Sleep(50);
+    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    {
+        if(contador>19)
+        {
+            textcolor(15);
+        }
+        else
+        {
+            textcolor(14);
+        }
+
+        printf("%c", ch);
+
+        if(ch=='\n' && contador<25)
+        {
+            contador++;
+            gotoXY(26, contador+6);
+            Sleep(10); //Imprime uma linha por vez
+        }
+    }
+
+    getch();
+    printf("\n\n");
+    system("pause");
+    return;
+}
+
+//Detecta a tecla pressionada
+char detectKey(void)
+{
+    char key;
+
+    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(0x57)) //Tecla para cima ou tecla 'W'
+    {
+        key = 'w';
+    }
+    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(0x58)) //Tecla para baixo ou tecla 'X'
+    {
+        key = 'x';
+    }
+    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(0x41)) //Tecla para esquerda ou tecla 'A'
+    {
+        key = 'a';
+    }
+    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(0x44)) //Tecla para direita ou tecla 'D'
+    {
+        key = 'd';
+    }
+    else if (GetAsyncKeyState(0x53)) //Tecla 'S'
+    {
+        key = 's';
+    }
+    else if (GetAsyncKeyState(0x50)) //Tecla 'P'
+    {
+        key = 'p';
+    }
+    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //Tecla 'ESC' ou tecla 'Espaço'
+    {
+        key = ' ';
+    }
+    else //Senão retorna uma letra que não significa nenhuma direção, assim será utilizada a ultima direção andada
+    {
+        key='m';
+    }
+
+    return key;
+
+}
+
+
+
+//Movimentação e impressão do PacMan na posição correta
+void movePacman(directions* next, directions* last)
 {
 
-    if (flag==1)  //Mensagem de inicio
+    gotoXY(pacman.x, pacman.y); //Apaga a posição atual do pacman
+    printf(" ");
+
+    switch((*next).coordinates) //Calcula a proxima posição do pacman
     {
-        gotoXY(39, 14);
-        printf("                         ");
-        gotoXY(39,15);
-        printf(" Press any key to start  ");
-        gotoXY(39, 16);
-        printf("                         ");
-    }
-    else if(flag==0)
-    {
-        reconstructMaze(13,15,38,65);
-        flag--;
+    case 'y':
+        pacman.y+=(*next).aumenta_diminui;
+        break;
+    case 'x':
+        pacman.x+=(*next).aumenta_diminui;
+        break;
     }
 
-    return flag;
+    testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
+    testColision(next, last); //Caso comando coloque o pacman dentro de uma parede, tira ele de lá
+
+    //Imprime a nova posição do pacman
+    gotoXY(pacman.x,pacman.y);
+    printf("C");
+
+    return;
 }
 
 //Checagem das pastilhas
@@ -323,97 +439,6 @@ void checkPowerPellets(void)
         gotoXY(29,33);
         printf("                                             ");
     }
-}
-
-
-
-//Controla pacman
-void pacmanControl(directions* next, directions* last, int* qtde_pacdots)
-{
-    float velocidade;
-
-    if ((*last).coordinates=='y')
-    {
-        velocidade=speed*1.4; //Correção da distorção das letras
-    }
-    else
-    {
-        velocidade=speed;
-    }
-
-    pacmanEndTimer=clock(); //Seta para verificar tempo atual do sistema
-    if((pacmanEndTimer-pacmanStartTimer)>velocidade) //Ao ter passado tempo igual a velocidade, executa o loop
-    {
-        pacmanStartTimer=pacmanEndTimer; //"Zera" o contador inicio
-        movePacman(next, last);
-        checkPacDots(qtde_pacdots);
-        checkPowerPellets();
-    }
-}
-
-//Seta direção que o PacMan irá seguir
-void setDirection(char key, int* pointer, directions* next)
-{
-
-    switch(key) //Verifica para onde será a nova direção
-    {
-    case 'w':
-        (*next).coordinates='y'; //Seta direção no eixo y
-        (*next).aumenta_diminui=-1; //Seta direção negativa
-        break;
-    case 'x':
-        (*next).coordinates='y';
-        (*next).aumenta_diminui=1; //Seta direção positiva
-        break;
-    case 'a':
-        (*next).coordinates='x'; //Seta direção no eixo x
-        (*next).aumenta_diminui=-1;
-        break;
-    case 'd':
-        (*next).coordinates='x';
-        (*next).aumenta_diminui=1;
-        break;
-    case 's':
-        (*next).coordinates='s';
-        (*next).aumenta_diminui=0;
-        break;
-    case 'p': //Pausa o jogo ao pressionar 'P'
-        pacmanPause();
-        break;
-    case ' ':
-        *pointer=0; //Irá fazer o programa terminar sua execução
-        (*next).coordinates='s'; //Faz pacman parar sua movimentação
-        (*next).aumenta_diminui=0;
-        break;
-    }
-
-}
-
-//Movimentação e impressão do PacMan na posição correta
-void movePacman(directions* next, directions* last)
-{
-
-    gotoXY(pacman.x, pacman.y); //Apaga a posição atual do pacman
-    printf(" ");
-
-    switch((*next).coordinates) //Calcula a proxima posição do pacman
-    {
-    case 'y':
-        pacman.y+=(*next).aumenta_diminui;
-        break;
-    case 'x':
-        pacman.x+=(*next).aumenta_diminui;
-        break;
-    }
-
-    testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
-    testColision(next, last); //Caso comando coloque o pacman dentro de uma parede, tira ele de lá
-
-    //Imprime a nova posição do pacman
-    gotoXY(pacman.x,pacman.y);
-    printf("C");
-
-    return;
 }
 
 //Testa se pacman chegou no limite do mapa, mandando ele para o outro lado
@@ -495,60 +520,103 @@ void testColision(directions* next, directions* last)
     return;
 }
 
-
-//Detecta a tecla pressionada
-char detectKey(void)
+//Seta direção que o PacMan irá seguir
+void setDirection(char key, int* pointer, directions* next)
 {
 
-    char key;
-
-    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(0x57)) //Tecla para cima ou tecla 'W'
+    switch(key) //Verifica para onde será a nova direção
     {
-        key = 'w';
+    case 'w':
+        (*next).coordinates='y'; //Seta direção no eixo y
+        (*next).aumenta_diminui=-1; //Seta direção negativa
+        break;
+    case 'x':
+        (*next).coordinates='y';
+        (*next).aumenta_diminui=1; //Seta direção positiva
+        break;
+    case 'a':
+        (*next).coordinates='x'; //Seta direção no eixo x
+        (*next).aumenta_diminui=-1;
+        break;
+    case 'd':
+        (*next).coordinates='x';
+        (*next).aumenta_diminui=1;
+        break;
+    case 's':
+        (*next).coordinates='s';
+        (*next).aumenta_diminui=0;
+        break;
+    case 'p': //Pausa o jogo ao pressionar 'P'
+        gamePause();
+        break;
+    case ' ':
+        *pointer=0; //Irá fazer o programa terminar sua execução
+        (*next).coordinates='s'; //Faz pacman parar sua movimentação
+        (*next).aumenta_diminui=0;
+        break;
     }
-    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(0x58)) //Tecla para baixo ou tecla 'X'
-    {
-        key = 'x';
-    }
-    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(0x41)) //Tecla para esquerda ou tecla 'A'
-    {
-        key = 'a';
-    }
-    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(0x44)) //Tecla para direita ou tecla 'D'
-    {
-        key = 'd';
-    }
-    else if (GetAsyncKeyState(0x53)) //Tecla 'S'
-    {
-        key = 's';
-    }
-    else if (GetAsyncKeyState(0x50)) //Tecla 'P'
-    {
-        key = 'p';
-    }
-    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //Tecla 'ESC' ou tecla 'Espaço'
-    {
-        key = ' ';
-    }
-    else //Senão retorna uma letra que não significa nenhuma direção, assim será utilizada a ultima direção andada
-    {
-        key='m';
-    }
-
-    return key;
 
 }
 
 
-// Função gotoXY, tem limite igual a: system("mode 'x-1', 'y-1'");
-// índice inicia em 0
-// vai até system(mode x-1, y-1)
-void gotoXY(int x, int y)
+
+//Apresenta menu de inicio do jogo
+void startMenu(void)
 {
-    COORD coord;
-    coord.X = x-1;
-    coord.Y = y-1;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+    int contador=0;
+    char ch;
+    FILE *arq; //Cria um ponteiro para um tipo arquivo
+
+    arq = fopen("data/pacmanStart.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+
+    gotoXY(26, contador+5);
+    Sleep(50);
+    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    {
+        if(contador>19)
+        {
+            textcolor(15);
+        }
+        else
+        {
+            textcolor(14);
+        }
+
+        printf("%c", ch);
+
+        if(ch=='\n' && contador<25)
+        {
+            contador++;
+            gotoXY(26, contador+5);
+            Sleep((contador-25)*-6); //Acelera a impressão de cada linha aos poucos
+        }
+    }
+
+    getch();
+    system("cls");
+    return;
+}
+
+//Mensagem que aparece no inicio do jogo
+int startMessage(int flag)
+{
+
+    if (flag==1)  //Mensagem de inicio
+    {
+        gotoXY(39, 14);
+        printf("                         ");
+        gotoXY(39,15);
+        printf(" Press any key to start  ");
+        gotoXY(39, 16);
+        printf("                         ");
+    }
+    else if(flag==0)
+    {
+        reconstructMaze(13,15,38,65);
+        flag--;
+    }
+
+    return flag;
 }
 
 //Função que reconstroi parte do labirinto conforme parametros passados
@@ -585,32 +653,44 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
     return;
 }
 
-
-//TODO LIST:
-
-//CMD
-// Criar 3 tipos diferentes de final de jogo: • Desistencia
-//                                            • Vitoria
-//                                            • Derrota
-
-//PACMAN
-//Detecção de colisão com os fantasmas, pacman.lives--, Respawn;
-
-//FANTASMAS
-//Movimentação dos fantasmas (Movimentação com SuperPastilha OFF/ON - Movimentação 30% menor)
-//Timer para ressuscitar
-//Na struct, adicionar parametro 'Alive' (0 - Morto, 1 - Vivo)
-
-//PASTILHAS
-//Criar função que detecta que comeu todas pastilhas -> EndGame - WIN
-
-//SUPER-PASTILHAS
-//Criar ligação entre super-pastilhas e fantasmas
+// Função gotoXY, tem limite igual a: system("mode 'x-1', 'y-1'");
+// índice inicia em 0
+void gotoXY(int x, int y)
+{
+    COORD coord;
+    coord.X = x-1;
+    coord.Y = y-1;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
 
 
-//EXTRAS:
-//Dijkshtra - Sistema de detecção de caminho dos fantasmas mais inteligente
-//Highscores
-//Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
 
-//FIM DO ARQUIVO
+/*
+TODO LIST:
+
+• CMD
+  - COMPLETO!!!
+
+• PACMAN
+  - Detecção de colisão com os fantasmas, pacman.lives--, Respawn;
+
+• FANTASMAS
+  - Movimentação dos fantasmas (Movimentação com SuperPastilha OFF/ON - Movimentação 30% menor)
+  - Timer para ressuscitar
+  - Na struct, adicionar parametro 'Alive' (0 - Morto, 1 - Vivo)
+
+• PASTILHAS
+  - Criar função que detecta que comeu todas pastilhas -> EndGame - WIN
+
+• SUPER-PASTILHAS
+  - Criar ligação entre super-pastilhas e fantasmas
+
+
+
+• EXTRAS:
+  Dijkshtra - Sistema de detecção de caminho dos fantasmas mais inteligente, utilizando grafos
+  Highscores
+  Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
+
+  FIM DO ARQUIVO
+*/
