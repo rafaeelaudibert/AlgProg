@@ -82,11 +82,6 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
             }
         }
 
-        if(i<HEIGHT-1)
-        {
-            printf("\n"); //Linha nova no final da linha
-        }
-
     }
 
     fantasmas.quant=q_fantasmas;
