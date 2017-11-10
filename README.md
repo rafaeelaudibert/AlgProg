@@ -1,4 +1,7 @@
 # AlgProg
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ebcd6150d50f41429710dafd6d2ac0f4)](https://www.codacy.com/app/rafaeelaudibert/AlgProg?utm_source=github.com&utm_medium=referral&utm_content=DasParedes/AlgProg&utm_campaign=badger)
+
 Trabalhos da faculdade da cadeira de Algoritmos e Programação
 
 Pacman: 
