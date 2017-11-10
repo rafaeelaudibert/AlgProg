@@ -1,39 +1,35 @@
-//Includes das Libs
+//Libraries inclusion
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h> //Para utilizar funções de movimentações do jogo
-#include <windows.h> //Para detectar keystrokes
-#include <ctype.h> //Para utilizar o tolower();
-#include <time.h> //Para utilizar função clock();
+#include <windows.h> //Detect keystrokes
+#include <ctype.h> //To use tolower();
+#include <time.h> //To use clock();
+#include <conio.h> //To use textcolor() & kbhit();
 
-//Includes de headers locais
+//Local headers inclusions
 #include "labirinto.h"
 
 
 //Structs
-struct //Armazena eixo andado, e direção no eixo
+struct //Stores axis and direction in it
 {
     char coordinates; //'x', 'y' ou 's'
     int aumenta_diminui; //1 - Aumenta; -1 - Diminui; 0 - parado
 } typedef directions;
 
-struct //Armazena posição do pacman, e suas informações
+struct //Stores pacman position, and its information
 {
     int x; //x-axis position
     int y; //y-axis position
-    int lives; //lives remaining
+    int lives; //l=Lives remaining
     int pacDotActive; //SuperPower
-    directions next; //NextDirection to walk
-    directions last; //LastDirection walked
+    directions next; //Next direction to walk
+    directions last; //Last direction walked
 } typedef pacmanInfo;
 
 
 
-//Inclusão dos protópipos das funções da conio.c
-void _setcursortype(int); //Função para modificar o tipo de cursor
-void textcolor(int); //Função que controla cor do texto
-
-//Protótipo das funções locais
+//Function Prototypes
 void gameStart(void);
 void pacmanControl(int*, int*);
 
@@ -54,30 +50,33 @@ void startMenu(void);
 int startMessage(int);
 void reconstructMaze(int, int, int, int);
 void gotoXY(int, int);
+void cursorType(int);
+void textcolor(); //conio.c
 
 
 
-//Constantes
-int  const  TOP = 1, //Limite superior do mapa (Nunca menor que 0)
-            LEFT = 1, //Limite esquerdo do mapa (Nunca menor que 0)
-            HEIGHT = 30, //Limite inferior do mapa
-            WIDTH = 100, //Limite direito do mapa
-            CURSOR = 0, // 0 para sem cursor; 1 para cursor de caixa; 2 para cursor normal
-            NORMAL_SPEED=100, //Velocidade padrao do jogo
-            FAST_SPEED=70; //Velocidade ao comer super-pastilha
+//Constants
+int  const  TOP = 1, //Top map limit (Never less than 1)
+            LEFT = 1, //Left map limit (Never less than 1)
+            HEIGHT = 30, //Bottom map limit
+            WIDTH = 100, //Right map limit
+            CURSOR = 0, // 0 - no cursor; 1 - box cursor; 2 - normal cursor
+            NORMAL_SPEED=100, //Default game's speed
+            FAST_SPEED=70; //Speed after eating a PowerPellet
 
 //Variaveis Globais
-pacmanInfo pacman; //Struct responsavel pelo pacman
-char lab[30][100]; //Variavel responsavel por armazenar o labirinto
-int speed; //Variavel responsavel por guardar a velocidade do jogo
-clock_t pacStartTimer, pacEndTimer; //Timers do pacman
+pacmanInfo pacman; //Struct whose stores the pacman
+char lab[30][100]; //Variable whose stores the maze
+int speed; //Variable whose stores the actual speed of the game
+clock_t pacStartTimer, pacEndTimer; //Pacman timers
+
 
 
 //Pac-man Main
 int main()
 {
     system("mode 100, 37"); //Defines screen size
-    _setcursortype(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
+    cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
 
     //startMenu(); //Start message
 
@@ -91,73 +90,73 @@ int main()
 
 
 
-//Controlador do jogo
+//Start of the game
 void gameStart(void)
 {
-    int points=0; //Contador de pontos
-    int mostraStart=1; //Flag para mensagem inicial
-    int continuaJogo=1, *point_continua=&continuaJogo; //Flag para loop do jogo
-    int qtdePastilhasTotal, qtdePastilhasComidas=0; //Quantidade de pastillhas
-    char key; //Tecla pressionada
+    int points=0; //Points counter
+    int showStartMessage=1; //Starting Message Flag
+    int continueGame=1, *point_continua=&continueGame; //Game loop flag
+    int totalPacDots, eatenPacDots=0; //PacDots quantities
+    char key; //Stroked key
 
-    pacman.lives--; //Ao iniciar o jogo, diminui uma vida do pacman
-    if(!pacman.lives)  //Se acabarem as vidas do pacman, finaliza o jogo
+    pacman.lives--; //When starts the game, takes one live out of pacman
+    if(!pacman.lives)  //If pacman has 0 lives, ends the game
     {
         gameLost();
         return;
     }
 
-    if(showLab(lab, &qtdePastilhasTotal, &pacman.x, &pacman.y))  //Carrega o labirinto, a posição do pacman, das pastilhas, das super-pastilhas e dos fantasmas na memória
+    if(showLab(lab, &totalPacDots, &pacman.x, &pacman.y))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
     {
         printf("ERROR!");
         system("Pause");
-        return; //Se der erro ao carregar, encerra o programa
+        return; //If there is an error at loading it, finishes the game
     }
 
-    //Mensagem de saida
+    //Exit message
     gotoXY(36, 31);
     printf("Press 'Space' or 'ESC' to quit");
     gotoXY(46, 32);
     printf("Pontos: %d", points);
 
-    //Starta o timer e roda o jogo
+    //Starts timer, and makes the game to start
     pacStartTimer=clock();
-    while(continuaJogo)
+    while(continueGame)
     {
-        if(mostraStart>-1)
+        if(showStartMessage>-1)
         {
-            mostraStart=startMessage(mostraStart); //Mostra mensagem de inicio enquanto necessario
+            showStartMessage=startMessage(showStartMessage); //Shows start message when necessarie
         }
 
-        if(kbhit()) //Ao pressionar uma tecla
+        if(kbhit()) //When a key is stroked
         {
-            //Flag para fazer não aparecer mais a mensagem inicial
-            //Primeiro faz não imprimir mais a mensagem inicial, depois reconstroi o labirinto embaixo dela
-            if(mostraStart>-1)
+            //Flag to make the start message not appear in the next iteration
+            //First, it makes not to print the initial message anymore, after rebuilds the maze under it
+            if(showStartMessage>-1)
             {
-                mostraStart--;
+                showStartMessage--;
             }
 
-            key=tolower(detectKey()); //Detecta tecla pressionada
-            setDirection(key, point_continua); //Decodifica tecla pressionada
+            key=tolower(detectKey()); //Detects pressed key
+            setDirection(key, point_continua); //Decodifies pressed key
         }
 
-        pacmanControl(&qtdePastilhasComidas, &points); //Controle do pacman
+        pacmanControl(&eatenPacDots, &points); //Controls pacman
 
-        if(qtdePastilhasComidas==qtdePastilhasTotal) //Ao comer todas pastilhas, termina o jogo
+        if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
             gameWin();
             return;
         }
 
-    } //FIM DO WHILE
+    } //WHILE END
 
-    gameEnd(); //Finaliza o jogo
+    gameEnd(); //Ends the game
 
     return;
 }
 
-//Controlador do Pacman
+//Pacman Controller
 void pacmanControl(int* qtde_pacdots, int* points)
 {
     float correcaoVelocidade;
@@ -381,8 +380,8 @@ void movePacman(void)
         break;
     }
 
-    testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
     testColision(); //Caso comando coloque o pacman dentro de uma parede, tira ele de lá
+    testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
 
     //Imprime a nova posição do pacman
     gotoXY(pacman.x,pacman.y);
@@ -658,6 +657,34 @@ void gotoXY(int x, int y)
     coord.Y = y-1;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+
+// Selects cursor appearance.
+// Sets the cursor type to
+//
+// _NOCURSOR	Turns off the cursor
+// _NORMALCURSOR	Normal underscore cursor
+// _SOLIDCURSOR	Solid block cursor
+void cursorType(int cursor)
+{
+   CONSOLE_CURSOR_INFO cursorInfo;
+
+   switch(cursor) {
+      case 0:
+         cursorInfo.dwSize = 100;
+         cursorInfo.bVisible = FALSE;
+         break;
+      case 1:
+         cursorInfo.dwSize = 100;
+         cursorInfo.bVisible = TRUE;
+         break;
+      case 2:
+         cursorInfo.dwSize = 10;
+         cursorInfo.bVisible = TRUE;
+         break;
+   }
+   SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
 
 
 
