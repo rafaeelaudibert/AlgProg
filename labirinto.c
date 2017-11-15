@@ -1,41 +1,51 @@
+//Libraries inclusion
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 #include <string.h>
 #include <ctype.h>
 #include <conio.h>
+#include <math.h>
+#include <time.h>
+
+// Local Headers Inclusion
+#include "structs.h"
 #include "labirinto.h"
 
 void gotoxy(int, int);
 void textcolor(int);
 
-//Defini��o das estruturas
-struct
-{
-    int x;
-    int y;
-} typedef ghost;
+//Definição das estruturas
 
-struct
-{
-    int quant;
-    ghost unid[5];
-} typedef ghosts;
-
-//inst�ncias globais dos objetos
+//instâncias globais dos objetos
 ghosts fantasmas;
+
 extern int HEIGHT;
 extern int WIDTH;
 
+// tamanho do mapa
+int const WIDTH_SCREEN = 100;
+int const HEIGHT_SCREEN = 30;
 
-//Inicia e carrega as estruturas, al�m de mostrar o labirinto na tela
+// chance de fantasma perseguir o pacman
+int const chance_perseguicao = 6;
+// função aleatória, gera de 0 a max_random
+int const max_random = 10;
+
+// possíveis posições
+coord dir[4]; // UP, RIGHT, DOWN, LEFT
+
+//Inicia e carrega as estruturas, além de mostrar o labirinto na tela
 int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacmany)
 {
 
-    int i, j; //Contador do la�o da matriz
+    int i, j; //Contador do laço da matriz
     int q_fantasmas=0, q_pastilhas=0; //Contagem de objetos
 
-    //Chamada das outras duas fun��es respons�veis pelo labirinto
+    // standard setup of the array dir[];
+    setupDir();
+
+    //Chamada das outras duas funções responsáveis pelo labirinto
     if(readLab(lab))
     {
         return 1;
@@ -60,6 +70,11 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
                 printf(" ");
                 fantasmas.unid[q_fantasmas].x = j;
                 fantasmas.unid[q_fantasmas].y = i;
+
+                // movimentação inicial aleatória
+                //shuffleDir();
+                //escolheDirecao(&fantasmas.unid[q_fantasmas], lab);
+
                 q_fantasmas++;
                 lab[i][j] = ' ';
                 break;
@@ -80,7 +95,7 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
                 printf(" ");
                 break;
             }
-        }
+        } printf("\n");
 
     }
 
@@ -91,7 +106,7 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
     return 0;
 }
 
-//Fun��o que l� o arquivo labirinto.txt e configura a matriz do labirinto
+//Função que lê o arquivo labirinto.txt e configura a matriz do labirinto
 //Retorna 1 se houve algum erro
 int readLab(char lab[HEIGHT][WIDTH])
 {
@@ -102,7 +117,7 @@ int readLab(char lab[HEIGHT][WIDTH])
     //Ponteiro para leitura do arquivo no 'endereco'
     arq = fopen("data/labirinto.txt", "r");
 
-    //Se n�o conseguiu ler o arquivo, sai e retorna 1
+    //Se não conseguiu ler o arquivo, sai e retorna 1
     if(arq == NULL)
     {
         printf("ERROR: nao foi possivel abrir o arquivo\n");
@@ -110,13 +125,13 @@ int readLab(char lab[HEIGHT][WIDTH])
     }
 
 
-    //L� cada uma das linhas do arquivo
+    //Lê cada uma das linhas do arquivo
     while(fgets(str, 101, arq) != NULL || i<30)
     {
         //Se a leitura retornar uma linha em branco, ignora
         if(str[0] != '\n')
         {
-            //Sen�o, adiciona � matriz lab uma linha
+            //Senão, adiciona à matriz lab uma linha
             for(j=0; j<100; j++)
             {
                 lab[i][j] = str[j];
@@ -129,3 +144,204 @@ int readLab(char lab[HEIGHT][WIDTH])
     return 0;
 }
 
+// novo código
+// algoritmo pra movimentar cada um dos fantasmas
+void moveGhost(pacmanInfo pac, char lab[30][100]){
+
+    int i, q = fantasmas.quant; //fantasmas.quant;
+    // passa por cada um dos fantasmas
+    for(i=0; i<q; i++){
+        // fantasma do teste atual
+        ghost g = fantasmas.unid[i];
+
+        // chance do fantasma ir atr�s do pacman
+        int chance = rand() % max_random;
+
+        // se o fantasma precisa decidir se muda de dire��o
+        if(mudarDirecao(g, lab) == 1){
+            // se o valor de perseguir pacman est� dentro da chance_persegui��o, persegue
+            if(chance < chance_perseguicao){
+
+                // testa se chegou em um canto com apenas uma sa�da
+                if(ladosLivres(g, lab) == 1){
+                    fantasmas.unid[i].mov.y = fantasmas.unid[i].mov.y * -1;
+                    fantasmas.unid[i].mov.x = fantasmas.unid[i].mov.x * -1;
+                } else {
+                    // escolhe uma dire��o diferente da que veio, aleatoriamente
+                    // mistura aleatoriamente o vetor de poss�veis dire��es
+                    shuffleDir();
+                }
+            } else {
+                // escolhe o caminho que mais diminui a dist�ncia em rela��o ao pacman
+                // ordena o vetor das possiveis dire��es de acordo com a dist�ncia
+                // cartesiana do ghost para o pacman
+                perseguePacman(pac, g, lab);
+            }
+            escolheDirecao(&fantasmas.unid[i], lab);
+        }
+    }
+}
+
+
+// verifica se o fantasma está em um local que é uma bifurcacao ou um canto
+// se precisa mudar sua direcao
+// retornos:  1 : se estiver e precisar decidir se muda de direcao ou se continua
+//            0 : nao muda de direcao
+int mudarDirecao(ghost g, char lab[30][100]){
+    // verifica em qual dire��o o fantasma est� indo
+    if( g.mov.x != 0){
+        // dire��o na horizontal, verifica se pode ir pra cima ou pra baixo
+        if( lab[g.y+1][g.x] != '#' || lab[g.y-1][g.x] != '#') return 1;
+    } else {
+        // dire��o na vertical, verifica se pode ir pra esquerda ou direita
+        if( lab[g.y][g.x+1] != '#' || lab[g.y][g.x-1] != '#') return 1;
+    }
+    return 0;
+}
+
+// verifica quais são as possíveis direções que o fantasma pode ir
+// e escolhe uma de acordo com a ordem de prefêrencia no array dir[].
+void escolheDirecao(ghost *pg, char lab[30][100]){
+    int d; // �ndice do array dir
+    ghost g = *pg;
+
+    // passa por cada uma das poss�veis dire��es que ele pode ir
+    for(d=0; d<4; d++)
+    {
+        // verifica para quais lados n�o � uma parede e se ele n�o passa do limite do mapa
+        if( lab[ (g.y + dir[d].y) ][ (g.x + dir[d].x) ] != '#' &&
+                testaLimites(g, dir[d]) == 1 )
+        {
+            // verifica se a nova dire��o n�o � a que ele, para n�o retornar pelo mesmo caminho
+            if( dir[d].x != (g.mov.x * -1) ||
+                dir[d].y != (g.mov.y * -1) ){
+                    // modifica direto no fantasma a nova dire��o e sai do la�o
+                    pg->mov = dir[d];
+                    d = 5;
+                }
+        }
+    }
+}
+
+// devolve um array de posiçoes ordenados pela distancia cartesiana crescente
+// do fantasma em direcao ao Pacman
+void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100]){
+    int d, i;
+
+    // vetor das dist�ncias em cada uma das novas posi��es poss�veis
+    int dists[4];
+    for(i=0; i<4; i++){
+        // calculo da dist�ncia cartesiana
+        dists[i] = pow( pac.y - g.y + dir[i].y , 2) + pow(pac.x - g.x + dir[i].x, 2);
+    }
+
+    // ordena o vetor das distancias e o das direcoes de acordo com o das distancias
+    for(d=0; d<4; d++){
+        for(i=0; i<4; i++){
+            if(d != i){
+                if(dists[d] > dists[i]){
+                    int t = dists[d];
+                    dists[d] = dists[i];
+                    dists[i] = t;
+
+                    coord temp = dir[d];
+                    dir[d] = dir[i];
+                    dir[i] = temp;
+                }
+            }
+        }
+    }
+}
+
+// mostra os fantasma na tela
+void showGhosts(char lab[30][100]){
+    int i;
+    for(i=0; i<fantasmas.quant; i++){
+        // reprinta a última posicao com o que continha
+        coord posg;
+        posg.x = fantasmas.unid[i].x;
+        posg.y = fantasmas.unid[i].y;
+        gotoxy2(posg.x, posg.y);
+        // cores para impresão
+        if(lab[posg.y][posg.x] =='o'){
+            textcolor(14); //AMARELO
+        } else if(lab[posg.y][posg.x]){
+            textcolor(13); //ROSA
+        }
+        printf("%c", lab[posg.y][posg.x]);
+
+        // atualiza a posicao
+        fantasmas.unid[i].x += fantasmas.unid[i].mov.x;
+        fantasmas.unid[i].y += fantasmas.unid[i].mov.y;
+
+        // print na tela a nova posi�ao
+        textcolor(13); // muda a cor para roxo
+        gotoxy2(fantasmas.unid[i].x, fantasmas.unid[i].y);
+        printf("W");
+    }
+    // volta a cor normal
+    textcolor(15);
+}
+
+// setup inicial of ghosts
+void randomSetup(){
+
+}
+
+// inicializa os elementos do array global dir
+void setupDir(){
+    dir[0].x = 0; // UP
+    dir[0].y = -1;
+    dir[1].x = 1; // RIGHT
+    dir[1].y = 0;
+    dir[2].x = 0; // DOWN
+    dir[2].y = 1;
+    dir[3].x = -1; // LEFT
+    dir[3].y = 0;
+}
+
+// embaralha o array das direções ( dir ), aleatoriamente
+void shuffleDir(){
+    coord t; // auxiliar
+    int i, j=0;
+    for(i=0; i<4; i++){
+        j = rand() % 4;
+        t = dir[j];
+        dir[j] = dir[i];
+        dir[i] = t;
+    }
+}
+
+// dentro dos limites do mapa, retorna 1
+int testaLimites(ghost g, coord d){
+    if( g.x + d.x < WIDTH_SCREEN-1 &&
+        g.x + d.x > 0 &&
+        g.y + d.y < HEIGHT_SCREEN-1 &&
+        g.y + d.y > 0){
+        return 1;
+    } else {
+        return 0;
+    }
+};
+
+// retorna quantos lados est�o livres
+int ladosLivres(ghost g, char lab[30][100]){
+    int soma = 0;
+    // testa cada uma das dire��es se est� livre
+    if( lab[g.y][ g.x + 1] != '#') soma++;
+    if( lab[g.y][ g.x - 1] != '#') soma++;
+    if( lab[ g.y + 1][g.x] != '#') soma++;
+    if( lab[ g.y - 1][g.x] != '#') soma++;
+    return soma;
+}
+
+// gotoxy2
+// move the cursor to position (x, y)
+// begin in 0.
+void gotoxy2(int x, int y)
+{
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}

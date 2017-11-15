@@ -8,26 +8,7 @@
 
 //Local headers inclusions
 #include "labirinto.h"
-
-
-//Structs
-struct //Stores axis and direction in it
-{
-    char coordinates; //'x', 'y' ou 's'
-    int aumenta_diminui; //1 - Aumenta; -1 - Diminui; 0 - parado
-} typedef directions;
-
-struct //Stores pacman position, and its information
-{
-    int x; //x-axis position
-    int y; //y-axis position
-    int lives; //l=Lives remaining
-    int pacDotActive; //SuperPower
-    directions next; //Next direction to walk
-    directions last; //Last direction walked
-} typedef pacmanInfo;
-
-
+#include "structs.h"
 
 //Function Prototypes
 void gameStart(void);
@@ -77,6 +58,8 @@ int main()
 {
     system("mode 100, 37"); //Defines screen size
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
+
+    srand( time(NULL) ); // alimenta a semente de rand com um n�mero do tempo atual
 
     //startMenu(); //Start message
 
@@ -143,6 +126,7 @@ void gameStart(void)
 
         pacmanControl(&eatenPacDots, &points); //Controls pacman
 
+
         if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
             gameWin();
@@ -177,6 +161,10 @@ void pacmanControl(int* qtde_pacdots, int* points)
         movePacman();
         checkPacDots(qtde_pacdots, points);
         checkPowerPellets(points);
+
+        moveGhost(pacman, lab); // update of the moviment of the ghosts
+        showGhosts(lab); // update and show the position of the ghosts
+        gotoxy2(0,0);
     }
 }
 
