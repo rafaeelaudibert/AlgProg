@@ -5,6 +5,7 @@
 #include <ctype.h> //To use tolower();
 #include <time.h> //To use clock();
 #include <conio.h> //To use textcolor() & kbhit();
+#include <string.h> //To use gets/puts;
 
 //Local headers inclusions
 #include "labirinto.h"
@@ -27,7 +28,20 @@ struct //Stores pacman position, and its information
     directions last; //Last direction walked
 } typedef pacmanInfo;
 
+struct
+{
+    int posicao;
+    char nome[30];
+    int pontos;
+    char dateStr[15];
+    char timeStr[15];
+} typedef PLACAR;
 
+struct
+{
+    char nome[30];
+    int pontos;
+} typedef JOGO_ATUAL;
 
 //Function Prototypes
 void gameStart(void);
@@ -35,8 +49,9 @@ void pacmanControl(int*, int*);
 
 void gamePause(void);
 void gameEnd(void);
-void gameWin(void);
+void gameWin(int);
 void gameLost(void);
+void highscores(int);
 char detectKey(void);
 
 void movePacman(void);
@@ -48,6 +63,7 @@ void setDirection(char, int*);
 
 void startMenu(void);
 int startMessage(int);
+void printTop10(void);
 void reconstructMaze(int, int, int, int);
 void gotoXY(int, int);
 void cursorType(int);
@@ -61,8 +77,21 @@ int  const  TOP = 1, //Top map limit (Never less than 1)
             HEIGHT = 30, //Bottom map limit
             WIDTH = 100, //Right map limit
             CURSOR = 0, // 0 - no cursor; 1 - box cursor; 2 - normal cursor
-            NORMAL_SPEED=100, //Default game's speed
-            FAST_SPEED=70; //Speed after eating a PowerPellet
+            NORMAL_SPEED=50, //Default game's speed
+            FAST_SPEED=30; //Speed after eating a PowerPellet
+
+//Enumerações
+enum cores{
+    PRETO=0,
+    CINZA=8,
+    AZUL, //8+1
+    VERDE,
+    VERDE_AGUA,
+    VERMELHO,
+    LILAS,
+    AMARELO,
+    BRANCO //15
+};
 
 //Variaveis Globais
 pacmanInfo pacman; //Struct whose stores the pacman
@@ -78,13 +107,15 @@ int main()
     system("mode 100, 37"); //Defines screen size
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
 
-    //startMenu(); //Start message
+    startMenu(); //Start message
 
     pacman.lives=3; //Sets the initial number of lives of the pacman
     speed=NORMAL_SPEED; //Sets the initial speed of the game
     pacman.pacDotActive=0; //Sets pacman "not powered"
     gameStart(); //The Game 'per se'
 
+    gotoXY(1,40);
+    textcolor(PRETO);
     return EXIT_SUCCESS; //End of the program
 }
 
@@ -114,6 +145,7 @@ void gameStart(void)
     }
 
     //Exit message
+    textcolor(BRANCO);
     gotoXY(36, 31);
     printf("Press 'Space' or 'ESC' to quit");
     gotoXY(46, 32);
@@ -145,7 +177,7 @@ void gameStart(void)
 
         if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
-            gameWin();
+            gameWin(points);
             return;
         }
 
@@ -188,6 +220,7 @@ void gamePause(void)
     char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
     int count;
 
+    textcolor(BRANCO);
     gotoXY(41,13);
     printf("                     ");
     gotoXY(41,14);
@@ -213,6 +246,7 @@ void gamePause(void)
 
     for(count=3; count>0; count--)  //Contagem regressiva ao voltar para o jogo
     {
+        textcolor(BRANCO);
         gotoXY(45, 16);
         printf("%d seconds...", count);
         Sleep(1000);
@@ -226,6 +260,7 @@ void gamePause(void)
 //Mensagem de término de jogo, caso jogador simplesmente desista
 void gameEnd(void)
 {
+    textcolor(BRANCO);
     gotoXY(36,31);
     printf("The program will be finished!  ");
     gotoXY(35,32);
@@ -233,15 +268,15 @@ void gameEnd(void)
     gotoXY(29,33);
     printf("                                              ");
 
-    textcolor(0); //Deixa texto em preto, tornando-o invisivel
+    textcolor(PRETO); //Deixa texto em preto, tornando-o invisivel
     gotoXY(1,33);
     system("pause");
-    textcolor(15);
+    textcolor(BRANCO);
 
 }
 
 //Mensagem de término de jogo, caso player ganhe o jogo
-void gameWin(void)
+void gameWin(int points)
 {
     int contador=0;
     char ch;
@@ -256,11 +291,11 @@ void gameWin(void)
     {
         if(contador>19)
         {
-            textcolor(15);
+            textcolor(BRANCO);
         }
         else
         {
-            textcolor(14);
+            textcolor(AMARELO);
         }
 
         printf("%c", ch);
@@ -275,8 +310,10 @@ void gameWin(void)
 
     getch();
     printf("\n\n");
-    textcolor(0);
+    textcolor(PRETO);
     system("pause");
+    fflush(stdin);
+    highscores(points);
     return;
 }
 
@@ -296,14 +333,14 @@ void gameLost(void)
     {
         if(contador>19)
         {
-            textcolor(15);
+            textcolor(BRANCO);
         }
         else
         {
-            textcolor(14);
+            textcolor(AMARELO);
         }
 
-        printf("%c", ch);
+         printf("%c", ch);
 
         if(ch=='\n' && contador<25)
         {
@@ -317,6 +354,198 @@ void gameLost(void)
     printf("\n\n");
     system("pause");
     return;
+}
+
+void highscores(int points)
+{
+    PLACAR Highscores[11];
+    JOGO_ATUAL dados={{'a','\0'}, -50};
+    FILE *arq;
+    char Linha[100], dateStrTemp[9], url[25]= {"data/Highscores.txt"};
+    int i, j, k=AZUL;
+    int flag=1, flag2=0, flag3=1;
+
+    system("cls");
+
+    textcolor(BRANCO);
+    gotoXY(1,1);
+    // Abre um arquivo TEXTO para LEITURA
+    arq = fopen(url, "rt");
+    if (arq == NULL)  // Se houve erro na abertura
+    {
+        printf("Problemas na abertura do arquivo\n");
+        return;
+    }
+    else //Lê arquivo
+    {
+        for(i=0; i<10; i++)
+        {
+            // Lê uma linha (inclusive com o '\n')
+            fgets(Linha, 10, arq);  // o 'fgets' lê até 14 caracteres ou até o '\n'
+            Highscores[i].posicao=atoi(Linha);
+
+            fgets(Linha, 31, arq); // o 'fgets' lê até 30 caracteres ou até o '\n'
+            strcpy(Highscores[i].nome,Linha);
+
+            fgets(Linha, 10, arq);
+            Highscores[i].pontos=atoi(Linha);
+
+            fgets(Linha, 16, arq);
+            strcpy(Highscores[i].dateStr,Linha);
+
+            fgets(Linha, 16, arq);
+            strcpy(Highscores[i].timeStr,Linha);
+
+        }
+    }
+    fclose(arq);
+
+    if(points>Highscores[9].pontos) //Verifica se essa partida entrará para o placar
+    {
+        //MENSAGEM
+        fflush(stdin);
+        gotoXY(32,17);
+        printf("CONGRATULATIONS, YOU ARE IN THE TOP10!\n");
+        gotoXY(38,18);
+        printf("You have made %d points!\n", points);
+        gotoXY(35,19);
+        printf("Please, insert your first name: ");
+        printTop10();
+        cursorType(2); //Faz cursor aparecer
+        textcolor(VERMELHO);
+        gotoXY(47,20);
+
+        //Operações para conseguir nome e pontos caso esteja no TOP10
+        gets(dados.nome);
+        dados.nome[strlen(dados.nome)]='\n';
+        dados.nome[strlen(dados.nome)+1]='\0';
+        dados.pontos=points;
+    }
+
+    //MANIPULAÇÃO E PRINTAGEM DOS DADOS DO PLACAR
+    cursorType(CURSOR); //Faz cursor desaparecer novamente
+    system("cls");
+    //Mensagem inicial
+    textcolor(BRANCO);
+    gotoXY(1,1);
+    printf("\n   ##############################################################################################   \n");
+    printf("  #########################################                #######################################  \n");
+    printf(" #########################################     HIGHSCORE    ####################################### \n");
+    printf("  #########################################                #######################################  \n");
+    printf("   ##############################################################################################   \n\n");
+    printf("        POSICAO   NOME                         PONTUACAO         DATA            HORA");
+
+
+    //Manipulação dos dados, e printagem do Ranking
+    for(i=0; i<10; i++)
+    {
+        if(Highscores[i].pontos<dados.pontos && flag)
+        {
+            for(j=9; j>=i; j--)
+            {
+                Highscores[j].pontos=Highscores[j-1].pontos;
+                strcpy(Highscores[j].nome, Highscores[j-1].nome);
+                strcpy(Highscores[j].dateStr, Highscores[j-1].dateStr);
+                strcpy(Highscores[j].timeStr, Highscores[j-1].timeStr);
+            }
+            Highscores[i].pontos=dados.pontos;
+            strcpy(Highscores[i].nome, dados.nome);
+
+            _strdate(Highscores[i].dateStr); //Data em formato MMDDAA
+            strcpy(dateStrTemp, Highscores[i].dateStr); //Transformação para DDMMAA
+            Highscores[i].dateStr[0]=dateStrTemp[3];
+            Highscores[i].dateStr[1]=dateStrTemp[4];
+            Highscores[i].dateStr[3]=dateStrTemp[0];
+            Highscores[i].dateStr[4]=dateStrTemp[1];
+            Highscores[i].dateStr[8]='\n';
+            Highscores[i].dateStr[9]='\0';
+
+            _strtime(Highscores[i].timeStr); //Hora no formato HHMMSS
+            Highscores[i].timeStr[8]='\n';
+            Highscores[i].timeStr[9]='\0';
+            flag=0;
+            flag2=1;
+        }
+
+        if(flag2)
+        {
+            textcolor(LILAS);
+        }
+        else
+        {
+            textcolor(BRANCO);
+        }
+        gotoXY(12, i+9);
+        printf("%d",Highscores[i].posicao);
+        gotoXY(19,i+9);
+        printf("%s", Highscores[i].nome);
+        gotoXY(50,i+9);
+        printf("%5d", Highscores[i].pontos);
+        gotoXY(64,i+9);
+        printf("%s", Highscores[i].dateStr);
+        gotoXY(80,i+9);
+        printf("%s", Highscores[i].timeStr);
+        flag2=0;
+    }
+    textcolor(BRANCO);
+    gotoXY(32,20);
+    printf("______________________________________");
+    gotoXY(32,21);
+    printf("Press any key to close the game window");
+
+    //ABRE arquivo para GRAVAÇÃO
+    arq = fopen(url, "wt");
+    if (arq == NULL) // Se nào conseguiu criar
+    {
+        printf("Problemas na CRIACAO do arquivo\n");
+        return;
+    }
+    else //Grava os novos dados no arquivo
+    {
+        for(i=0; i<10; i++)
+        {
+
+            fprintf(arq,"%d\n",Highscores[i].posicao);
+            fprintf(arq,"%s",Highscores[i].nome);
+            fprintf(arq,"%d\n",Highscores[i].pontos);
+            fprintf(arq,"%s",Highscores[i].dateStr);
+            fprintf(arq,"%s",Highscores[i].timeStr);
+
+
+        }
+    }
+    fclose(arq);
+
+    while(flag3) //While para ficar trocando as cores do banner
+    {
+        textcolor(k);
+        gotoXY(1,1);
+        printf("\n   ##############################################################################################   \n");
+        printf("  #########################################                #######################################  \n");
+        printf(" #########################################                  ####################################### \n");
+        printf("  #########################################                #######################################  \n");
+        printf("   ##############################################################################################   \n\n");
+        k++;
+
+        textcolor(BRANCO);
+        gotoXY(48,4);
+        printf("HIGHSCORE");
+
+        if(k>AMARELO)
+        {
+            k=AZUL;
+        }
+        if(kbhit()){
+            flag3=0;
+        }
+
+        Sleep(150);
+    }
+
+
+
+    return;
+
 }
 
 //Detecta a tecla pressionada
@@ -384,6 +613,7 @@ void movePacman(void)
     testLimits(); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
 
     //Imprime a nova posição do pacman
+    textcolor(AMARELO);
     gotoXY(pacman.x,pacman.y);
     printf("C");
 
@@ -402,6 +632,7 @@ void checkPacDots(int* pacdots, int* points)
         //Beep(500, 30); //- Comentado até sabermos se utilizaremos isso ou não
 
 
+        textcolor(BRANCO);
         gotoXY(46, 32);
         printf("Pontos: %d", *points);
     }
@@ -419,6 +650,7 @@ void checkPowerPellets(int* points)
         Beep(1000, 50);
         pacman.pacDotActive=5000/FAST_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
 
+        textcolor(BRANCO);
         gotoXY(46, 32);
         printf("Pontos: %d", *points);
     }
@@ -428,6 +660,7 @@ void checkPowerPellets(int* points)
     {
         speed=FAST_SPEED;
         pacman.pacDotActive--;
+        textcolor(BRANCO);
         gotoXY(29,33);
         printf("Tempo restante de invulnerabilidade: %4dms", pacman.pacDotActive*FAST_SPEED);
     }
@@ -467,7 +700,7 @@ void testLimits(void)
 void testColision(void)
 {
 
-    if(lab[pacman.y-1][pacman.x-1]=='#') //Caso esteja dentro de um campo 'parede'
+    if(lab[pacman.y-1][pacman.x-1]=='#' && (pacman.y>TOP-1 && pacman.y<HEIGHT+1) && (pacman.x>LEFT-1 && pacman.x<WIDTH+1)) //Caso esteja dentro de um campo 'parede' E dentro do mapa
     {
         switch(pacman.next.coordinates) //Volta a ultima posição andada
         {
@@ -479,18 +712,17 @@ void testColision(void)
             break;
         }
 
-        if(pacman.next.coordinates!=pacman.last.coordinates) //Faz continuar andando na ultima posição andada nessa iteração
+        //Faz pacman continuar andando
+        switch(pacman.last.coordinates)
         {
-            switch(pacman.last.coordinates)
-            {
-            case 'y':
-                pacman.y+=pacman.last.aumenta_diminui;
-                break;
-            case 'x':
-                pacman.x+=pacman.last.aumenta_diminui;
-                break;
-            }
+        case 'y':
+            pacman.y+=pacman.last.aumenta_diminui;
+            break;
+        case 'x':
+            pacman.x+=pacman.last.aumenta_diminui;
+            break;
         }
+
 
         if(lab[pacman.y-1][pacman.x-1]=='#') //Caso ja esteja em uma esquina, e seja forçado a entrar na parede, faz não entrar nela
         {
@@ -504,8 +736,8 @@ void testColision(void)
                 break;
             }
         }
-
     }
+
     else //Senão, confirma que ocorreu um movimento valido, e seta a ultima posição para ser igual a atual, para funcionar a proxima iteração
     {
         pacman.last.coordinates=pacman.next.coordinates;
@@ -570,11 +802,11 @@ void startMenu(void)
     {
         if(contador>19)
         {
-            textcolor(15);
+            textcolor(BRANCO);
         }
         else
         {
-            textcolor(14);
+            textcolor(AMARELO);
         }
 
         printf("%c", ch);
@@ -598,6 +830,7 @@ int startMessage(int flag)
 
     if (flag==1)  //Mensagem de inicio
     {
+        textcolor(BRANCO);
         gotoXY(39, 14);
         printf("                         ");
         gotoXY(39,15);
@@ -626,12 +859,12 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
             gotoXY(count+1,contador+1);
             if(lab[contador][count]=='#')
             {
-                textcolor(15);
+                textcolor(BRANCO);
                 printf("%c", lab[contador][count]);
             }
             else if(lab[contador][count]=='o')
             {
-                textcolor(14);
+                textcolor(AMARELO);
                 printf("%c", lab[contador][count]);
             }
             else
@@ -642,10 +875,35 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
         }
     }
 
+    textcolor(AMARELO);
     gotoXY(pacman.x, pacman.y);
     printf("C");
 
     return;
+}
+
+void printTop10(void){
+    int i=3;
+    char ch;
+    FILE *arq; //Cria um ponteiro para um tipo arquivo
+
+    arq = fopen("data/top10.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+
+    gotoXY(4, i);
+    i++;
+    while( (ch=fgetc(arq))!=EOF)   //Impressão do TOP10
+    {
+        textcolor(BRANCO);
+        printf("%c", ch);
+
+        if(ch=='\n'){
+            gotoXY(4,i);
+            i++;
+        }
+    }
+
+    return;
+
 }
 
 // Função gotoXY, tem limite igual a: system("mode 'x-1', 'y-1'");
@@ -666,23 +924,24 @@ void gotoXY(int x, int y)
 // _SOLIDCURSOR	Solid block cursor
 void cursorType(int cursor)
 {
-   CONSOLE_CURSOR_INFO cursorInfo;
+    CONSOLE_CURSOR_INFO cursorInfo;
 
-   switch(cursor) {
-      case 0:
-         cursorInfo.dwSize = 100;
-         cursorInfo.bVisible = FALSE;
-         break;
-      case 1:
-         cursorInfo.dwSize = 100;
-         cursorInfo.bVisible = TRUE;
-         break;
-      case 2:
-         cursorInfo.dwSize = 10;
-         cursorInfo.bVisible = TRUE;
-         break;
-   }
-   SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    switch(cursor)
+    {
+    case 0:
+        cursorInfo.dwSize = 100;
+        cursorInfo.bVisible = FALSE;
+        break;
+    case 1:
+        cursorInfo.dwSize = 100;
+        cursorInfo.bVisible = TRUE;
+        break;
+    case 2:
+        cursorInfo.dwSize = 10;
+        cursorInfo.bVisible = TRUE;
+        break;
+    }
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 }
 
 
@@ -703,7 +962,7 @@ TODO LIST:
   - Na struct, adicionar parametro 'Alive' (0 - Morto, 1 - Vivo)
 
 • PASTILHAS
-  - Criar função que detecta que comeu todas pastilhas -> EndGame - WIN
+  - COMPLETO!!!
 
 • SUPER-PASTILHAS
   - Criar ligação entre super-pastilhas e fantasmas
@@ -712,7 +971,10 @@ TODO LIST:
 
 • EXTRAS:
   Dijkshtra - Sistema de detecção de caminho dos fantasmas mais inteligente, utilizando grafos
-  Highscores
+  HIGHSCORES -> FEITO
+  EFEITOS SONOROS -> Super-pastilhas OK
+                     Morte PACMAN
+                     Vitoria PACMAN
   Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
 
   FIM DO ARQUIVO
