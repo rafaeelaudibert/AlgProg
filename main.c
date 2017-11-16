@@ -26,7 +26,7 @@ struct
 
 //Function Prototypes
 void gameStart(void);
-void pacmanControl(int*, int*);
+int pacmanControl(int*, int*);
 
 void gamePause(void);
 void gameEnd(void);
@@ -50,7 +50,7 @@ void gotoXY(int, int);
 void cursorType(int);
 void textcolor(); //conio.c
 
-void ghostsControl(); // controla o tempo de movimento dos fantasmas
+int ghostsControl(); // controla o tempo de movimento dos fantasmas
 int checkGhostCollision(pacmanInfo); // checa se houve colisão do pacman com algum fantasma
 
 //Constants
@@ -65,7 +65,8 @@ int  const  TOP = 1, //Top map limit (Never less than 1)
             FAST_SPEED=70; //Speed after eating a PowerPellet
 
 //Enumerações
-enum cores{
+enum cores
+{
     PRETO=0,
     CINZA=8,
     AZUL, //8+1
@@ -84,12 +85,15 @@ char lab[30][100]; //Variable whose stores the maze
 int speed; //Variable whose stores the actual speed of the game
 clock_t pacStartTimer, pacEndTimer; //Pacman timers
 clock_t ghostsTime;
+int points=0; //Points counter
 
+int totalPacDots;
 
 //Pac-man Main
 int main()
 {
-    system("mode 100, 37"); //Defines screen size
+    system("mode 100, 37"); //Defines CMD's screen size
+    system("title Pacman"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
 
 
@@ -101,10 +105,26 @@ int main()
     speed=NORMAL_SPEED; //Sets the initial speed of the game
     pacman.pacDotActive=0; //Sets pacman "not powered"
     ghostsTime = clock(); //initial time of the ghosts
-    gameStart(); //The Game 'per se'
+
+    // seta as posições iniciais de tudo
+    iniciaLabirinto(lab, &totalPacDots, pacman);
+
+    while(pacman.lives>0){
+        gameStart(); //The Game 'per se'
+        pacman.lives--; //When starts the game, takes one live out of pacman
+        gameLost();
+        Sleep(500);
+    }
+    system("cls");
+
+    if(!pacman.lives){
+        gameLost();
+    }
 
     gotoXY(1,40);
     textcolor(PRETO);
+    highscores(points);
+
     return EXIT_SUCCESS; //End of the program
 }
 
@@ -113,19 +133,14 @@ int main()
 //Start of the game
 void gameStart(void)
 {
-    int points=0; //Points counter
+    int testecontinua=0;
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1, *point_continua=&continueGame; //Game loop flag
-    int totalPacDots, eatenPacDots=0; //PacDots quantities
-    char key; //Stroked key
+    int eatenPacDots=0; //PacDots quantities
+    char key='j'; //Stroked key
 
-    pacman.lives--; //When starts the game, takes one live out of pacman
-    if(!pacman.lives)  //If pacman has 0 lives, ends the game
-    {
-        gameLost();
-        return;
-    }
 
+    system("cls");
     if(showLab(lab, &totalPacDots, &pacman.x, &pacman.y))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
     {
         printf("ERROR!");
@@ -133,12 +148,14 @@ void gameStart(void)
         return; //If there is an error at loading it, finishes the game
     }
 
+
+
     //Exit message
     textcolor(BRANCO);
     gotoXY(36, 31);
     printf("Press 'Space' or 'ESC' to quit");
     gotoXY(46, 32);
-    printf("Pontos: %d", points);
+    printf("Points: %5d \t\t Lives: %d", points, pacman.lives);
 
     //Starts timer, and makes the game to start
     pacStartTimer=clock();
@@ -146,7 +163,7 @@ void gameStart(void)
     {
         if(showStartMessage>-1)
         {
-            showStartMessage=startMessage(showStartMessage); //Shows start message when necessarie
+            showStartMessage=startMessage(showStartMessage); //Shows start message when necessary
         }
 
         if(kbhit()) //When a key is stroked
@@ -162,10 +179,20 @@ void gameStart(void)
             setDirection(key, point_continua); //Decodifies pressed key
         }
 
-        pacmanControl(&eatenPacDots, &points); //Controls pacman
-        ghostsControl(); // Controls of the ghost
 
-        if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
+        if(!(testecontinua=pacmanControl(&eatenPacDots, &points)))  //Controls pacman
+        {
+            return;
+        }
+
+        if(key!='j')
+        {
+            if(!(testecontinua=ghostsControl(&points))){
+                return;
+            }
+        } // Controls of the ghost
+
+    if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
             gameWin(points);
             return;
@@ -173,13 +200,17 @@ void gameStart(void)
 
     } //WHILE END
 
-    gameEnd(); //Ends the game
+    if(continueGame==0)
+    {
+        gameEnd(); //Ends the game
+        pacman.lives=-1;
+    }
 
     return;
 }
 
 //Pacman Controller
-void pacmanControl(int* qtde_pacdots, int* points)
+int pacmanControl(int* qtde_pacdots, int* points)
 {
     float correcaoVelocidade;
 
@@ -200,34 +231,60 @@ void pacmanControl(int* qtde_pacdots, int* points)
         checkPacDots(qtde_pacdots, points);
         checkPowerPellets(points);
 
-        if(checkGhostCollision(pacman)){
-            if( pacman.pacDotActive){
+        if(checkGhostCollision(pacman))
+        {
+            if( pacman.pacDotActive)
+            {
                 eatGhost(pacman, points);
-            } else {
-                gameLost();
+            }
+            else
+            {
+                return 0;
             }
         }
 
         gotoxy2(0,0);
     }
+
+    return 1;
+
 }
 
-void ghostsControl(int *points){
+int ghostsControl(int *points)
+{
+
+    float correcaoVelocidade;
+
+    if (pacman.last.coordinates=='y')
+    {
+        correcaoVelocidade=1.4; //Correção da distorção das letras
+    }
+    else
+    {
+        correcaoVelocidade=1;
+    }
+
     clock_t atualTime = clock();
 
-    if((atualTime - ghostsTime) > ( pacman.pacDotActive ? SLOW_SPEED : NORMAL_SPEED)){
+    if((atualTime - ghostsTime) > ( pacman.pacDotActive ? SLOW_SPEED*correcaoVelocidade : NORMAL_SPEED*correcaoVelocidade))
+    {
         ghostsTime = atualTime;
         moveGhost(pacman, lab); // update of the moviment of the ghosts
-        showGhosts(lab); // update and show the position of the ghosts
+        showGhosts(pacman, lab); // update and show the position of the ghosts
 
-       if(checkGhostCollision(pacman)){
-            if( pacman.pacDotActive){
+        if(checkGhostCollision(pacman))
+        {
+            if( pacman.pacDotActive)
+            {
                 eatGhost(pacman, points);
-            } else {
-                gameEnd();
+            }
+            else
+            {
+                return 0;
             }
         }
     }
+    return 1;
 }
 
 //Pausa o jogo
@@ -279,8 +336,8 @@ void gameEnd(void)
     textcolor(BRANCO);
     gotoXY(36,31);
     printf("The program will be finished!  ");
-    gotoXY(35,32);
-    printf("Press any key to close the game");
+    gotoXY(32,32);
+    printf("Press any key twice to close the game");
     gotoXY(29,33);
     printf("                                              ");
 
@@ -356,7 +413,7 @@ void gameLost(void)
             textcolor(AMARELO);
         }
 
-         printf("%c", ch);
+        printf("%c", ch);
 
         if(ch=='\n' && contador<25)
         {
@@ -375,7 +432,7 @@ void gameLost(void)
 void highscores(int points)
 {
     PLACAR Highscores[11];
-    JOGO_ATUAL dados={{'a','\0'}, -50};
+    JOGO_ATUAL dados= {{'a','\0'}, -50};
     FILE *arq;
     char Linha[100], dateStrTemp[9], url[25]= {"data/Highscores.txt"};
     int i, j, k=AZUL;
@@ -443,12 +500,7 @@ void highscores(int points)
     system("cls");
     //Mensagem inicial
     textcolor(BRANCO);
-    gotoXY(1,1);
-    printf("\n   ##############################################################################################   \n");
-    printf("  #########################################                #######################################  \n");
-    printf(" #########################################     HIGHSCORE    ####################################### \n");
-    printf("  #########################################                #######################################  \n");
-    printf("   ##############################################################################################   \n\n");
+    gotoXY(1,8);
     printf("        POSICAO   NOME                         PONTUACAO         DATA            HORA");
 
 
@@ -491,15 +543,15 @@ void highscores(int points)
         {
             textcolor(BRANCO);
         }
-        gotoXY(12, i+9);
+        gotoXY(12, i+10);
         printf("%d",Highscores[i].posicao);
-        gotoXY(19,i+9);
+        gotoXY(19,i+10);
         printf("%s", Highscores[i].nome);
-        gotoXY(50,i+9);
+        gotoXY(50,i+10);
         printf("%5d", Highscores[i].pontos);
-        gotoXY(64,i+9);
+        gotoXY(64,i+10);
         printf("%s", Highscores[i].dateStr);
-        gotoXY(80,i+9);
+        gotoXY(80,i+10);
         printf("%s", Highscores[i].timeStr);
         flag2=0;
     }
@@ -535,12 +587,12 @@ void highscores(int points)
     while(flag3) //While para ficar trocando as cores do banner
     {
         textcolor(k);
-        gotoXY(1,1);
-        printf("\n   ##############################################################################################   \n");
-        printf("  #########################################                #######################################  \n");
-        printf(" #########################################                  ####################################### \n");
-        printf("  #########################################                #######################################  \n");
-        printf("   ##############################################################################################   \n\n");
+        gotoXY(1,2);
+        printf("   ##############################################################################################\n");
+        printf("  ##########################################               #######################################\n");
+        printf(" ##########################################                 #######################################\n");
+        printf("  ##########################################               #######################################\n");
+        printf("   ##############################################################################################\n");
         k++;
 
         textcolor(BRANCO);
@@ -551,7 +603,8 @@ void highscores(int points)
         {
             k=AZUL;
         }
-        if(kbhit()){
+        if(kbhit())
+        {
             flag3=0;
         }
 
@@ -650,7 +703,7 @@ void checkPacDots(int* pacdots, int* points)
 
         textcolor(BRANCO);
         gotoXY(46, 32);
-        printf("Pontos: %d", *points);
+        printf("Points: %d", *points);
     }
 
 }
@@ -668,7 +721,7 @@ void checkPowerPellets(int* points)
 
         textcolor(BRANCO);
         gotoXY(46, 32);
-        printf("Pontos: %d", *points);
+        printf("Points: %d", *points);
     }
 
     //Alteração da velocidade, e timer da duração do super-poder
@@ -898,7 +951,8 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final)
     return;
 }
 
-void printTop10(void){
+void printTop10(void)
+{
     int i=3;
     char ch;
     FILE *arq; //Cria um ponteiro para um tipo arquivo
@@ -912,7 +966,8 @@ void printTop10(void){
         textcolor(BRANCO);
         printf("%c", ch);
 
-        if(ch=='\n'){
+        if(ch=='\n')
+        {
             gotoXY(4,i);
             i++;
         }
@@ -970,18 +1025,16 @@ TODO LIST:
   - COMPLETO!!!
 
 • PACMAN
-  - Detecção de colisão com os fantasmas, pacman.lives--, Respawn;
+  - Refatorar gameStart para saber utilizar corretamente o Respawn
 
 • FANTASMAS
-  - Movimentação dos fantasmas (Movimentação com SuperPastilha OFF/ON - Movimentação 30% menor)
   - Timer para ressuscitar
-  - Na struct, adicionar parametro 'Alive' (0 - Morto, 1 - Vivo)
 
 • PASTILHAS
   - COMPLETO!!!
 
 • SUPER-PASTILHAS
-  - Criar ligação entre super-pastilhas e fantasmas
+  - COMPLETO!!!
 
 
 

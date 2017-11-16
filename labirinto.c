@@ -18,7 +18,8 @@ void textcolor(int);
 //Definição das estruturas
 
 //instâncias globais dos objetos
-ghosts fantasmas;
+ghosts fantasmas, ghosts_origin;
+pacmanInfo pacman_origin;
 
 extern int HEIGHT;
 extern int WIDTH;
@@ -35,10 +36,8 @@ int const max_random = 10;
 // possíveis posições
 coord dir[4]; // UP, RIGHT, DOWN, LEFT
 
-//Inicia e carrega as estruturas, além de mostrar o labirinto na tela
-int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacmany)
-{
-
+// inicia e carrega todas as estruturas
+int iniciaLabirinto(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo pacman){
     int i, j; //Contador do laço da matriz
     int q_fantasmas=0, q_pastilhas=0; //Contagem de objetos
 
@@ -52,6 +51,7 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
     }
 
     //Printagem do labirinto na tela
+    gotoxy2(0,0);
     for(i=0; i<HEIGHT; i++)
     {
         for(j=0; j<WIDTH; j++)
@@ -60,14 +60,16 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
             {
             case 'c':
             case 'C':
-                printf(" ");
-                *pacmanx=j+1;
-                *pacmany=i+1;
+                // printf(" ");
+                // *pacmanx=j+1;
+                // *pacmany=i+1;
+                pacman_origin.x = j+1;
+                pacman_origin.y = i+1;
                 lab[i][j] = ' ';
                 break;
             case 'w':
             case 'W': // Fantasmas
-                printf(" ");
+                // printf(" ");
                 fantasmas.unid[q_fantasmas].x = j;
                 fantasmas.unid[q_fantasmas].y = i;
                 fantasmas.unid[q_fantasmas].alive = 1; // seta a vida do ghost
@@ -78,6 +80,49 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
                 q_fantasmas++;
                 lab[i][j] = ' ';
                 break;
+            case 'o':
+                q_pastilhas++;
+                break;
+            }
+        }
+    }
+
+    fantasmas.quant=q_fantasmas;
+    // seta e guarda a posição inicial dos fantasmas
+    ghosts_origin = fantasmas;
+
+    // seta e guarda a posição inicial do Pacman
+    pacman.x = pacman_origin.x;
+    pacman.y = pacman_origin.y;
+
+    *qtdePastilhas=q_pastilhas; //Seta a quantidade total de pastilhas
+
+    return 0;
+}
+
+
+// mostra o labirinto na tela
+int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacmany)
+{
+
+    int i, j; //Contador do laço da matriz
+    int q_fantasmas=fantasmas.quant;
+
+    //Printagem do labirinto na tela
+    gotoxy2(0,0);
+    // reprinta todo o labirinto
+    for(i=0; i<HEIGHT; i++)
+    {
+        for(j=0; j<WIDTH; j++)
+        {
+            switch(lab[i][j])
+            {
+            case 'c':
+            case 'C':
+                break;
+            case 'w':
+            case 'W': // Fantasmas
+                break;
             case '#':
                 textcolor(15); //BRANCO
                 printf("#");
@@ -85,23 +130,30 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
             case 'o':
                 textcolor(14); //AMARELO
                 printf("o");
-                q_pastilhas++;
+                // q_pastilhas++;
                 break;
             case '*':
-                textcolor(13); //ROSA
+                textcolor(12); //ROSA
                 printf("*");
                 break;
             default:
                 printf(" ");
                 break;
             }
-        } printf("\n");
-
+        }
+        printf("\n");
     }
 
-    fantasmas.quant=q_fantasmas;
+    // seta a posição inicial do pacman
+    *pacmanx= pacman_origin.x;
+    *pacmany= pacman_origin.y;
 
-    *qtdePastilhas=q_pastilhas; //Seta a quantidade total de pastilhas
+    // seta os fantasmas para as posições iniciais
+    for(i=0; i<q_fantasmas; i++){
+        fantasmas.unid[q_fantasmas].x = ghosts_origin.unid[q_fantasmas].x;
+        fantasmas.unid[q_fantasmas].y = ghosts_origin.unid[q_fantasmas].y;
+        fantasmas.unid[q_fantasmas].alive = 1; // seta a vida do ghost
+    }
 
     return 0;
 }
@@ -145,6 +197,9 @@ int readLab(char lab[HEIGHT][WIDTH])
     return 0;
 }
 
+int respawn(){
+
+}
 // novo código
 // algoritmo pra movimentar cada um dos fantasmas
 void moveGhost(pacmanInfo pac, char lab[30][100]){
@@ -262,7 +317,7 @@ void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100]){
 }
 
 // mostra os fantasma na tela
-void showGhosts(char lab[30][100]){
+void showGhosts(pacmanInfo pac, char lab[30][100]){
     int i;
     for(i=0; i<fantasmas.quant; i++){
         // reprinta a última posicao com o que continha
@@ -274,7 +329,7 @@ void showGhosts(char lab[30][100]){
         if(lab[posg.y][posg.x] =='o'){
             textcolor(14); //AMARELO
         } else if(lab[posg.y][posg.x]){
-            textcolor(13); //ROSA
+            textcolor(12); //VERMELHO
         }
         printf("%c", lab[posg.y][posg.x]);
 
@@ -284,7 +339,12 @@ void showGhosts(char lab[30][100]){
 
         if(fantasmas.unid[i].alive){
             // print na tela a nova posicao
-            textcolor(13); // muda a cor para roxo
+            if(pac.pacDotActive){
+            textcolor(11);
+            }
+            else{
+                textcolor(13);
+            } // muda a cor para roxo
             gotoxy2(fantasmas.unid[i].x, fantasmas.unid[i].y);
             printf("W");
         }
@@ -380,7 +440,7 @@ int eatGhost(pacmanInfo pac, int *points){
         ghost g = fantasmas.unid[i];
         if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y){
             fantasmas.unid[i].alive = 0;
-            *points += 100;
+            *points = *points + 100;
             return 1;
         }
     }

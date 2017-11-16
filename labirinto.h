@@ -55,8 +55,9 @@ int showLab(char lab[30][100], int*, int*, int*);
 // Fun��es dos fantasmas
 void setupDir(); // seta as dire��es para o fantasma
 void shuffleDir(); // random Sort of the dir[]
-void moveGhost(pacmanInfo, char[30][100]);
-void showGhosts();
+int iniciaLabirinto(char [30][100], int*, pacmanInfo); // seta as posições iniciais de tudo
+void moveGhost(pacmanInfo, char[30][100]); // movimenta os fantasmas
+void showGhosts(pacmanInfo, char[30][100]); // show the labirinto
 void escolheDirecao(pacmanInfo, ghost*, char[30][100]); // dire��o v�lida aleat�ria do fantasma
 int mudarDirecao(ghost, char[30][100]);
 

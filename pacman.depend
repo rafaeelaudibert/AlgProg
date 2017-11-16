@@ -130,3 +130,55 @@
 
 1510790213 c:\users\andre\documents\git\algprog\structs.h
 
+1510845390 source:c:\users\rbaudibert\downloads\algprogmergeado\algprog-master\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	"labirinto.h"
+
+1510842351 c:\users\rbaudibert\downloads\algprogmergeado\algprog-master\labirinto.h
+
+1510845437 source:c:\users\rbaudibert\downloads\algprogmergeado\algprog-master\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	<math.h>
+	<time.h>
+	"structs.h"
+	"labirinto.h"
+
+1510841662 c:\users\rbaudibert\downloads\algprogmergeado\algprog-master\structs.h
+
+1510870483 source:c:\users\andre\desktop\algprogok\algprog-master\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	<math.h>
+	<time.h>
+	"structs.h"
+	"labirinto.h"
+
+1510845264 c:\users\andre\desktop\algprogok\algprog-master\structs.h
+
+1510870609 c:\users\andre\desktop\algprogok\algprog-master\labirinto.h
+
+1510871849 source:c:\users\andre\desktop\algprogok\algprog-master\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	"labirinto.h"
+
