@@ -22,5 +22,5 @@
      #####################################
                   PAC-MAN is ded
       		    YOU LOST IT!
-         Press any key to end the game
+      Press any key twice to end the game
      #####################################

@@ -86,7 +86,6 @@ int speed; //Variable whose stores the actual speed of the game
 clock_t pacStartTimer, pacEndTimer; //Pacman timers
 clock_t ghostsTime;
 int points=0; //Points counter
-
 int totalPacDots;
 
 //Pac-man Main
@@ -95,36 +94,40 @@ int main()
     system("mode 100, 37"); //Defines CMD's screen size
     system("title Pacman"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
-
-
     srand( time(NULL) ); // alimenta a semente de rand com um n�mero do tempo atual
-    startMenu(); //Start message
 
-
+    //Setting some variables
     pacman.lives=3; //Sets the initial number of lives of the pacman
     speed=NORMAL_SPEED; //Sets the initial speed of the game
     pacman.pacDotActive=0; //Sets pacman "not powered"
     ghostsTime = clock(); //initial time of the ghosts
 
-    // seta as posições iniciais de tudo
-    iniciaLabirinto(lab, &totalPacDots, pacman);
+    iniciaLabirinto(lab, &totalPacDots, pacman); // Set the initial positions of the game
+    startMenu(); //Start message
 
-    while(pacman.lives>0){
-        gameStart(); //The Game 'per se'
+    //THE GAME
+    while(pacman.lives>=0) //While pacman still has lives, keeps playing the game
+    {
         pacman.lives--; //When starts the game, takes one live out of pacman
-        gameLost();
-        Sleep(500);
+        if(pacman.lives>=0)
+        {
+            gameStart(); //The Game 'per se'
+        }
     }
-    system("cls");
 
-    if(!pacman.lives){
+    if(pacman.lives==-1) //Se acabar com 0 vidas, mostra que pacman perdeu
+    {
         gameLost();
     }
+
+    if(pacman.lives!=-2)
+    {
+        highscores(points); //Tabela de Highscores
+    }
+
 
     gotoXY(1,40);
     textcolor(PRETO);
-    highscores(points);
-
     return EXIT_SUCCESS; //End of the program
 }
 
@@ -137,8 +140,7 @@ void gameStart(void)
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1, *point_continua=&continueGame; //Game loop flag
     int eatenPacDots=0; //PacDots quantities
-    char key='j'; //Stroked key
-
+    char key='j'; //Stroked key with a non useful, but known value
 
     system("cls");
     if(showLab(lab, &totalPacDots, &pacman.x, &pacman.y))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
@@ -154,8 +156,8 @@ void gameStart(void)
     textcolor(BRANCO);
     gotoXY(36, 31);
     printf("Press 'Space' or 'ESC' to quit");
-    gotoXY(46, 32);
-    printf("Points: %5d \t\t Lives: %d", points, pacman.lives);
+    gotoXY(36, 32);
+    printf("Points: %5d         Lives: %d", points, pacman.lives);
 
     //Starts timer, and makes the game to start
     pacStartTimer=clock();
@@ -187,12 +189,13 @@ void gameStart(void)
 
         if(key!='j')
         {
-            if(!(testecontinua=ghostsControl(&points))){
+            if(!(testecontinua=ghostsControl(&points)))
+            {
                 return;
             }
         } // Controls of the ghost
 
-    if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
+        if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
             gameWin(points);
             return;
@@ -200,11 +203,10 @@ void gameStart(void)
 
     } //WHILE END
 
-    if(continueGame==0)
-    {
-        gameEnd(); //Ends the game
-        pacman.lives=-1;
-    }
+
+    gameEnd(); //Ends the game
+    pacman.lives=-2; //This way, the Highscore menu is not shown
+
 
     return;
 }
@@ -387,6 +389,7 @@ void gameWin(int points)
     system("pause");
     fflush(stdin);
     highscores(points);
+    pacman.lives=-3;
     return;
 }
 
@@ -425,6 +428,7 @@ void gameLost(void)
 
     getch();
     printf("\n\n");
+    textcolor(PRETO);
     system("pause");
     return;
 }
@@ -702,8 +706,8 @@ void checkPacDots(int* pacdots, int* points)
 
 
         textcolor(BRANCO);
-        gotoXY(46, 32);
-        printf("Points: %d", *points);
+        gotoXY(36, 32);
+        printf("Points: %5d", *points);
     }
 
 }
@@ -720,8 +724,8 @@ void checkPowerPellets(int* points)
         pacman.pacDotActive=5000/FAST_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
 
         textcolor(BRANCO);
-        gotoXY(46, 32);
-        printf("Points: %d", *points);
+        gotoXY(36, 32);
+        printf("Points: %5d", *points);
     }
 
     //Alteração da velocidade, e timer da duração do super-poder
@@ -1025,10 +1029,11 @@ TODO LIST:
   - COMPLETO!!!
 
 • PACMAN
-  - Refatorar gameStart para saber utilizar corretamente o Respawn
+  - Pausa no jogo após o Respawn
 
 • FANTASMAS
   - Timer para ressuscitar
+  - Contador de pontos não está funcionando
 
 • PASTILHAS
   - COMPLETO!!!

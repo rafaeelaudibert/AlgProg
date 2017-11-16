@@ -53,7 +53,7 @@ int showLab(char lab[30][100], int*, int*, int*);
 // void iniciaLabirinto(char lab[30][100]);
 
 // Fun��es dos fantasmas
-void setupDir(); // seta as dire��es para o fantasma
+void setupDir(); // seta as direcoes para o fantasma
 void shuffleDir(); // random Sort of the dir[]
 int iniciaLabirinto(char [30][100], int*, pacmanInfo); // seta as posições iniciais de tudo
 void moveGhost(pacmanInfo, char[30][100]); // movimenta os fantasmas
@@ -74,7 +74,7 @@ int retornaXPacman(void);
 int retornaYPacman(void);
 
 // interações do pacman com os ghots
-int eatGhost(pacmanInfo, int *);
+int eatGhost(pacmanInfo, int*);
 int checkGhostCollision(pacmanInfo);
 
 // dist�ncia cartesiana entre 2 pontos xy

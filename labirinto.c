@@ -95,7 +95,7 @@ int iniciaLabirinto(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo pacm
     pacman.x = pacman_origin.x;
     pacman.y = pacman_origin.y;
 
-    *qtdePastilhas=q_pastilhas; //Seta a quantidade total de pastilhas
+   *qtdePastilhas=q_pastilhas; //Seta a quantidade total de pastilhas
 
     return 0;
 }
@@ -145,8 +145,8 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
     }
 
     // seta a posição inicial do pacman
-    *pacmanx= pacman_origin.x;
-    *pacmany= pacman_origin.y;
+    *pacmanx=pacman_origin.x;
+    *pacmany=pacman_origin.y;
 
     // seta os fantasmas para as posições iniciais
     for(i=0; i<q_fantasmas; i++){
@@ -197,9 +197,6 @@ int readLab(char lab[HEIGHT][WIDTH])
     return 0;
 }
 
-int respawn(){
-
-}
 // novo código
 // algoritmo pra movimentar cada um dos fantasmas
 void moveGhost(pacmanInfo pac, char lab[30][100]){
@@ -424,6 +421,7 @@ int checkGhostCollision(pacmanInfo pac){
         if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y){
             if(pac.pacDotActive){
                 fantasmas.unid[i].alive = 0;
+
             } else {
                 return 1;
             }
@@ -440,7 +438,7 @@ int eatGhost(pacmanInfo pac, int *points){
         ghost g = fantasmas.unid[i];
         if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y){
             fantasmas.unid[i].alive = 0;
-            *points = *points + 100;
+            *points+=200;
             return 1;
         }
     }
