@@ -112,10 +112,11 @@ int readLab(char lab[HEIGHT][WIDTH])
 {
     char str[101];
     int i=0, j=0;
+    char url[30]="data/labirinto.txt"; //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos
     FILE *arq;
 
     //Ponteiro para leitura do arquivo no 'endereco'
-    arq = fopen("data/labirinto.txt", "r");
+    arq = fopen(url, "r");
 
     //Se não conseguiu ler o arquivo, sai e retorna 1
     if(arq == NULL)
