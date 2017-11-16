@@ -70,7 +70,7 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
                 printf(" ");
                 fantasmas.unid[q_fantasmas].x = j;
                 fantasmas.unid[q_fantasmas].y = i;
-
+                fantasmas.unid[q_fantasmas].alive = 1; // seta a vida do ghost
                 // movimentação inicial aleatória
                 //shuffleDir();
                 //escolheDirecao(&fantasmas.unid[q_fantasmas], lab);
@@ -177,7 +177,7 @@ void moveGhost(pacmanInfo pac, char lab[30][100]){
                 // cartesiana do ghost para o pacman
                 perseguePacman(pac, g, lab);
             }
-            escolheDirecao(&fantasmas.unid[i], lab);
+            escolheDirecao(pac, &fantasmas.unid[i], lab);
         }
     }
 }
@@ -201,18 +201,25 @@ int mudarDirecao(ghost g, char lab[30][100]){
 
 // verifica quais são as possíveis direções que o fantasma pode ir
 // e escolhe uma de acordo com a ordem de prefêrencia no array dir[].
-void escolheDirecao(ghost *pg, char lab[30][100]){
-    int d; // �ndice do array dir
+void escolheDirecao(pacmanInfo pac, ghost *pg, char lab[30][100]){
+    int i, d; // índice, limite, incremento
     ghost g = *pg;
 
-    // passa por cada uma das poss�veis dire��es que ele pode ir
-    for(d=0; d<4; d++)
+    // passa por cada uma das possiveis direcoes que ele pode ir
+    for(i=0; i<4; i++)
     {
-        // verifica para quais lados n�o � uma parede e se ele n�o passa do limite do mapa
+        // por qual lado deve ser a leitura do array
+        // crescente se o fantasma estiver perseguindo o pacman, drescente se estiver fugindo
+        if(pac.pacDotActive != 0){
+            d = i;
+        } else {
+            d = 3 - i;
+        }
+        // verifica para quais lados nao sao paredes e se ele nao passa do limite do mapa com a nova dir
         if( lab[ (g.y + dir[d].y) ][ (g.x + dir[d].x) ] != '#' &&
                 testaLimites(g, dir[d]) == 1 )
         {
-            // verifica se a nova dire��o n�o � a que ele, para n�o retornar pelo mesmo caminho
+            // verifica se a nova direcao nao eh a que ele vinha, para nao retornar pelo mesmo caminho
             if( dir[d].x != (g.mov.x * -1) ||
                 dir[d].y != (g.mov.y * -1) ){
                     // modifica direto no fantasma a nova dire��o e sai do la�o
@@ -223,15 +230,15 @@ void escolheDirecao(ghost *pg, char lab[30][100]){
     }
 }
 
-// devolve um array de posiçoes ordenados pela distancia cartesiana crescente
-// do fantasma em direcao ao Pacman
+// devolve um array de posiçoes ordenados pela distancia cartesiana
+// crescente do fantasma em direcao ao Pacman.
 void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100]){
     int d, i;
 
     // vetor das dist�ncias em cada uma das novas posi��es poss�veis
     int dists[4];
     for(i=0; i<4; i++){
-        // calculo da dist�ncia cartesiana
+        // calculo da distância cartesiana
         dists[i] = pow( pac.y - g.y + dir[i].y , 2) + pow(pac.x - g.x + dir[i].x, 2);
     }
 
@@ -274,10 +281,12 @@ void showGhosts(char lab[30][100]){
         fantasmas.unid[i].x += fantasmas.unid[i].mov.x;
         fantasmas.unid[i].y += fantasmas.unid[i].mov.y;
 
-        // print na tela a nova posi�ao
-        textcolor(13); // muda a cor para roxo
-        gotoxy2(fantasmas.unid[i].x, fantasmas.unid[i].y);
-        printf("W");
+        if(fantasmas.unid[i].alive){
+            // print na tela a nova posicao
+            textcolor(13); // muda a cor para roxo
+            gotoxy2(fantasmas.unid[i].x, fantasmas.unid[i].y);
+            printf("W");
+        }
     }
     // volta a cor normal
     textcolor(15);
@@ -344,4 +353,35 @@ void gotoxy2(int x, int y)
     coord.X = x;
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+int checkGhostCollision(pacmanInfo pac){
+    int i;
+
+    for(i=0; i<fantasmas.quant; i++){
+        ghost g = fantasmas.unid[i];
+        if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y){
+            if(pac.pacDotActive){
+                fantasmas.unid[i].alive = 0;
+            } else {
+                return 1;
+            }
+
+        }
+    }
+    return 0;
+}
+
+int eatGhost(pacmanInfo pac, int *points){
+    int i;
+
+    for(i=0; i<fantasmas.quant; i++){
+        ghost g = fantasmas.unid[i];
+        if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y){
+            fantasmas.unid[i].alive = 0;
+            *points += 100;
+            return 1;
+        }
+    }
+    return 0;
 }

@@ -12,9 +12,9 @@ struct // fantasmas
 {
     int x;
     int y;
-    coord mov; // para onde o ghost est� indo
+    coord mov; // para onde o ghost está indo
     // UP, RIGHT, DOWN, LEFT
-    // 1 = livre, 0 = bloqueado
+    int alive;
 } typedef ghost;
 
 struct // conjunto dos fantasmas
@@ -57,7 +57,7 @@ void setupDir(); // seta as dire��es para o fantasma
 void shuffleDir(); // random Sort of the dir[]
 void moveGhost(pacmanInfo, char[30][100]);
 void showGhosts();
-void escolheDirecao(ghost*, char[30][100]); // dire��o v�lida aleat�ria do fantasma
+void escolheDirecao(pacmanInfo, ghost*, char[30][100]); // dire��o v�lida aleat�ria do fantasma
 int mudarDirecao(ghost, char[30][100]);
 
 // altera o array dir, colocando as direções em ordem crescente de distância do ghost
@@ -71,6 +71,10 @@ int testaLimites(ghost g, coord d);
 //Fun��es que retornam posi��o do pacman para as fun��es do arquivo main.c (Bugadas no momento)
 int retornaXPacman(void);
 int retornaYPacman(void);
+
+// interações do pacman com os ghots
+int eatGhost(pacmanInfo, int *);
+int checkGhostCollision(pacmanInfo);
 
 // dist�ncia cartesiana entre 2 pontos xy
 //int distancia_cart(coord, coord);

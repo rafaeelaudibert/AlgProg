@@ -34,7 +34,8 @@ void gotoXY(int, int);
 void cursorType(int);
 void textcolor(); //conio.c
 
-
+void ghostsControl(); // controla o tempo de movimento dos fantasmas
+int checkGhostCollision(pacmanInfo); // checa se houve colisão do pacman com algum fantasma
 
 //Constants
 int  const  TOP = 1, //Top map limit (Never less than 1)
@@ -42,6 +43,7 @@ int  const  TOP = 1, //Top map limit (Never less than 1)
             HEIGHT = 30, //Bottom map limit
             WIDTH = 100, //Right map limit
             CURSOR = 0, // 0 - no cursor; 1 - box cursor; 2 - normal cursor
+            SLOW_SPEED = 130, //
             NORMAL_SPEED=100, //Default game's speed
             FAST_SPEED=70; //Speed after eating a PowerPellet
 
@@ -50,7 +52,7 @@ pacmanInfo pacman; //Struct whose stores the pacman
 char lab[30][100]; //Variable whose stores the maze
 int speed; //Variable whose stores the actual speed of the game
 clock_t pacStartTimer, pacEndTimer; //Pacman timers
-
+clock_t ghostsTime;
 
 
 //Pac-man Main
@@ -66,6 +68,7 @@ int main()
     pacman.lives=3; //Sets the initial number of lives of the pacman
     speed=NORMAL_SPEED; //Sets the initial speed of the game
     pacman.pacDotActive=0; //Sets pacman "not powered"
+    ghostsTime = clock(); //initial time of the ghosts
     gameStart(); //The Game 'per se'
 
     return EXIT_SUCCESS; //End of the program
@@ -125,7 +128,7 @@ void gameStart(void)
         }
 
         pacmanControl(&eatenPacDots, &points); //Controls pacman
-
+        ghostsControl(); // Controls of the ghost
 
         if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
@@ -162,13 +165,35 @@ void pacmanControl(int* qtde_pacdots, int* points)
         checkPacDots(qtde_pacdots, points);
         checkPowerPellets(points);
 
-        moveGhost(pacman, lab); // update of the moviment of the ghosts
-        showGhosts(lab); // update and show the position of the ghosts
+        if(checkGhostCollision(pacman)){
+            if( pacman.pacDotActive){
+                eatGhost(pacman, points);
+            } else {
+                gameLost();
+            }
+        }
+
         gotoxy2(0,0);
     }
 }
 
+void ghostsControl(int *points){
+    clock_t atualTime = clock();
 
+    if((atualTime - ghostsTime) > ( pacman.pacDotActive ? SLOW_SPEED : NORMAL_SPEED)){
+        ghostsTime = atualTime;
+        moveGhost(pacman, lab); // update of the moviment of the ghosts
+        showGhosts(lab); // update and show the position of the ghosts
+
+       if(checkGhostCollision(pacman)){
+            if( pacman.pacDotActive){
+                eatGhost(pacman, points);
+            } else {
+                gameEnd();
+            }
+        }
+    }
+}
 
 //Pausa o jogo
 void gamePause(void)

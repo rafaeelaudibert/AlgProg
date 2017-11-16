@@ -66,7 +66,7 @@
 	<conio.h>
 	"../labirinto.h"
 
-1510789908 source:c:\users\andre\documents\git\algprog\main.c
+1510794738 source:c:\users\andre\documents\git\algprog\main.c
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -76,7 +76,7 @@
 	"labirinto.h"
 	"structs.h"
 
-1510790215 c:\users\andre\documents\git\algprog\labirinto.h
+1510795029 c:\users\andre\documents\git\algprog\labirinto.h
 
 1509240371 source:c:\users\andre\documents\git\algprog\data\labirinto.c
 	<stdio.h>
@@ -116,7 +116,7 @@
 	<ctype.h>
 	"labirinto.h"
 
-1510789813 source:c:\users\andre\documents\git\algprog\labirinto.c
+1510794981 source:c:\users\andre\documents\git\algprog\labirinto.c
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
