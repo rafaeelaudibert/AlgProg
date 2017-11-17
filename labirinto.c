@@ -29,7 +29,7 @@ int const WIDTH_SCREEN = 100;
 int const HEIGHT_SCREEN = 30;
 
 // chance de fantasma perseguir o pacman
-int const chance_perseguicao = 6;
+int const chance_perseguicao = 10;
 // função aleatória, gera de 0 a max_random
 int const max_random = 10;
 
@@ -141,20 +141,23 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
                 break;
             }
         }
-        printf("\n");
+        //printf("\n");
     }
 
     // seta a posição inicial do pacman
     *pacmanx=pacman_origin.x;
     *pacmany=pacman_origin.y;
 
+    gotoxy2(0, 35);
+    //ghost gi = fantasmas.unid[0];
+    //ghost go = ghosts_origin.unid[0];
+
     // seta os fantasmas para as posições iniciais
     for(i=0; i<q_fantasmas; i++){
-        fantasmas.unid[q_fantasmas].x = ghosts_origin.unid[q_fantasmas].x;
-        fantasmas.unid[q_fantasmas].y = ghosts_origin.unid[q_fantasmas].y;
-        fantasmas.unid[q_fantasmas].alive = 1; // seta a vida do ghost
+        fantasmas.unid[i].x = ghosts_origin.unid[i].x;
+        fantasmas.unid[i].y = ghosts_origin.unid[i].y;
+        fantasmas.unid[i].alive = 1; // seta a vida do ghost
     }
-
     return 0;
 }
 
@@ -269,8 +272,7 @@ void escolheDirecao(pacmanInfo pac, ghost *pg, char lab[30][100]){
             d = 3 - i;
         }
         // verifica para quais lados nao sao paredes e se ele nao passa do limite do mapa com a nova dir
-        if( lab[ (g.y + dir[d].y) ][ (g.x + dir[d].x) ] != '#' &&
-                testaLimites(g, dir[d]) == 1 )
+        if( lab[ (g.y + dir[d].y) ][ (g.x + dir[d].x) ] != '#')
         {
             // verifica se a nova direcao nao eh a que ele vinha, para nao retornar pelo mesmo caminho
             if( dir[d].x != (g.mov.x * -1) ||
@@ -334,6 +336,8 @@ void showGhosts(pacmanInfo pac, char lab[30][100]){
         fantasmas.unid[i].x += fantasmas.unid[i].mov.x;
         fantasmas.unid[i].y += fantasmas.unid[i].mov.y;
 
+        testaLimites( &fantasmas.unid[i]);
+
         if(fantasmas.unid[i].alive){
             // print na tela a nova posicao
             if(pac.pacDotActive){
@@ -379,16 +383,16 @@ void shuffleDir(){
     }
 }
 
-// dentro dos limites do mapa, retorna 1
-int testaLimites(ghost g, coord d){
-    if( g.x + d.x < WIDTH_SCREEN-1 &&
-        g.x + d.x > 0 &&
-        g.y + d.y < HEIGHT_SCREEN-1 &&
-        g.y + d.y > 0){
-        return 1;
+// dentro dos limites do mapa, retorna 1, se não retorna 0;
+int testaLimites(ghost *g){
+    if( g->x <= 0 || g->x >= (WIDTH_SCREEN-1) ){
+        g->x = WIDTH_SCREEN - g->x -1;
+    } else if(g->y <= 0 || g->y >= (HEIGHT_SCREEN-1) ){
+        g->y = HEIGHT - g->y -1;
     } else {
         return 0;
     }
+    return 1;
 };
 
 // retorna quantos lados est�o livres
@@ -413,7 +417,7 @@ void gotoxy2(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-int checkGhostCollision(pacmanInfo pac){
+int checkGhostCollision(pacmanInfo pac, int *points){
     int i;
 
     for(i=0; i<fantasmas.quant; i++){
@@ -421,26 +425,16 @@ int checkGhostCollision(pacmanInfo pac){
         if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y){
             if(pac.pacDotActive){
                 fantasmas.unid[i].alive = 0;
+                (*points) = (*points) + 200;
 
-            } else {
-                return 1;
+                textcolor(15);
+                gotoxy2(35, 31);
+                printf("Points: %5d", *points);
             }
-
-        }
-    }
-    return 0;
-}
-
-int eatGhost(pacmanInfo pac, int *points){
-    int i;
-
-    for(i=0; i<fantasmas.quant; i++){
-        ghost g = fantasmas.unid[i];
-        if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y){
-            fantasmas.unid[i].alive = 0;
-            *points+=200;
             return 1;
         }
     }
     return 0;
 }
+
+

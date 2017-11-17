@@ -51,7 +51,6 @@ void cursorType(int);
 void textcolor(); //conio.c
 
 int ghostsControl(); // controla o tempo de movimento dos fantasmas
-int checkGhostCollision(pacmanInfo); // checa se houve colisão do pacman com algum fantasma
 
 //Constants
 int  const  TOP = 1, //Top map limit (Never less than 1)
@@ -59,10 +58,9 @@ int  const  TOP = 1, //Top map limit (Never less than 1)
             HEIGHT = 30, //Bottom map limit
             WIDTH = 100, //Right map limit
             CURSOR = 0, // 0 - no cursor; 1 - box cursor; 2 - normal cursor
+            SLOW_SPEED=142, //Ghost's speed while under effect of PowerPellets
+            NORMAL_SPEED=100; //Default game's speed
 
-            SLOW_SPEED = 130, //
-            NORMAL_SPEED=100, //Default game's speed
-            FAST_SPEED=70; //Speed after eating a PowerPellet
 
 //Enumerações
 enum cores
@@ -86,12 +84,12 @@ int speed; //Variable whose stores the actual speed of the game
 clock_t pacStartTimer, pacEndTimer; //Pacman timers
 clock_t ghostsTime;
 int points=0; //Points counter
-int totalPacDots;
+int totalPacDots, eatenPacDots=0; //PacDots quantities
 
 //Pac-man Main
 int main()
 {
-    system("mode 100, 37"); //Defines CMD's screen size
+    system("mode 100, 45"); //Defines CMD's screen size
     system("title Pacman"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR'
     srand( time(NULL) ); // alimenta a semente de rand com um n�mero do tempo atual
@@ -136,10 +134,8 @@ int main()
 //Start of the game
 void gameStart(void)
 {
-    int testecontinua=0;
     int showStartMessage=1; //Starting Message Flag
-    int continueGame=1, *point_continua=&continueGame; //Game loop flag
-    int eatenPacDots=0; //PacDots quantities
+    int continueGame=1;//Game loop flag
     char key='j'; //Stroked key with a non useful, but known value
 
     system("cls");
@@ -149,8 +145,6 @@ void gameStart(void)
         system("Pause");
         return; //If there is an error at loading it, finishes the game
     }
-
-
 
     //Exit message
     textcolor(BRANCO);
@@ -178,25 +172,23 @@ void gameStart(void)
             }
 
             key=tolower(detectKey()); //Detects pressed key
-            setDirection(key, point_continua); //Decodifies pressed key
+            setDirection(key, &continueGame); //Decodifies pressed key
         }
 
 
-        if(!(testecontinua=pacmanControl(&eatenPacDots, &points)))  //Controls pacman
+        if(!pacmanControl(&eatenPacDots, &points))  //Controls pacman
         {
-            return;
+            return;  //Ends the game, if there is a collision between the ghost and the pacman
         }
 
-        if(key!='j')
+        if(key!='j' && !ghostsControl(&points)) //Controls ghosts
         {
-            if(!(testecontinua=ghostsControl(&points)))
-            {
-                return;
-            }
-        } // Controls of the ghost
+                return; //Ends the game, if there is a collision between the ghost and the pacman
+        }
 
         if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
+            points+=((pacman.lives+1)*150); //150 points, each lasting life
             gameWin(points);
             return;
         }
@@ -233,16 +225,9 @@ int pacmanControl(int* qtde_pacdots, int* points)
         checkPacDots(qtde_pacdots, points);
         checkPowerPellets(points);
 
-        if(checkGhostCollision(pacman))
+        if(checkGhostCollision(pacman, points) && !pacman.pacDotActive)
         {
-            if( pacman.pacDotActive)
-            {
-                eatGhost(pacman, points);
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         gotoxy2(0,0);
@@ -274,16 +259,9 @@ int ghostsControl(int *points)
         moveGhost(pacman, lab); // update of the moviment of the ghosts
         showGhosts(pacman, lab); // update and show the position of the ghosts
 
-        if(checkGhostCollision(pacman))
+        if(checkGhostCollision(pacman, points) && !pacman.pacDotActive)
         {
-            if( pacman.pacDotActive)
-            {
-                eatGhost(pacman, points);
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
     }
     return 1;
@@ -387,8 +365,6 @@ void gameWin(int points)
     printf("\n\n");
     textcolor(PRETO);
     system("pause");
-    fflush(stdin);
-    highscores(points);
     pacman.lives=-3;
     return;
 }
@@ -721,7 +697,7 @@ void checkPowerPellets(int* points)
         lab[pacman.y-1][pacman.x-1]=' ';
         *points+=50;
         Beep(1000, 50);
-        pacman.pacDotActive=5000/FAST_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
+        pacman.pacDotActive=5000/NORMAL_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
 
         textcolor(BRANCO);
         gotoXY(36, 32);
@@ -731,15 +707,13 @@ void checkPowerPellets(int* points)
     //Alteração da velocidade, e timer da duração do super-poder
     if(pacman.pacDotActive>0)
     {
-        speed=FAST_SPEED;
         pacman.pacDotActive--;
         textcolor(BRANCO);
         gotoXY(29,33);
-        printf("Tempo restante de invulnerabilidade: %4dms", pacman.pacDotActive*FAST_SPEED);
+        printf("Tempo restante de invulnerabilidade: %4dms", pacman.pacDotActive*NORMAL_SPEED);
     }
     else
     {
-        speed=NORMAL_SPEED;
         gotoXY(29,33);
         printf("                                             ");
     }

@@ -66,16 +66,15 @@ void perseguePacman(pacmanInfo, ghost, char[30][100]);
 
 // devolve para quantos lados o pacman pode ir
 int ladosLivres(ghost, char[30][100]);
-// se está dentro dos limites do mapa
-int testaLimites(ghost g, coord d);
+// se está fora dos limites do mapa
+int testaLimites(ghost *g);
 
 //Fun��es que retornam posi��o do pacman para as fun��es do arquivo main.c (Bugadas no momento)
 int retornaXPacman(void);
 int retornaYPacman(void);
 
 // interações do pacman com os ghots
-int eatGhost(pacmanInfo, int*);
-int checkGhostCollision(pacmanInfo);
+int checkGhostCollision(pacmanInfo, int*);
 
 // dist�ncia cartesiana entre 2 pontos xy
 //int distancia_cart(coord, coord);

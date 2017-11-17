@@ -187,3 +187,67 @@
 
 1510874724 c:\users\rafae\documents\github\algprog\structs.h
 
+1510854250 source:\\homes\aftrodrigues\windows config\desktop\algprog-master\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	"labirinto.h"
+
+1510854250 \\homes\aftrodrigues\windows config\desktop\algprog-master\labirinto.h
+
+1510924458 source:x:\documents\algprog-master\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	<math.h>
+	<time.h>
+	"structs.h"
+	"labirinto.h"
+
+1510854250 x:\documents\algprog-master\structs.h
+
+1510924216 x:\documents\algprog-master\labirinto.h
+
+1510924374 source:x:\documents\algprog-master\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	"labirinto.h"
+
+1510930731 source:x:\documents\algprog\trabalhofinal2\algprog-master\labirinto.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<ctype.h>
+	<conio.h>
+	<math.h>
+	<time.h>
+	"structs.h"
+	"labirinto.h"
+
+1510854250 x:\documents\algprog\trabalhofinal2\algprog-master\structs.h
+
+1510930261 x:\documents\algprog\trabalhofinal2\algprog-master\labirinto.h
+
+1510929395 source:x:\documents\algprog\trabalhofinal2\algprog-master\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	"labirinto.h"
+
