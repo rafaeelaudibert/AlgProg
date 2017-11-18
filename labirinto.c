@@ -339,7 +339,7 @@ void showGhosts(pacmanInfo pac, char lab[30][100]){
 
         if(fantasmas.unid[i].alive){
             // print na tela a nova posicao
-            if(pac.pacDotActive>15){
+            if(pac.pacDotActive>(1500/115)){ //TROCAR POR NORMAL_SPEED QUANDO VIRAR CONST GLOBAL
             textcolor(11);
             }
             else{

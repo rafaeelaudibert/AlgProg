@@ -44,8 +44,8 @@ int  const  TOP = 1, //Top map limit (Never less than 1)
             HEIGHT = 30, //Bottom map limit
             WIDTH = 100, //Right map limit
             CURSOR = 0, // 0 - no cursor; 1 - box cursor; 2 - normal cursor
-            SLOW_SPEED=142, //Ghost's speed while under effect of PowerPellets (30% less than the normal speed)
-            NORMAL_SPEED=100; //Default game's speed
+            SLOW_SPEED=157, //Ghost's speed while under effect of PowerPellets (30% less than the normal speed)
+            NORMAL_SPEED=115; //Default game's speed
 
 
 //Enumerações
@@ -1026,6 +1026,7 @@ TODO LIST:
 
 • FANTASMAS
   - Timer para ressuscitar
+  - Trocar 1500/115 por 1500/NORMAL_SPEED quando conseguir colocar NORMAL_SPEED constante global
 
 • PASTILHAS
   - COMPLETO!!!
