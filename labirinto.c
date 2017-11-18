@@ -339,11 +339,15 @@ void showGhosts(pacmanInfo pac, char lab[30][100]){
 
         if(fantasmas.unid[i].alive){
             // print na tela a nova posicao
-            if(pac.pacDotActive){
+            if(pac.pacDotActive>15){
             textcolor(11);
             }
             else{
-                textcolor(13);
+                if(pac.pacDotActive%2){
+                        textcolor(11);
+                }else{
+                        textcolor(13);
+                }
             } // muda a cor para roxo
             gotoxy2(fantasmas.unid[i].x, fantasmas.unid[i].y);
             printf("W");

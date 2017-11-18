@@ -1026,7 +1026,6 @@ TODO LIST:
 
 • FANTASMAS
   - Timer para ressuscitar
-  - Timer para sair do estado de fraqueza (Piscar fantasma)
 
 • PASTILHAS
   - COMPLETO!!!
