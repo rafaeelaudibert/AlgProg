@@ -20,7 +20,7 @@
                   #############             
 
      #####################################
-                  PAC-MAN is ded
-      		    YOU LOST IT!
-      Press any key twice to end the game
+                PAC-MAN is ded
+      		  YOU LOST IT!
+               Press any key twice
      #####################################
