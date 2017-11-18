@@ -3,5 +3,6 @@ pacman.layout
 *.exe
 obj\Debug\labirinto.o
 obj\Debug\main.o
-
+pacman.exe
+pacman.exe.lnk
 
