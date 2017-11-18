@@ -1,6 +1,20 @@
-#ifndef COMMANDS_H_
-#define COMMANDS_H_
+#ifndef STRUCTS_H_
+#define STRUCTS_H_
 
+struct
+{
+    int posicao;
+    char nome[30];
+    int pontos;
+    char dateStr[15];
+    char timeStr[15];
+} typedef PLACAR;
+
+struct
+{
+    char nome[30];
+    int pontos;
+} typedef JOGO_ATUAL;
 
 struct // salva uma posição x,y
 {

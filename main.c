@@ -9,20 +9,6 @@
 
 //Local headers inclusions
 #include "labirinto.h"
-struct
-{
-    int posicao;
-    char nome[30];
-    int pontos;
-    char dateStr[15];
-    char timeStr[15];
-} typedef PLACAR;
-
-struct
-{
-    char nome[30];
-    int pontos;
-} typedef JOGO_ATUAL;
 
 //Function Prototypes
 void gameStart(void);
@@ -58,7 +44,7 @@ int  const  TOP = 1, //Top map limit (Never less than 1)
             HEIGHT = 30, //Bottom map limit
             WIDTH = 100, //Right map limit
             CURSOR = 0, // 0 - no cursor; 1 - box cursor; 2 - normal cursor
-            SLOW_SPEED=142, //Ghost's speed while under effect of PowerPellets
+            SLOW_SPEED=142, //Ghost's speed while under effect of PowerPellets (30% less than the normal speed)
             NORMAL_SPEED=100; //Default game's speed
 
 
@@ -81,8 +67,7 @@ enum cores
 pacmanInfo pacman; //Struct whose stores the pacman
 char lab[30][100]; //Variable whose stores the maze
 int speed; //Variable whose stores the actual speed of the game
-clock_t pacStartTimer, pacEndTimer; //Pacman timers
-clock_t ghostsTime;
+clock_t pacStartTimer, pacEndTimer, ghostsTime; //Timers do jogo
 int points=0; //Points counter
 int totalPacDots, eatenPacDots=0; //PacDots quantities
 
@@ -110,6 +95,10 @@ int main()
         if(pacman.lives>=0)
         {
             gameStart(); //The Game 'per se'
+            while(kbhit())
+            {
+                getch();
+            }
         }
     }
 
@@ -178,12 +167,17 @@ void gameStart(void)
 
         if(!pacmanControl(&eatenPacDots, &points))  //Controls pacman
         {
+            pacman.next.coordinates='s';
+            pacman.next.aumenta_diminui='0';
             return;  //Ends the game, if there is a collision between the ghost and the pacman
+
         }
 
         if(key!='j' && !ghostsControl(&points)) //Controls ghosts
         {
-                return; //Ends the game, if there is a collision between the ghost and the pacman
+            pacman.next.coordinates='s';
+            pacman.next.aumenta_diminui='0';
+            return; //Ends the game, if there is a collision between the ghost and the pacman
         }
 
         if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
@@ -195,10 +189,8 @@ void gameStart(void)
 
     } //WHILE END
 
-
     gameEnd(); //Ends the game
     pacman.lives=-2; //This way, the Highscore menu is not shown
-
 
     return;
 }
@@ -875,19 +867,46 @@ void startMenu(void)
 int startMessage(int flag)
 {
 
-    if (flag==1)  //Mensagem de inicio
+    if (flag)  //Mensagem de inicio
     {
-        textcolor(BRANCO);
-        gotoXY(39, 14);
-        printf("                         ");
-        gotoXY(39,15);
-        printf(" Press any key to start  ");
-        gotoXY(39, 16);
-        printf("                         ");
+        switch(pacman.lives)
+        {
+        case 2:
+            textcolor(BRANCO);
+            gotoXY(39,14);
+            printf("                         ");
+            gotoXY(39,15);
+            printf(" Press any key to start  ");
+            gotoXY(39,16);
+            printf("                         ");
+            break;
+        case 1:
+            textcolor(BRANCO);
+            gotoXY(39,14);
+            printf("                          ");
+            gotoXY(39,15);
+            printf(" You've died! Be careful! ");
+            gotoXY(39,16);
+            printf(" Press any key to restart ");
+            gotoXY(39,17);
+            printf("                          ");
+            break;
+        case 0:
+            textcolor(BRANCO);
+            gotoXY(39,14);
+            printf("                          ");
+            gotoXY(39,15);
+            printf(" This is your LAST chance ");
+            gotoXY(39,16);
+            printf(" Press any key to restart ");
+            gotoXY(39,17);
+            printf("                          ");
+            break;
+        }
     }
-    else if(flag==0)
+    else
     {
-        reconstructMaze(13,15,38,65);
+        reconstructMaze(13,17,38,70);
         flag--;
     }
 
@@ -1003,19 +1022,17 @@ TODO LIST:
   - COMPLETO!!!
 
 • PACMAN
-  - Pausa no jogo após o Respawn
+  - COMPLETO!!
 
 • FANTASMAS
   - Timer para ressuscitar
-  - Contador de pontos não está funcionando
+  - Timer para sair do estado de fraqueza (Piscar fantasma)
 
 • PASTILHAS
   - COMPLETO!!!
 
 • SUPER-PASTILHAS
   - COMPLETO!!!
-
-
 
 • EXTRAS:
   Dijkshtra - Sistema de detecção de caminho dos fantasmas mais inteligente, utilizando grafos
@@ -1024,6 +1041,7 @@ TODO LIST:
                      Morte PACMAN
                      Vitoria PACMAN
   Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
+  Menu inicial, com seleções de mapas e/ou dificuldades + créditos
 
   FIM DO ARQUIVO
 */

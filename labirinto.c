@@ -9,7 +9,6 @@
 #include <time.h>
 
 // Local Headers Inclusion
-#include "structs.h"
 #include "labirinto.h"
 
 void gotoxy(int, int);

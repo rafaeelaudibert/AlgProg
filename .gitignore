@@ -1,4 +1,7 @@
 pacman.layout
 *.o
+*.exe
+obj\Debug\labirinto.o
+obj\Debug\main.o
 
 
