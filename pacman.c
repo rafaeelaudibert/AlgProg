@@ -39,16 +39,16 @@ int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* p
 void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
 {
 
-    gotoXY(pacman->x, pacman->y); //Apaga a posição atual do pacman
+    gotoXY(pacman->pos.x, pacman->pos.y); //Apaga a posição atual do pacman
     printf(" ");
 
     switch(pacman->next.coordinates) //Calcula a proxima posição do pacman
     {
     case 'y':
-        pacman->y+=pacman->next.aumenta_diminui;
+        pacman->pos.y+=pacman->next.aumenta_diminui;
         break;
     case 'x':
-        pacman->x+=pacman->next.aumenta_diminui;
+        pacman->pos.x+=pacman->next.aumenta_diminui;
         break;
     }
 
@@ -57,7 +57,7 @@ void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
 
     //Imprime a nova posição do pacman
     textcolor(AMARELO);
-    gotoXY(pacman->x,pacman->y);
+    gotoXY(pacman->pos.x,pacman->pos.y);
     printf("C");
 
     return;
@@ -67,21 +67,21 @@ void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
 void testLimits(pacmanInfo *pacman)
 {
 
-    if(pacman->y<TOP)
+    if(pacman->pos.y<TOP)
     {
-        pacman->y=HEIGHT;
+        pacman->pos.y=HEIGHT;
     }
-    else if(pacman->y>HEIGHT)
+    else if(pacman->pos.y>HEIGHT)
     {
-        pacman->y=TOP;
+        pacman->pos.y=TOP;
     }
-    else if(pacman->x<LEFT)
+    else if(pacman->pos.x<LEFT)
     {
-        pacman->x=WIDTH;
+        pacman->pos.x=WIDTH;
     }
-    else if(pacman->x>WIDTH)
+    else if(pacman->pos.x>WIDTH)
     {
-        pacman->x=LEFT;
+        pacman->pos.x=LEFT;
     }
 
     return;
@@ -91,15 +91,15 @@ void testLimits(pacmanInfo *pacman)
 void testColision(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
 {
 
-    if(lab[pacman->y-1][pacman->x-1]=='#' && (pacman->y>TOP-1 && pacman->y<HEIGHT+1) && (pacman->x>LEFT-1 && pacman->x<WIDTH+1)) //Caso esteja dentro de um campo 'parede' E dentro do mapa
+    if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#' && (pacman->pos.y > TOP-1 && pacman->pos.y < HEIGHT+1) && (pacman->pos.x > LEFT-1 && pacman->pos.x < WIDTH+1)) //Caso esteja dentro de um campo 'parede' E dentro do mapa
     {
         switch(pacman->next.coordinates) //Volta a ultima posição andada
         {
         case 'y':
-            pacman->y-=pacman->next.aumenta_diminui;
+            pacman->pos.y-=pacman->next.aumenta_diminui;
             break;
         case 'x':
-            pacman->x-=pacman->next.aumenta_diminui;
+            pacman->pos.x-=pacman->next.aumenta_diminui;
             break;
         }
 
@@ -107,23 +107,23 @@ void testColision(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
         switch(pacman->last.coordinates)
         {
         case 'y':
-            pacman->y+=pacman->last.aumenta_diminui;
+            pacman->pos.y+=pacman->last.aumenta_diminui;
             break;
         case 'x':
-            pacman->x+=pacman->last.aumenta_diminui;
+            pacman->pos.x+=pacman->last.aumenta_diminui;
             break;
         }
 
 
-        if(lab[pacman->y-1][pacman->x-1]=='#') //Caso ja esteja em uma esquina, e seja forçado a entrar na parede, faz não entrar nela
+        if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#') //Caso ja esteja em uma esquina, e seja forçado a entrar na parede, faz não entrar nela
         {
             switch(pacman->last.coordinates)
             {
             case 'y':
-                pacman->y-=pacman->last.aumenta_diminui;
+                pacman->pos.y-=pacman->last.aumenta_diminui;
                 break;
             case 'x':
-                pacman->x-=pacman->last.aumenta_diminui;
+                pacman->pos.x-=pacman->last.aumenta_diminui;
                 break;
             }
         }

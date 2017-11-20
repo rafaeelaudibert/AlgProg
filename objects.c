@@ -12,9 +12,9 @@
 void checkPacDots(int* pacdots, int* points, char lab[HEIGHT][WIDTH], pacmanInfo pacman)
 {
 
-    if(lab[pacman.y-1][pacman.x-1]=='o')
+    if(lab[pacman.pos.y-1][pacman.pos.x-1]=='o')
     {
-        lab[pacman.y-1][pacman.x-1]=' ';
+        lab[pacman.pos.y-1][pacman.pos.x-1]=' ';
         *points+=10; //Aumenta contador de pontos
         *pacdots+=1; //Incrementa 1 no contador de pastilhas comidas
 
@@ -29,9 +29,9 @@ void checkPacDots(int* pacdots, int* points, char lab[HEIGHT][WIDTH], pacmanInfo
 void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman)
 {
 
-    if(lab[pacman->y-1][pacman->x-1]=='*')
+    if(lab[pacman->pos.y-1][pacman->pos.x-1]=='*')
     {
-        lab[pacman->y-1][pacman->x-1]=' ';
+        lab[pacman->pos.y-1][pacman->pos.x-1]=' ';
         *points+=50;
         Beep(1000, 50);
         pacman->pacDotActive=5000/NORMAL_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos

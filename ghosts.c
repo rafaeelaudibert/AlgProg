@@ -114,8 +114,8 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
     {
         // reprinta a última posicao com o que continha
         coord posg;
-        posg.x = fantasmas->unid[i].x;
-        posg.y = fantasmas->unid[i].y;
+        posg.x = fantasmas->unid[i].pos.x;
+        posg.y = fantasmas->unid[i].pos.y;
         gotoXY(posg.x+1, posg.y+1);
         // cores para impresão
         if(lab[posg.y][posg.x] =='o')
@@ -129,8 +129,8 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
         printf("%c", lab[posg.y][posg.x]);
 
         // atualiza a posicao
-        fantasmas->unid[i].x += fantasmas->unid[i].mov.x;
-        fantasmas->unid[i].y += fantasmas->unid[i].mov.y;
+        fantasmas->unid[i].pos.x += fantasmas->unid[i].mov.x;
+        fantasmas->unid[i].pos.y += fantasmas->unid[i].mov.y;
 
         testaLimites(&fantasmas->unid[i]);
 
@@ -151,8 +151,8 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
                 {
                     textcolor(LILAS);
                 }
-            } // muda a cor para roxo
-            gotoXY(fantasmas->unid[i].x+1, fantasmas->unid[i].y+1);
+            }
+            gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
             printf("W");
         }
     }
@@ -181,7 +181,7 @@ void escolheDirecao(pacmanInfo pac, ghost *pg, char lab[30][100])
             d = 3 - i;
         }
         // verifica para quais lados nao sao paredes e se ele nao passa do limite do mapa com a nova dir
-        if( lab[ (g.y + dir[d].y) ][ (g.x + dir[d].x) ] != '#')
+        if( lab[ (g.pos.y + dir[d].y) ][ (g.pos.x + dir[d].x) ] != '#')
         {
             // verifica se a nova direcao nao eh a que ele vinha, para nao retornar pelo mesmo caminho
             if( dir[d].x != (g.mov.x * -1) ||
@@ -205,12 +205,12 @@ int mudarDirecao(ghost g, char lab[30][100])
     if( g.mov.x != 0)
     {
         // dire��o na horizontal, verifica se pode ir pra cima ou pra baixo
-        if( lab[g.y+1][g.x] != '#' || lab[g.y-1][g.x] != '#') return 1;
+        if( lab[g.pos.y+1][g.pos.x] != '#' || lab[g.pos.y-1][g.pos.x] != '#') return 1;
     }
     else
     {
         // dire��o na vertical, verifica se pode ir pra esquerda ou direita
-        if( lab[g.y][g.x+1] != '#' || lab[g.y][g.x-1] != '#') return 1;
+        if( lab[g.pos.y][g.pos.x+1] != '#' || lab[g.pos.y][g.pos.x-1] != '#') return 1;
     }
     return 0;
 }
@@ -226,7 +226,7 @@ void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100])
     for(i=0; i<4; i++)
     {
         // calculo da distância cartesiana
-        dists[i] = pow( pac.y - g.y + dir[i].y, 2) + pow(pac.x - g.x + dir[i].x, 2);
+        dists[i] = pow( pac.pos.y - g.pos.y + dir[i].y, 2) + pow(pac.pos.x - g.pos.x + dir[i].x, 2);
     }
 
     // ordena o vetor das distancias e o das direcoes de acordo com o das distancias
@@ -256,23 +256,23 @@ int ladosLivres(ghost g, char lab[30][100])
 {
     int soma = 0;
     // testa cada uma das dire��es se est� livre
-    if( lab[g.y][ g.x + 1] != '#') soma++;
-    if( lab[g.y][ g.x - 1] != '#') soma++;
-    if( lab[ g.y + 1][g.x] != '#') soma++;
-    if( lab[ g.y - 1][g.x] != '#') soma++;
+    if( lab[g.pos.y][ g.pos.x + 1] != '#') soma++;
+    if( lab[g.pos.y][ g.pos.x - 1] != '#') soma++;
+    if( lab[ g.pos.y + 1][g.pos.x] != '#') soma++;
+    if( lab[ g.pos.y - 1][g.pos.x] != '#') soma++;
     return soma;
 }
 
 // dentro dos limites do mapa, retorna 1, se não retorna 0;
 int testaLimites(ghost *g)
 {
-    if( g->x <= 0 || g->x >= (WIDTH-1) )
+    if( g->pos.x <= 0 || g->pos.x >= (WIDTH-1) )
     {
-        g->x = WIDTH - g->x -1;
+        g->pos.x = WIDTH - g->pos.x -1;
     }
-    else if(g->y <= 0 || g->y >= (HEIGHT-1) )
+    else if(g->pos.y <= 0 || g->pos.y >= (HEIGHT-1) )
     {
-        g->y = HEIGHT - g->y -1;
+        g->pos.y = HEIGHT - g->pos.y -1;
     }
     else
     {
@@ -288,7 +288,7 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
     for(i=0; i<fantasmas->quant; i++)
     {
         ghost g = fantasmas->unid[i];
-        if(g.alive && pac.x-1 == g.x && pac.y-1 == g.y)
+        if(g.alive && pac.pos.x-1 == g.pos.x && pac.pos.y-1 == g.pos.y)
         {
             if(pac.pacDotActive)
             {
