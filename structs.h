@@ -12,13 +12,14 @@ struct
     coord pos;
     coord origin;
     coord mov; //Where the ghost is going -> UP, RIGHT, DOWN, LEFT
+    char key;
     int alive;
-    } typedef ghost; //Stores ONE ghost Information
+} typedef ghost; //Stores ONE ghost Information
 
 struct
 {
     int quant;
-    ghost unid[5];
+    ghost unid[MAX_GHOSTS];
 } typedef ghosts; //Ghosts Group
 
 struct

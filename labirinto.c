@@ -2,10 +2,7 @@
 #include "main.h"
 #include "structs.h"
 #include "labirinto.h"
-#include "pacman.h"
 #include "ghosts.h"
-#include "objects.h"
-#include "messages.h"
 #include "auxiliars.h"
 
 //Inicia e carrega todas as estruturas
@@ -53,6 +50,7 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
                 fantasmas->unid[q_fantasmas].alive = 1; // seta a vida do ghost
                 fantasmas->unid[q_fantasmas].origin.x = j;
                 fantasmas->unid[q_fantasmas].origin.y = i;
+                fantasmas->unid[q_fantasmas].key='W';
 
                 //Atual
                 fantasmas->unid[q_fantasmas].pos.x = j;

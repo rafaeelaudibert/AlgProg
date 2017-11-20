@@ -1,11 +1,7 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
-#include "labirinto.h"
-#include "pacman.h"
 #include "ghosts.h"
-#include "objects.h"
-#include "messages.h"
 #include "auxiliars.h"
 
 //Variaveis globais
@@ -13,15 +9,15 @@
 coord dir[4]; //Possíveis posições -> UP, RIGHT, DOWN, LEFT
 
 //Ghost Controller
-int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTime, char lab[HEIGHT][WIDTH], ghosts *fantasmas)
+int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas)
 {
 
     float correcaoVelocidade = pacman.last.coordinates=='y' ? 1.4 : 1;
     clock_t actualTime=clock();
 
-    if((actualTime - *ghostsTime) > ( pacman.pacDotActive ? SLOW_SPEED*correcaoVelocidade : NORMAL_SPEED*correcaoVelocidade))
+    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? SLOW_SPEED*correcaoVelocidade : NORMAL_SPEED*correcaoVelocidade))
     {
-        *ghostsTime = actualTime;
+        *ghostsTimer = actualTime;
         moveGhost(pacman, lab, fantasmas); // update of the moviment of the ghosts
         showGhosts(pacman, lab, fantasmas); // update and show the position of the ghosts
 
@@ -44,6 +40,8 @@ void setupDir()
     dir[2].y = 1;
     dir[3].x = -1; // LEFT
     dir[3].y = 0;
+
+    return;
 }
 
 // embaralha o array das direções ( dir ), aleatoriamente
@@ -58,6 +56,8 @@ void shuffleDir()
         dir[j] = dir[i];
         dir[i] = t;
     }
+
+    return;
 }
 
 // algoritmo pra movimentar cada um dos fantasmas
@@ -104,6 +104,8 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
             escolheDirecao(pac, &(fantasmas->unid[i]), lab);
         }
     }
+
+    return;
 }
 
 // mostra os fantasma na tela
@@ -153,11 +155,11 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
                 }
             }
             gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
-            printf("W");
+            printf("%c", fantasmas->unid[i].key);
         }
     }
-    // volta a cor normal
-    textcolor(BRANCO);
+
+    return;
 }
 
 // verifica quais são as possíveis direções que o fantasma pode ir
@@ -193,6 +195,8 @@ void escolheDirecao(pacmanInfo pac, ghost *pg, char lab[30][100])
             }
         }
     }
+
+    return;
 }
 
 // verifica se o fantasma está em um local que é uma bifurcacao ou um canto
@@ -249,13 +253,16 @@ void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100])
             }
         }
     }
+
+    return;
+
 }
 
-// retorna quantos lados est�o livres
+// retorna quantos lados estao livres
 int ladosLivres(ghost g, char lab[30][100])
 {
     int soma = 0;
-    // testa cada uma das dire��es se est� livre
+    // testa cada uma das dire��es se esta livre
     if( lab[g.pos.y][ g.pos.x + 1] != '#') soma++;
     if( lab[g.pos.y][ g.pos.x - 1] != '#') soma++;
     if( lab[ g.pos.y + 1][g.pos.x] != '#') soma++;
@@ -264,22 +271,21 @@ int ladosLivres(ghost g, char lab[30][100])
 }
 
 // dentro dos limites do mapa, retorna 1, se não retorna 0;
-int testaLimites(ghost *g)
-{
-    if( g->pos.x <= 0 || g->pos.x >= (WIDTH-1) )
-    {
-        g->pos.x = WIDTH - g->pos.x -1;
-    }
-    else if(g->pos.y <= 0 || g->pos.y >= (HEIGHT-1) )
-    {
-        g->pos.y = HEIGHT - g->pos.y -1;
-    }
-    else
-    {
+int testaLimites(ghost *g){
+    if( g->pos.x < 0){
+        g->pos.x = WIDTH - 1;
+    } else if(g->pos.x > (WIDTH-1)){
+        g->pos.x = 0;
+    } else if(g->pos.y < 0 ){
+        g->pos.y = HEIGHT - 1;
+    } else if(g->pos.y > (HEIGHT-1)){
+        g->pos.y = 0;
+    } else {
         return 0;
     }
     return 1;
-}
+};
+
 
 int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
 {
