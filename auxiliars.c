@@ -37,7 +37,7 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final, cha
     }
 
     textcolor(AMARELO);
-    gotoXY(pacman.x, pacman.y);
+    gotoXY(pacman.pos.x, pacman.pos.y);
     printf("C");
 
     return;

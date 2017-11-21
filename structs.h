@@ -9,8 +9,7 @@ struct
 
 struct
 {
-    int x;
-    int y;
+    coord pos;
     int alive;
     coord mov; //Where the ghost is going -> UP, RIGHT, DOWN, LEFT
 } typedef ghost; //Stores ONE ghost Information
@@ -29,8 +28,7 @@ struct
 
 struct
 {
-    int x; //x-axis position
-    int y; //y-axis position
+    coord pos;
     int lives; //lives remaining
     int pacDotActive; //SuperPower
     directions next; //Next direction to walk

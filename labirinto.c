@@ -33,15 +33,15 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, pa
             {
             case 'c':
             case 'C':
-                pacman_origin->x = j+1;
-                pacman_origin->y = i+1;
+                pacman_origin->pos.x = j+1;
+                pacman_origin->pos.y = i+1;
                 lab[i][j] = ' ';
                 break;
             case 'w':
             case 'W': // Fantasmas
                 // printf(" ");
-                fantasmas->unid[q_fantasmas].x = j;
-                fantasmas->unid[q_fantasmas].y = i;
+                fantasmas->unid[q_fantasmas].pos.x = j;
+                fantasmas->unid[q_fantasmas].pos.y = i;
                 fantasmas->unid[q_fantasmas].alive = 1; // seta a vida do ghost
                 q_fantasmas++;
                 lab[i][j] = ' ';
@@ -58,8 +58,8 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, pa
     *ghosts_origin = *fantasmas;
 
     // seta e guarda a posição inicial do Pacman
-    pacman->x = pacman_origin->x;
-    pacman->y = pacman_origin->y;
+    pacman->pos.x = pacman_origin->pos.x;
+    pacman->pos.y = pacman_origin->pos.y;
 
     *qtdePastilhas=q_pastilhas; //Seta a quantidade total de pastilhas
 
@@ -102,14 +102,14 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
     }
 
     //Seta a posição inicial do pacman
-    *pacmanx=pacman_origin.x;
-    *pacmany=pacman_origin.y;
+    *pacmanx=pacman_origin.pos.x;
+    *pacmany=pacman_origin.pos.y;
 
     // seta os fantasmas para as posições iniciais
     for(i=0; i<q_fantasmas; i++)
     {
-        fantasmas->unid[i].x = ghosts_origin.unid[i].x;
-        fantasmas->unid[i].y = ghosts_origin.unid[i].y;
+        fantasmas->unid[i].pos.x = ghosts_origin.unid[i].pos.x;
+        fantasmas->unid[i].pos.y = ghosts_origin.unid[i].pos.y;
         fantasmas->unid[i].alive = 1; // seta a vida do ghost
     }
     return 0;

@@ -75,7 +75,7 @@ void gameStart(void)
     char key='j'; //Stroked key with a non useful, but known value
 
     system("cls");
-    if(showLab(lab, &totalPacDots, &pacman.x, &pacman.y, &fantasmas, ghosts_origin, pacman_origin))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
+    if(showLab(lab, &totalPacDots, &pacman.pos.x, &pacman.pos.y, &fantasmas, ghosts_origin, pacman_origin))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
     {
         printf("ERROR!");
         system("Pause");
