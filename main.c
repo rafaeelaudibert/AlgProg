@@ -22,8 +22,8 @@ int totalPacDots, eatenPacDots=0; //PacDots quantities
 //Pac-man Main
 int main()
 {
-    system("mode 100, 45"); //Defines CMD's screen size
-    system("title Pacman"); //Defines CMD's title
+    system("mode 100, 35"); //Defines CMD's screen size
+    system("title Pacman - AlgProg - 2017/2"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR' (main.h)
     srand(time(NULL)); // Feeds the rand seed with the system time
 
