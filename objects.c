@@ -1,7 +1,11 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
+#include "labirinto.h"
+#include "pacman.h"
+#include "ghosts.h"
 #include "objects.h"
+#include "messages.h"
 #include "auxiliars.h"
 
 //Checagem das pastilhas
@@ -22,10 +26,8 @@ void checkPacDots(int* pacdots, int* points, char lab[HEIGHT][WIDTH], pacmanInfo
 }
 
 //Checagem das super-pastilhas
-void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
+void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman)
 {
-
-    int i;
 
     if(lab[pacman->pos.y-1][pacman->pos.x-1]=='*')
     {
@@ -33,9 +35,6 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman,
         *points+=50;
         Beep(1000, 50);
         pacman->pacDotActive=5000/NORMAL_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
-        for(i=0; i < fantasmas->quant; i++){
-            fantasmas->unid[i].key='w';
-        }
 
         textcolor(BRANCO);
         gotoXY(36, 32);
@@ -54,9 +53,5 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman,
     {
         gotoXY(29,33);
         printf("                                             ");
-
-        for(i=0; i < fantasmas->quant; i++){
-            fantasmas->unid[i].key='W';
-        }
     }
 }

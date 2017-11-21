@@ -14,7 +14,9 @@ pacmanInfo pacman; //Pacman informations
 ghosts fantasmas; //Ghost informations
 char lab[30][100]; //Variable whose stores the maze
 int speed; //Variable whose stores the actual speed of the game
-clock_t pacTimer, ghostsTimer; //Game timers
+clock_t pacStartTimer, pacEndTimer, ghostsTime; //Game timers
+int points=0; //Points counter
+int totalPacDots, eatenPacDots=0; //PacDots quantities
 
 
 //Pac-man Main
@@ -24,10 +26,6 @@ int main()
     system("title Pacman"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR' (main.h)
     srand(time(NULL)); // Feeds the rand seed with the system time
-
-    //Creating variables
-    int points=0; //Points counter
-    int totalPacDots, eatenPacDots=0; //PacDots quantities
 
     //Setting some useful variables
     pacman.lives=3; //Sets the initial number of lives of the pacman
@@ -43,7 +41,7 @@ int main()
         pacman.lives--; //When starts the game, takes one live out of pacman
         if(pacman.lives>=0)
         {
-            gameStart(&points, &eatenPacDots, totalPacDots); //The Game 'per se'
+            gameStart(); //The Game 'per se'
             while(kbhit())
             {
                 getch();
@@ -70,7 +68,7 @@ int main()
 
 
 //Start of the game
-void gameStart(int *points, int *eatenPacDots, int totalPacDots)
+void gameStart(void)
 {
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1;//Game loop flag
@@ -89,11 +87,11 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
     gotoXY(36, 31);
     printf("Press 'Space' or 'ESC' to quit");
     gotoXY(36, 32);
-    printf("Points: %5d         Lives: %d", *points, pacman.lives);
+    printf("Points: %5d         Lives: %d", points, pacman.lives);
 
     //Starts timers, and makes the game to start
-    pacTimer=clock();
-    ghostsTimer=clock();
+    pacStartTimer=clock();
+    ghostsTime=clock();
     while(continueGame)
     {
         if(showStartMessage>-1)
@@ -115,7 +113,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
         }
 
 
-        if(!pacmanControl(eatenPacDots, points, &pacman, &pacTimer, speed, lab, &fantasmas))  //Controls pacman
+        if(!pacmanControl(&eatenPacDots, &points, &pacman, &pacEndTimer, &pacStartTimer, speed, lab, &fantasmas))  //Controls pacman
         {
             pacman.next.coordinates='s';
             pacman.next.aumenta_diminui='0';
@@ -123,17 +121,17 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
 
         }
 
-        if(key!='j' && !ghostsControl(points, pacman, &ghostsTimer, lab, &fantasmas)) //Controls ghosts
+        if(key!='j' && !ghostsControl(&points, pacman, &ghostsTime, lab, &fantasmas)) //Controls ghosts
         {
             pacman.next.coordinates='s';
             pacman.next.aumenta_diminui='0';
             return; //Ends the game loop, if there is a collision between the ghost and the pacman
         }
 
-        if((*eatenPacDots)==totalPacDots) //If all pacDots have been eaten, ends the game
+        if(eatenPacDots==totalPacDots) //If all pacDots have been eaten, ends the game
         {
-            *points+=((pacman.lives+1)*150); //Gives 150 points, each lasting life
-            gameWin();
+            points+=((pacman.lives+1)*150); //Gives 150 points, each lasting life
+            gameWin(points);
             return;
         }
 
@@ -207,7 +205,7 @@ void gameEnd(void)
 }
 
 //Mensagem de término de jogo, caso player ganhe o jogo
-void gameWin(void)
+void gameWin(int points)
 {
     int contador=0;
     char ch;
