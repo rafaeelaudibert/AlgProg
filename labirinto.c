@@ -9,7 +9,7 @@
 #include "auxiliars.h"
 
 //Inicia e carrega todas as estruturas
-int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas, ghosts *ghosts_origin)
+int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas)
 {
     int i, j; //Contador do laço da matriz
     int q_fantasmas=0, q_pastilhas=0; //Contagem de objetos
@@ -39,7 +39,11 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
                 break;
             case 'w':
             case 'W': // Fantasmas
-                // printf(" ");
+                //Origin dos fantasmas
+                fantasmas->unid[q_fantasmas].origin.x=j;
+                fantasmas->unid[q_fantasmas].origin.y=i;
+
+                //Posição atual dos fantasmas
                 fantasmas->unid[q_fantasmas].pos.x = j;
                 fantasmas->unid[q_fantasmas].pos.y = i;
                 fantasmas->unid[q_fantasmas].alive = 1; // seta a vida do ghost
@@ -54,8 +58,6 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
     }
 
     fantasmas->quant=q_fantasmas;
-    // seta e guarda a posição inicial dos fantasmas
-    *ghosts_origin = *fantasmas;
 
     // seta e guarda a posição inicial do Pacman
     pacman->pos.x = pacman->origin.x;
@@ -68,7 +70,7 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
 
 
 //Mostra o labirinto na tela
-int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas, ghosts ghosts_origin)
+int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas)
 {
 
     int i, j; //Contador do laço da matriz
@@ -108,8 +110,8 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gho
     // seta os fantasmas para as posições iniciais
     for(i=0; i<q_fantasmas; i++)
     {
-        fantasmas->unid[i].pos.x = ghosts_origin.unid[i].pos.x;
-        fantasmas->unid[i].pos.y = ghosts_origin.unid[i].pos.y;
+        fantasmas->unid[i].pos.x = fantasmas->unid[i].origin.x;
+        fantasmas->unid[i].pos.y = fantasmas->unid[i].origin.y;
         fantasmas->unid[i].alive = 1; // seta a vida do ghost
     }
     return 0;

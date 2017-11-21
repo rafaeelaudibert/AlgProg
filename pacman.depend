@@ -55,7 +55,7 @@
 
 1508888115 c:\users\rafae\documents\github\algprog\testalabirinto.h
 
-1511302104 c:\users\rafae\documents\github\algprog\labirinto.h
+1511302399 c:\users\rafae\documents\github\algprog\labirinto.h
 
 1509327136 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
 	<stdio.h>
@@ -87,7 +87,7 @@
 	<conio.h>
 	"../labirinto.h"
 
-1511302190 source:c:\users\rafae\documents\github\algprog\labirinto.c
+1511302386 source:c:\users\rafae\documents\github\algprog\labirinto.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -185,7 +185,7 @@
 	<string.h>
 	"labirinto.h"
 
-1511301957 c:\users\rafae\documents\github\algprog\structs.h
+1511302293 c:\users\rafae\documents\github\algprog\structs.h
 
 1510854250 source:\\homes\aftrodrigues\windows config\desktop\algprog-master\main.c
 	<stdio.h>
@@ -411,7 +411,7 @@
 	"messages.h"
 	"auxiliars.h"
 
-1511301840 source:c:\users\rafae\documents\github\algprog\pacman.c
+1511302278 source:c:\users\rafae\documents\github\algprog\pacman.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"

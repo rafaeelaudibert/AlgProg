@@ -10,6 +10,7 @@ struct
 struct
 {
     coord pos;
+    coord origin;
     int alive;
     coord mov; //Where the ghost is going -> UP, RIGHT, DOWN, LEFT
 } typedef ghost; //Stores ONE ghost Information
