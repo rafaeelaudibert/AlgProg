@@ -9,7 +9,7 @@
 #include "auxiliars.h"
 
 //Inicia e carrega todas as estruturas
-int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, pacmanInfo *pacman_origin, ghosts *fantasmas, ghosts *ghosts_origin)
+int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas, ghosts *ghosts_origin)
 {
     int i, j; //Contador do laço da matriz
     int q_fantasmas=0, q_pastilhas=0; //Contagem de objetos
@@ -33,8 +33,8 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, pa
             {
             case 'c':
             case 'C':
-                pacman_origin->pos.x = j+1;
-                pacman_origin->pos.y = i+1;
+                pacman->origin.x = j+1;
+                pacman->origin.y = i+1;
                 lab[i][j] = ' ';
                 break;
             case 'w':
@@ -58,8 +58,8 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, pa
     *ghosts_origin = *fantasmas;
 
     // seta e guarda a posição inicial do Pacman
-    pacman->pos.x = pacman_origin->pos.x;
-    pacman->pos.y = pacman_origin->pos.y;
+    pacman->pos.x = pacman->origin.x;
+    pacman->pos.y = pacman->origin.y;
 
     *qtdePastilhas=q_pastilhas; //Seta a quantidade total de pastilhas
 
@@ -68,7 +68,7 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, pa
 
 
 //Mostra o labirinto na tela
-int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacmany, ghosts *fantasmas, ghosts ghosts_origin, pacmanInfo pacman_origin)
+int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas, ghosts ghosts_origin)
 {
 
     int i, j; //Contador do laço da matriz
@@ -102,8 +102,8 @@ int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, int *pacmanx, int *pacm
     }
 
     //Seta a posição inicial do pacman
-    *pacmanx=pacman_origin.pos.x;
-    *pacmany=pacman_origin.pos.y;
+    pacman->pos.x=pacman->origin.x;
+    pacman->pos.y=pacman->origin.y;
 
     // seta os fantasmas para as posições iniciais
     for(i=0; i<q_fantasmas; i++)

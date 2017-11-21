@@ -29,6 +29,7 @@ struct
 struct
 {
     coord pos;
+    coord origin;
     int lives; //lives remaining
     int pacDotActive; //SuperPower
     directions next; //Next direction to walk

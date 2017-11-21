@@ -10,7 +10,7 @@
 
 
 //Variaveis Globais
-pacmanInfo pacman, pacman_origin; //Pacman informations
+pacmanInfo pacman; //Pacman informations
 ghosts fantasmas, ghosts_origin; //Ghost informations
 char lab[30][100]; //Variable whose stores the maze
 int speed; //Variable whose stores the actual speed of the game
@@ -32,7 +32,7 @@ int main()
     speed=NORMAL_SPEED; //Sets the initial speed of the game
     pacman.pacDotActive=0; //Sets pacman "not powered"
 
-    startLab(lab, &totalPacDots, &pacman, &pacman_origin, &fantasmas, &ghosts_origin); // Set the initial positions of the game
+    startLab(lab, &totalPacDots, &pacman, &fantasmas, &ghosts_origin); // Set the initial positions of the game
     startMenu(); //Start message
 
     //THE GAME
@@ -75,7 +75,7 @@ void gameStart(void)
     char key='j'; //Stroked key with a non useful, but known value
 
     system("cls");
-    if(showLab(lab, &totalPacDots, &pacman.pos.x, &pacman.pos.y, &fantasmas, ghosts_origin, pacman_origin))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
+    if(showLab(lab, &totalPacDots, &pacman, &fantasmas, ghosts_origin))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
     {
         printf("ERROR!");
         system("Pause");
