@@ -1,6 +1,10 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
+#include "labirinto.h"
+#include "pacman.h"
+#include "ghosts.h"
+#include "objects.h"
 #include "messages.h"
 #include "auxiliars.h"
 

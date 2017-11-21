@@ -99,16 +99,19 @@
 	"structs.h"
 	"labirinto.h"
 
-1511213400 source:c:\users\usuario\documents\github\algprog\labirinto.c
+1511142310 source:c:\users\usuario\documents\github\algprog\labirinto.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
+	"pacman.h"
 	"ghosts.h"
+	"objects.h"
+	"messages.h"
 	"auxiliars.h"
 
-1511197910 c:\users\usuario\documents\github\algprog\labirinto.h
+1511142159 c:\users\usuario\documents\github\algprog\labirinto.h
 
-1511213110 source:c:\users\usuario\documents\github\algprog\main.c
+1511142159 source:c:\users\usuario\documents\github\algprog\main.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -250,7 +253,7 @@
 	<string.h>
 	"labirinto.h"
 
-1511212856 c:\users\usuario\documents\github\algprog\main.h
+1511142412 c:\users\usuario\documents\github\algprog\main.h
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -288,46 +291,65 @@
 1511128519 source:c:\users\usuario\documents\github\algprogteste\main.c
 	"main.h"
 
-1511213400 c:\users\usuario\documents\github\algprog\structs.h
+1511132740 c:\users\usuario\documents\github\algprog\structs.h
 
-1511196554 c:\users\usuario\documents\github\algprog\messages.h
+1511137002 c:\users\usuario\documents\github\algprog\messages.h
 
-1511212077 source:c:\users\usuario\documents\github\algprog\messages.c
+1511137357 source:c:\users\usuario\documents\github\algprog\messages.c
 	"main.h"
 	"structs.h"
-	"messages.h"
-	"auxiliars.h"
-
-1511213110 c:\users\usuario\documents\github\algprog\pacman.h
-
-1511213582 source:c:\users\usuario\documents\github\algprog\pacman.c
-	"main.h"
-	"structs.h"
+	"labirinto.h"
 	"pacman.h"
 	"ghosts.h"
 	"objects.h"
+	"messages.h"
 	"auxiliars.h"
 
-1511213563 c:\users\usuario\documents\github\algprog\objects.h
+1511138920 c:\users\usuario\documents\github\algprog\pacman.h
 
-1511213573 source:c:\users\usuario\documents\github\algprog\objects.c
+1511138912 source:c:\users\usuario\documents\github\algprog\pacman.c
 	"main.h"
 	"structs.h"
-	"objects.h"
-	"auxiliars.h"
-
-1511196554 c:\users\usuario\documents\github\algprog\auxiliars.h
-
-1511211994 source:c:\users\usuario\documents\github\algprog\auxiliars.c
-	"main.h"
-	"structs.h"
-	"auxiliars.h"
-
-1511196554 c:\users\usuario\documents\github\algprog\ghosts.h
-
-1511213110 source:c:\users\usuario\documents\github\algprog\ghosts.c
-	"main.h"
-	"structs.h"
+	"labirinto.h"
+	"pacman.h"
 	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511136479 c:\users\usuario\documents\github\algprog\objects.h
+
+1511141469 source:c:\users\usuario\documents\github\algprog\objects.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511137269 c:\users\usuario\documents\github\algprog\auxiliars.h
+
+1511137357 source:c:\users\usuario\documents\github\algprog\auxiliars.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511138839 c:\users\usuario\documents\github\algprog\ghosts.h
+
+1511141602 source:c:\users\usuario\documents\github\algprog\ghosts.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
 	"auxiliars.h"
 
