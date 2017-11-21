@@ -26,8 +26,10 @@ void checkPacDots(int* pacdots, int* points, char lab[HEIGHT][WIDTH], pacmanInfo
 }
 
 //Checagem das super-pastilhas
-void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman)
+void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
 {
+
+    int i;
 
     if(lab[pacman->pos.y-1][pacman->pos.x-1]=='*')
     {
@@ -36,6 +38,9 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman)
         Beep(1000, 50);
         pacman->pacDotActive=5000/NORMAL_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
 
+        for(i=0; i<fantasmas->quant; i++){
+            fantasmas->unid[i].key='w';
+        }
         textcolor(BRANCO);
         gotoXY(36, 32);
         printf("Points: %5d", *points);
@@ -53,5 +58,9 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman)
     {
         gotoXY(29,33);
         printf("                                             ");
+
+        for(i=0; i < fantasmas->quant; i++){
+            fantasmas->unid[i].key='W';
+        }
     }
 }

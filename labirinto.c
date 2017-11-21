@@ -47,6 +47,7 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
                 fantasmas->unid[q_fantasmas].pos.x = j;
                 fantasmas->unid[q_fantasmas].pos.y = i;
                 fantasmas->unid[q_fantasmas].alive = 1; // seta a vida do ghost
+                fantasmas->unid[q_fantasmas].key = 'W';
                 q_fantasmas++;
                 lab[i][j] = ' ';
                 break;

@@ -2,6 +2,6 @@
 #define OBJECTS_FUNCTIONS_H
 
 void checkPacDots(int*, int*, char[HEIGHT][WIDTH], pacmanInfo);
-void checkPowerPellets(int*, char[HEIGHT][WIDTH], pacmanInfo*);
+void checkPowerPellets(int*, char[HEIGHT][WIDTH], pacmanInfo*, ghosts*);
 
 #endif // OBJECTS_FUNCTIONS_H

@@ -153,7 +153,7 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
                 }
             } // muda a cor para roxo
             gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
-            printf("W");
+            printf("%c", fantasmas->unid[i].key);
         }
     }
 }

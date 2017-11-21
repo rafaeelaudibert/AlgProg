@@ -21,7 +21,7 @@ int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* p
         *pacStartTimer=*pacEndTimer; //"Zera" o contador inicio
         movePacman(pacman, lab);
         checkPacDots(qtde_pacdots, points, lab, *pacman);
-        checkPowerPellets(points, lab, pacman);
+        checkPowerPellets(points, lab, pacman, fantasmas);
 
         if(checkGhostCollision((*pacman), points, fantasmas) && !pacman->pacDotActive)
         {
