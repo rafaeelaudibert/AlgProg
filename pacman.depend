@@ -26,7 +26,7 @@
 	<string.h>
 	<ctype.h>
 
-1511302393 source:c:\users\rafae\documents\github\algprog\main.c
+1511303723 source:c:\users\rafae\documents\github\algprog\main.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -55,7 +55,7 @@
 
 1508888115 c:\users\rafae\documents\github\algprog\testalabirinto.h
 
-1511302399 c:\users\rafae\documents\github\algprog\labirinto.h
+1511303717 c:\users\rafae\documents\github\algprog\labirinto.h
 
 1509327136 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
 	<stdio.h>
@@ -87,7 +87,7 @@
 	<conio.h>
 	"../labirinto.h"
 
-1511303184 source:c:\users\rafae\documents\github\algprog\labirinto.c
+1511309120 source:c:\users\rafae\documents\github\algprog\labirinto.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -185,7 +185,7 @@
 	<string.h>
 	"labirinto.h"
 
-1511303141 c:\users\rafae\documents\github\algprog\structs.h
+1511308956 c:\users\rafae\documents\github\algprog\structs.h
 
 1510854250 source:\\homes\aftrodrigues\windows config\desktop\algprog-master\main.c
 	<stdio.h>
@@ -361,7 +361,7 @@
 	"messages.h"
 	"auxiliars.h"
 
-1511301340 c:\users\rafae\documents\github\algprog\main.h
+1511309160 c:\users\rafae\documents\github\algprog\main.h
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -381,7 +381,7 @@
 
 1511229893 c:\users\rafae\documents\github\algprog\auxiliars.h
 
-1511302972 source:c:\users\rafae\documents\github\algprog\ghosts.c
+1511303710 source:c:\users\rafae\documents\github\algprog\ghosts.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"

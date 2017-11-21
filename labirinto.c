@@ -12,7 +12,10 @@
 int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas)
 {
     int i, j; //Contador do laço da matriz
-    int q_fantasmas=0, q_pastilhas=0; //Contagem de objetos
+
+    //Inicialização de algumas variáveis
+    *qtdePastilhas=0;
+    fantasmas->quant=0;
 
     // standard setup of the array dir[];
     setupDir();
@@ -33,45 +36,47 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
             {
             case 'c':
             case 'C':
+                //Origin do pacman
                 pacman->origin.x = j+1;
                 pacman->origin.y = i+1;
+
+                //Atual do pacman
+                pacman->pos.x = j+1;
+                pacman->pos.y = i+1;
+
                 lab[i][j] = ' ';
                 break;
             case 'w':
             case 'W': // Fantasmas
-                //Origin dos fantasmas
-                fantasmas->unid[q_fantasmas].origin.x=j;
-                fantasmas->unid[q_fantasmas].origin.y=i;
+                if(fantasmas->quant < MAX_GHOSTS)
+                {
+                    //Origin dos fantasmas
+                    fantasmas->unid[fantasmas->quant].origin.x=j;
+                    fantasmas->unid[fantasmas->quant].origin.y=i;
 
-                //Posição atual dos fantasmas
-                fantasmas->unid[q_fantasmas].pos.x = j;
-                fantasmas->unid[q_fantasmas].pos.y = i;
-                fantasmas->unid[q_fantasmas].alive = 1; // seta a vida do ghost
-                fantasmas->unid[q_fantasmas].key = 'W';
-                q_fantasmas++;
+                    //Posição atual dos fantasmas
+                    fantasmas->unid[fantasmas->quant].pos.x = j;
+                    fantasmas->unid[fantasmas->quant].pos.y = i;
+                    fantasmas->unid[fantasmas->quant].alive = 1; // seta a vida do ghost
+                    fantasmas->unid[fantasmas->quant].key = 'W';
+                    (fantasmas->quant)++;
+                }
                 lab[i][j] = ' ';
                 break;
             case 'o':
-                q_pastilhas++;
+                (*qtdePastilhas)++;
                 break;
             }
         }
     }
 
-    fantasmas->quant=q_fantasmas;
+   return 0;
 
-    // seta e guarda a posição inicial do Pacman
-    pacman->pos.x = pacman->origin.x;
-    pacman->pos.y = pacman->origin.y;
-
-    *qtdePastilhas=q_pastilhas; //Seta a quantidade total de pastilhas
-
-    return 0;
 }
 
 
 //Mostra o labirinto na tela
-int showLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas)
+int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
 {
 
     int i, j; //Contador do laço da matriz
