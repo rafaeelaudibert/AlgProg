@@ -13,15 +13,15 @@
 coord dir[4]; //Possíveis posições -> UP, RIGHT, DOWN, LEFT
 
 //Ghost Controller
-int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTime, char lab[HEIGHT][WIDTH], ghosts *fantasmas)
+int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas)
 {
 
     float correcaoVelocidade = pacman.last.coordinates=='y' ? 1.4 : 1;
     clock_t actualTime=clock();
 
-    if((actualTime - *ghostsTime) > ( pacman.pacDotActive ? SLOW_SPEED*correcaoVelocidade : NORMAL_SPEED*correcaoVelocidade))
+    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? SLOW_SPEED*correcaoVelocidade : NORMAL_SPEED*correcaoVelocidade))
     {
-        *ghostsTime = actualTime;
+        *ghostsTimer = actualTime;
         moveGhost(pacman, lab, fantasmas); // update of the moviment of the ghosts
         showGhosts(pacman, lab, fantasmas); // update and show the position of the ghosts
 
@@ -156,8 +156,6 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
             printf("W");
         }
     }
-    // volta a cor normal
-    textcolor(BRANCO);
 }
 
 // verifica quais são as possíveis direções que o fantasma pode ir
@@ -264,20 +262,29 @@ int ladosLivres(ghost g, char lab[30][100])
 }
 
 // dentro dos limites do mapa, retorna 1, se não retorna 0;
-int testaLimites(ghost *g)
+int testaLimites(ghost *fantasma)
 {
-    if( g->pos.x <= 0 || g->pos.x >= (WIDTH-1) )
+    if (fantasma->pos.x < 0)
     {
-        g->pos.x = WIDTH - g->pos.x -1;
+        fantasma->pos.x = WIDTH-1;
     }
-    else if(g->pos.y <= 0 || g->pos.y >= (HEIGHT-1) )
+    else if(fantasma->pos.x > (WIDTH-1))
     {
-        g->pos.y = HEIGHT - g->pos.y -1;
+        fantasma->pos.x=0;
+    }
+    else if(fantasma->pos.y < 0)
+    {
+        fantasma->pos.y = HEIGHT-1;
+    }
+    else if(fantasma->pos.y > (HEIGHT-1))
+    {
+        fantasma->pos.y = 0;
     }
     else
     {
         return 0;
     }
+
     return 1;
 }
 
