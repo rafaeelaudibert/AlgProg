@@ -361,7 +361,7 @@
 	"messages.h"
 	"auxiliars.h"
 
-1511388623 c:\users\rafae\documents\github\algprog\main.h
+1511390480 c:\users\rafae\documents\github\algprog\main.h
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -381,7 +381,7 @@
 
 1511229893 c:\users\rafae\documents\github\algprog\auxiliars.h
 
-1511389178 source:c:\users\rafae\documents\github\algprog\ghosts.c
+1511389786 source:c:\users\rafae\documents\github\algprog\ghosts.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"

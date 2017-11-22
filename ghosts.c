@@ -343,7 +343,7 @@ void reviveGhosts(ghosts *ghosts)
         if( !ghosts->unid[i].alive && (( clock() - ghosts->unid[i].deathTime) > RESPAWN) )
         {
             ghosts->unid[i].pos = ghosts->unid[i].origin;
-            ghosts->unid[i].reviveTime=30;
+            ghosts->unid[i].reviveTime=4000/NORMAL_SPEED; //4 seconds blinking
             ghosts->unid[i].alive = 2;
             return;
         }
