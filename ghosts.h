@@ -12,6 +12,6 @@ void perseguePacman(pacmanInfo, ghost, char[30][100]); //Altera o array dir, col
 int ladosLivres(ghost, char[30][100]); //Retorna a quantidade de lados que o pacman tem disponivel para andar
 int testaLimites(ghost*); // Testa se o fantasma está fora dos limites do mapa
 int checkGhostCollision(pacmanInfo, int*, ghosts*); //Interações de colisão entre o pacman e os ghosts
-int reviveGhosts(ghosts *ghosts); // revive um fantasma dentre todos da struct ghosts
+void reviveGhosts(ghosts *ghosts); // revive um fantasma dentre todos da struct ghosts
 
 #endif // GHOSTS_FUNCTIONS_H

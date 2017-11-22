@@ -8,8 +8,6 @@
 #include "messages.h"
 #include "auxiliars.h"
 
-#define TIMERESPAWN 3000
-
 //Variaveis globais
 
 coord dir[4]; //Possíveis posições -> UP, RIGHT, DOWN, LEFT
@@ -78,18 +76,19 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
 
         // se o fantasma precisa decidir se muda de dire��o
         if(ladosLivres(g, lab) == 1)
-                {
-                    fantasmas->unid[i].mov.y = fantasmas->unid[i].mov.y * -1;
-                    fantasmas->unid[i].mov.x = fantasmas->unid[i].mov.x * -1;
-                }else if(mudarDirecao(g, lab) == 1)
+        {
+            fantasmas->unid[i].mov.y = fantasmas->unid[i].mov.y * -1;
+            fantasmas->unid[i].mov.x = fantasmas->unid[i].mov.x * -1;
+        }
+        else if(mudarDirecao(g, lab) == 1)
         {
             // se o valor de perseguir pacman est� dentro da chance_persegui��o, persegue
             if(chance < abs(CHASE_CHANCE-10))
             {
 
-                    // escolhe uma dire��o diferente da que veio, aleatoriamente
-                    // mistura aleatoriamente o vetor de poss�veis dire��es
-                    shuffleDir();
+                // escolhe uma dire��o diferente da que veio, aleatoriamente
+                // mistura aleatoriamente o vetor de poss�veis dire��es
+                shuffleDir();
             }
             else
             {
@@ -126,12 +125,15 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
         printf("%c", lab[posg.y][posg.x]);
 
         // atualiza a posicao
-        fantasmas->unid[i].pos.x += fantasmas->unid[i].mov.x;
-        fantasmas->unid[i].pos.y += fantasmas->unid[i].mov.y;
+        if(fantasmas->unid[i].alive==1)
+        {
+            fantasmas->unid[i].pos.x += fantasmas->unid[i].mov.x;
+            fantasmas->unid[i].pos.y += fantasmas->unid[i].mov.y;
+        }
 
         testaLimites(&fantasmas->unid[i]);
 
-        if(fantasmas->unid[i].alive)
+        if(fantasmas->unid[i].alive==1)
         {
             // print na tela a nova posicao
             if(pac.pacDotActive>(2000/NORMAL_SPEED))
@@ -149,6 +151,26 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
                     textcolor(LILAS);
                 }
             }
+            gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
+            printf("%c", fantasmas->unid[i].key);
+        }
+        else if(fantasmas->unid[i].alive==2)
+        {
+            if (!(fantasmas->unid[i].reviveTime%2))
+            {
+                textcolor(PRETO);
+            }
+            else
+            {
+                textcolor(LILAS);
+            }
+            fantasmas->unid[i].reviveTime--;
+
+            if(!(fantasmas->unid[i].reviveTime))
+            {
+                fantasmas->unid[i].alive=1;
+            }
+
             gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
             printf("%c", fantasmas->unid[i].key);
         }
@@ -292,7 +314,7 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
     for(i=0; i<fantasmas->quant; i++)
     {
         ghost g = fantasmas->unid[i];
-        if(g.alive && pac.pos.x-1 == g.pos.x && pac.pos.y-1 == g.pos.y)
+        if(g.alive==1 && pac.pos.x-1 == g.pos.x && pac.pos.y-1 == g.pos.y)
         {
             if(pac.pacDotActive)
             {
@@ -310,17 +332,21 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
     return 0;
 }
 
-/// revive o primeiro fantasma que encontrar, e retorna 1
-/// retorna 0 se todos os fantasmas estiverem vivos
-int reviveGhosts(ghosts *ghosts){
+/// Revive o primeiro fantasma que encontrar morto
+void reviveGhosts(ghosts *ghosts)
+{
+
     int i;
-    for(i=0; i<ghosts->quant; i++){
-        ghost g = ghosts->unid[i];
-        if( !g.alive && ( clock() - g.deathTime) > TIMERESPAWN ){
+
+    for(i=0; i < ghosts->quant; i++)
+    {
+        if( !ghosts->unid[i].alive && (( clock() - ghosts->unid[i].deathTime) > RESPAWN) )
+        {
             ghosts->unid[i].pos = ghosts->unid[i].origin;
-            ghosts->unid[i].alive = 1;
-            return 1;
+            ghosts->unid[i].reviveTime=30;
+            ghosts->unid[i].alive = 2;
+            return;
         }
     }
-    return 0;
+    return;
 }

@@ -57,6 +57,7 @@ enum colors
 #define CHASE_CHANCE 06             //Chance of the Ghost to chase the Pacman (out of 10)
 #define MAX_RANDOM 10               //Random function will generate a number in the interval [0,MAX_RANDOM]
 #define MAX_GHOSTS 5                //Maximum number of ghosts in the lab
+#define RESPAWN 7000
 #define LAB "data/labirinto.txt"    //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos, labirintoProfessor.txt para testes de caminhos sem saida
 
 #endif // CONSTANTS_H_

@@ -74,8 +74,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1;//Game loop flag
     char key='j'; //Stroked key with a non useful, but known value
-
-    clock_t lastRevive = 0;
+    clock_t lastReviveTry = 0; //Last time the ghosts tried to respawn
 
     system("cls");
     if(showLab(lab, &pacman, &fantasmas))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
@@ -124,11 +123,10 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
 
         }
 
-        int RESPAWN = 8000;
         // respawn the ghosts
-        if( (clock() - lastRevive) > RESPAWN){
+        if( (clock() - lastReviveTry) > RESPAWN){
            reviveGhosts(&fantasmas);
-           lastRevive = clock();
+           lastReviveTry = clock();
         }
 
         if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas)) //Controls ghosts

@@ -12,8 +12,9 @@ struct
     coord pos;
     coord origin;
     coord mov;
-    int alive;
     char key;
+    int alive;
+    int reviveTime;
     clock_t deathTime;
 }typedef ghost; //Stores ONE ghost Information
 
