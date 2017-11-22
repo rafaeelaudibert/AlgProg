@@ -14,6 +14,7 @@ struct
     coord mov;
     int alive;
     char key;
+    clock_t deathTime;
 }typedef ghost; //Stores ONE ghost Information
 
 struct

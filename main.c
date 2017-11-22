@@ -75,6 +75,8 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
     int continueGame=1;//Game loop flag
     char key='j'; //Stroked key with a non useful, but known value
 
+    clock_t lastRevive = 0;
+
     system("cls");
     if(showLab(lab, &pacman, &fantasmas))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
     {
@@ -120,6 +122,13 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
             pacman.next.aumenta_diminui='0';
             return;  //Ends the game loop, if there is a collision between the ghost and the pacman
 
+        }
+
+        int RESPAWN = 8000;
+        // respawn the ghosts
+        if( (clock() - lastRevive) > RESPAWN){
+           reviveGhosts(&fantasmas);
+           lastRevive = clock();
         }
 
         if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas)) //Controls ghosts

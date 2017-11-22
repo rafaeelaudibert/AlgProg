@@ -8,6 +8,8 @@
 #include "messages.h"
 #include "auxiliars.h"
 
+#define TIMERESPAWN 3000
+
 //Variaveis globais
 
 coord dir[4]; //Possíveis posições -> UP, RIGHT, DOWN, LEFT
@@ -295,12 +297,28 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
             if(pac.pacDotActive)
             {
                 fantasmas->unid[i].alive = 0;
+                fantasmas->unid[i].deathTime = clock();
                 (*points)+=200;
 
                 textcolor(BRANCO);
                 gotoXY(36, 32);
                 printf("Points: %5d", *points);
             }
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/// revive o primeiro fantasma que encontrar, e retorna 1
+/// retorna 0 se todos os fantasmas estiverem vivos
+int reviveGhosts(ghosts *ghosts){
+    int i;
+    for(i=0; i<ghosts->quant; i++){
+        ghost g = ghosts->unid[i];
+        if( !g.alive && ( clock() - g.deathTime) > TIMERESPAWN ){
+            ghosts->unid[i].pos = ghosts->unid[i].origin;
+            ghosts->unid[i].alive = 1;
             return 1;
         }
     }

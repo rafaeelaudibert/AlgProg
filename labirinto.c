@@ -107,6 +107,7 @@ int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
                 break;
             }
         }
+        printf("\n");
     }
 
     //Seta a posição inicial do pacman

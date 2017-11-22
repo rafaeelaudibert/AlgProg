@@ -421,3 +421,97 @@
 	"messages.h"
 	"auxiliars.h"
 
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\auxiliars.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511384772 c:\users\andre\desktop\algprog-corre-omaster\main.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<math.h>
+
+1511383871 c:\users\andre\desktop\algprog-corre-omaster\structs.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\labirinto.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\pacman.h
+
+1511384652 c:\users\andre\desktop\algprog-corre-omaster\ghosts.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\objects.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\messages.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\auxiliars.h
+
+1511384703 source:c:\users\andre\desktop\algprog-corre-omaster\labirinto.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511384883 source:c:\users\andre\desktop\algprog-corre-omaster\main.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\messages.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\objects.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\pacman.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511385291 source:c:\users\andre\desktop\algprog-corre-omaster\ghosts.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
