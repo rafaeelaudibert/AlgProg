@@ -75,24 +75,19 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
         int chance = rand() % MAX_RANDOM;
 
         // se o fantasma precisa decidir se muda de dire��o
-        if(mudarDirecao(g, lab) == 1)
+        if(ladosLivres(g, lab) == 1)
+                {
+                    fantasmas->unid[i].mov.y = fantasmas->unid[i].mov.y * -1;
+                    fantasmas->unid[i].mov.x = fantasmas->unid[i].mov.x * -1;
+                }else if(mudarDirecao(g, lab) == 1)
         {
             // se o valor de perseguir pacman est� dentro da chance_persegui��o, persegue
             if(chance < abs(CHASE_CHANCE-10))
             {
 
-                // testa se chegou em um canto com apenas uma sa�da
-                if(ladosLivres(g, lab) == 1)
-                {
-                    fantasmas->unid[i].mov.y = fantasmas->unid[i].mov.y * -1;
-                    fantasmas->unid[i].mov.x = fantasmas->unid[i].mov.x * -1;
-                }
-                else
-                {
                     // escolhe uma dire��o diferente da que veio, aleatoriamente
                     // mistura aleatoriamente o vetor de poss�veis dire��es
                     shuffleDir();
-                }
             }
             else
             {

@@ -15,7 +15,6 @@ ghosts fantasmas; //Ghost informations
 char lab[30][100]; //Variable whose stores the maze
 clock_t pacStartTimer, ghostsTime; //Game timers
 
-
 ///Pac-man Main
 int main()
 {
@@ -338,11 +337,10 @@ TODO LIST:
   - COMPLETO!!!
 
 • PACMAN
-  - Juntar origin na struct original
+  - COMPLETO!!
 
 • FANTASMAS
   - Timer para ressuscitar
-  - Correção de entrada em caminhos sem saida
 
 • PASTILHAS
   - COMPLETO!!!
