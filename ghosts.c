@@ -110,7 +110,7 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
 void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
 {
     int i;
-    for(i=0; i<fantasmas->quant; i++)
+    for(i=0; i < fantasmas->quant; i++)
     {
         // reprinta a última posicao com o que continha
         coord posg;

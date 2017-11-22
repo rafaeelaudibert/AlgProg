@@ -26,7 +26,7 @@
 	<string.h>
 	<ctype.h>
 
-1511309523 source:c:\users\rafae\documents\github\algprog\main.c
+1511312832 source:c:\users\rafae\documents\github\algprog\main.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -361,7 +361,7 @@
 	"messages.h"
 	"auxiliars.h"
 
-1511309160 c:\users\rafae\documents\github\algprog\main.h
+1511312803 c:\users\rafae\documents\github\algprog\main.h
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -371,7 +371,7 @@
 	<string.h>
 	<math.h>
 
-1511301340 c:\users\rafae\documents\github\algprog\pacman.h
+1511311824 c:\users\rafae\documents\github\algprog\pacman.h
 
 1511229893 c:\users\rafae\documents\github\algprog\ghosts.h
 
@@ -381,7 +381,7 @@
 
 1511229893 c:\users\rafae\documents\github\algprog\auxiliars.h
 
-1511303710 source:c:\users\rafae\documents\github\algprog\ghosts.c
+1511311605 source:c:\users\rafae\documents\github\algprog\ghosts.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -411,7 +411,7 @@
 	"messages.h"
 	"auxiliars.h"
 
-1511303369 source:c:\users\rafae\documents\github\algprog\pacman.c
+1511311814 source:c:\users\rafae\documents\github\algprog\pacman.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"

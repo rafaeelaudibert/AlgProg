@@ -1,3 +1,5 @@
+///ESSE PROGRAMA SERVE PARA PODER RESETAR O ARQUIVO HIGHSCORES.TXT, REFERENTE AO JOGO PACMAN
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,7 +12,7 @@ struct
 } typedef DADOS;
 
 //Programa para resetar o arquivo Highscores.txt
-int main() 
+int main()
 {
 
     DADOS Highscore={"-----",0,"--/--/--","--:--:--"};
@@ -19,7 +21,7 @@ int main()
     int i;
 
     arq = fopen(url, "wt");
-    
+
     if (arq == NULL) // Se não conseguiu criar
     {
         printf("Problemas na CRIACAO do arquivo\n");
