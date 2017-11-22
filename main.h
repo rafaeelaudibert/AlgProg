@@ -58,6 +58,6 @@ enum colors
 #define MAX_RANDOM 10               //Random function will generate a number in the interval [0,MAX_RANDOM]
 #define MAX_GHOSTS 5                //Maximum number of ghosts in the lab
 #define RESPAWN 7000
-#define LAB "data/labirinto.txt"    //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos, labirintoProfessor.txt para testes de caminhos sem saida
+#define LAB "data/labirintoOneDot.txt"    //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos, labirintoProfessor.txt para testes de caminhos sem saida
 
 #endif // CONSTANTS_H_

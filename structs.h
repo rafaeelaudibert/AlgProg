@@ -38,6 +38,7 @@ struct
     int pacDotActive; //SuperPower
     directions next; //Next direction to walk
     directions last; //Last direction walked
+    int duracao;
 } typedef pacmanInfo; //Stores pacman information
 
 struct
@@ -45,6 +46,7 @@ struct
     int posicao;
     char nome[30];
     int pontos;
+    clock_t duracao;
     char dateStr[15]; //Date
     char timeStr[15]; //Time
 } typedef PLACAR; //Struct que guarda valores do HighScore

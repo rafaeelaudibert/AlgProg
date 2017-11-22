@@ -21,6 +21,7 @@ int main()
     //Setting variables
     int points=0; //Points counter
     int totalPacDots, eatenPacDots=0; //PacDots quantities
+    clock_t timerInicial;
 
     //Initial definitions
     system("mode 100, 37"); //Defines CMD's screen size
@@ -34,6 +35,7 @@ int main()
 
     startLab(lab, &totalPacDots, &pacman, &fantasmas); // Set the initial positions of the game
     startMenu(); //Start message
+    timerInicial=clock();
 
     //THE GAME
     while(pacman.lives>=0) //While pacman still has lives, keeps playing the game
@@ -50,6 +52,7 @@ int main()
     }
     //END OF THE GAME
 
+    pacman.duracao=clock()-timerInicial;
     if(pacman.lives==-1) //If the game ends with 0 lives, shows that the player lost
     {
         gameLost();
@@ -57,7 +60,7 @@ int main()
 
     if(pacman.lives!=-2)
     {
-        highscores(points); //Highscore Table
+        highscores(points, pacman.duracao); //Highscore Table
     }
 
 
