@@ -31,8 +31,9 @@ char detectKey(void);
 enum colors
 {
     PRETO=0,
-    CINZA=8,
-    AZUL, //8+1
+    CINZA_CLARO=7,
+    CINZA, //7+1
+    AZUL,
     VERDE,
     VERDE_AGUA,
     VERMELHO,
@@ -57,7 +58,17 @@ enum colors
 #define CHASE_CHANCE 06             //Chance of the Ghost to chase the Pacman (out of 10)
 #define MAX_RANDOM 10               //Random function will generate a number in the interval [0,MAX_RANDOM]
 #define MAX_GHOSTS 5                //Maximum number of ghosts in the lab
-#define RESPAWN 7000
-#define LAB "data/labirintoOneDot.txt"    //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos, labirintoProfessor.txt para testes de caminhos sem saida
+#define RESPAWN 7000                //After this much of clocks, the game tries to revive a Ghost, if there is one already dead
+#define LAB "data/labirinto.txt"    //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos, labirintoProfessor.txt para testes de caminhos sem saida
 
 #endif // CONSTANTS_H_
+
+#ifndef LAB_CHARS_H_
+#define LAB_CHARS_H_
+
+#define PAREDE 219                  //219 to print █, 35 to print #
+#define PAC 67                      //67 to print C
+#define PACDOT 250                  //250 to print ·, 111 to print o
+#define POWERPELLET 184             //184 to print ©, 169 to print ®, 42 to print *
+
+#endif // LAB_CHARS_H_

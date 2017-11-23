@@ -1,11 +1,8 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
-#include "labirinto.h"
-#include "pacman.h"
 #include "ghosts.h"
 #include "objects.h"
-#include "messages.h"
 #include "auxiliars.h"
 
 //Variaveis globais
@@ -117,12 +114,15 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
         if(lab[posg.y][posg.x] =='o')
         {
             textcolor(AMARELO);
+            printf("%c", PACDOT);
         }
-        else
+        else if(lab[posg.y][posg.x] =='*')
         {
             textcolor(VERMELHO);
+            printf("%c", POWERPELLET);
+        }else{
+            printf(" ");
         }
-        printf("%c", lab[posg.y][posg.x]);
 
         // atualiza a posicao
         if(fantasmas->unid[i].alive==1)

@@ -1,11 +1,9 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
-#include "labirinto.h"
-#include "pacman.h"
 #include "ghosts.h"
+#include "pacman.h"
 #include "objects.h"
-#include "messages.h"
 #include "auxiliars.h"
 
 //Pacman Controller
@@ -56,7 +54,7 @@ void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
     //Imprime a nova posição do pacman
     textcolor(AMARELO);
     gotoXY(pacman->pos.x,pacman->pos.y);
-    printf("C");
+    printf("%c", PAC);
 
     return;
 }

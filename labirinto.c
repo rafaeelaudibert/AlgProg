@@ -1,12 +1,10 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
-#include "labirinto.h"
-#include "pacman.h"
 #include "ghosts.h"
-#include "objects.h"
-#include "messages.h"
 #include "auxiliars.h"
+#include "labirinto.h"
+
 
 //Inicia e carrega todas as estruturas
 int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas)
@@ -91,23 +89,23 @@ int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
             switch(lab[i][j])
             {
             case '#':
-                textcolor(BRANCO);
-                printf("#");
+                textcolor(CINZA_CLARO);
+                printf("%c", PAREDE);
                 break;
             case 'o':
                 textcolor(AMARELO);
-                printf("o");
+                printf("%c", PACDOT);
                 break;
             case '*':
                 textcolor(VERMELHO);
-                printf("*");
+                printf("%c", POWERPELLET);
                 break;
             default:
                 printf(" ");
                 break;
             }
         }
-        printf("\n");
+        //printf("\n");
     }
 
     //Seta a posição inicial do pacman

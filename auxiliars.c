@@ -1,11 +1,6 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
-#include "labirinto.h"
-#include "pacman.h"
-#include "ghosts.h"
-#include "objects.h"
-#include "messages.h"
 #include "auxiliars.h"
 
 //Função que reconstroi parte do labirinto conforme parametros passados
@@ -20,19 +15,23 @@ void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final, cha
             gotoXY(count+1,contador+1);
             if(lab[contador][count]=='#')
             {
-                textcolor(BRANCO);
-                printf("%c", lab[contador][count]);
+                textcolor(CINZA_CLARO);
+                printf("%c", PAREDE);
             }
             else if(lab[contador][count]=='o')
             {
                 textcolor(AMARELO);
-                printf("%c", lab[contador][count]);
+                printf("%c", PACDOT);
+            }
+            else if(lab[contador][count]=='*')
+            {
+                textcolor(VERMELHO);
+                printf("%c", POWERPELLET);
             }
             else
             {
                 printf(" ");
             }
-
         }
     }
 
