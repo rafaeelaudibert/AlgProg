@@ -160,8 +160,8 @@ void highscores(int points, clock_t duracao)
         printf("%s", Highscores[i].nome);
         gotoXY(48,i+10);
         printf("%5d", Highscores[i].pontos);
-        gotoXY(64,i+10);
-        printf("%d",Highscores[i].duracao/CLOCKS_PER_SEC);
+        gotoXY(60,i+10);
+        printf("%5ld",Highscores[i].duracao/CLOCKS_PER_SEC);
         gotoXY(72,i+10);
         printf("%s", Highscores[i].dateStr);
         gotoXY(88,i+10);
@@ -189,7 +189,7 @@ void highscores(int points, clock_t duracao)
             fprintf(arq,"%d\n",Highscores[i].posicao);
             fprintf(arq,"%s",Highscores[i].nome);
             fprintf(arq,"%d\n",Highscores[i].pontos);
-            fprintf(arq,"%d\n",Highscores[i].duracao/CLOCKS_PER_SEC);
+            fprintf(arq,"%ld\n",Highscores[i].duracao/CLOCKS_PER_SEC);
             fprintf(arq,"%s",Highscores[i].dateStr);
             fprintf(arq,"%s",Highscores[i].timeStr);
 
