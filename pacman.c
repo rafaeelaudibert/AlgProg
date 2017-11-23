@@ -1,20 +1,22 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
+#include "labirinto.h"
 #include "pacman.h"
 #include "ghosts.h"
 #include "objects.h"
+#include "messages.h"
 #include "auxiliars.h"
 
 //Pacman Controller
-int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacTimer, int speed, char lab[HEIGHT][WIDTH], ghosts* fantasmas)
+int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghosts* fantasmas)
 {
     float correcaoVelocidade= pacman->last.coordinates=='y' ? 1.4 : 1; //Correção de distorção das letras
-    clock_t pacEndTimer=clock(); //Verifica tempo atual do sistema
+    clock_t pacEndTimer=clock(); //Seta para verificar tempo atual do sistema
 
-    if((pacEndTimer-(*pacTimer))>speed*correcaoVelocidade) //Ao ter passado tempo igual a velocidade, executa o loop
+    if((pacEndTimer-(*pacStartTimer))>NORMAL_SPEED*correcaoVelocidade) //Ao ter passado tempo igual a velocidade, executa o loop
     {
-        *pacTimer=pacEndTimer; //"Zera" o contador inicio
+        *pacStartTimer=pacEndTimer; //"Zera" o contador inicio
         movePacman(pacman, lab);
         checkPacDots(qtde_pacdots, points, lab, *pacman);
         checkPowerPellets(points, lab, pacman, fantasmas);
@@ -23,6 +25,8 @@ int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* p
         {
             return 0;
         }
+
+        gotoXY(1,1);
     }
 
     return 1;
@@ -125,8 +129,8 @@ void testColision(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
 
     else //Senão, confirma que ocorreu um movimento valido, e seta a ultima posição para ser igual a atual, para funcionar a proxima iteração
     {
-        pacman->last.coordinates = pacman->next.coordinates;
-        pacman->last.aumenta_diminui = pacman->next.aumenta_diminui;
+        pacman->last.coordinates=pacman->next.coordinates;
+        pacman->last.aumenta_diminui=pacman->next.aumenta_diminui;
     }
 
     return;

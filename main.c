@@ -9,33 +9,33 @@
 #include "auxiliars.h"
 
 
-//Variaveis Globais
+///Variaveis Globais
 pacmanInfo pacman; //Pacman informations
 ghosts fantasmas; //Ghost informations
 char lab[30][100]; //Variable whose stores the maze
-int speed; //Variable whose stores the actual speed of the game
-clock_t pacTimer, ghostsTimer; //Game timers
+clock_t pacStartTimer, ghostsTime; //Game timers
 
-
-//Pac-man Main
+///Pac-man Main
 int main()
 {
-    system("mode 100, 45"); //Defines CMD's screen size
-    system("title Pacman"); //Defines CMD's title
+    //Setting variables
+    int points=0; //Points counter
+    int totalPacDots, eatenPacDots=0; //PacDots quantities
+    clock_t timerInicial;
+
+    //Initial definitions
+    system("mode 100, 37"); //Defines CMD's screen size
+    system("title Pacman - AlgProg - 2017/2"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR' (main.h)
     srand(time(NULL)); // Feeds the rand seed with the system time
 
-    //Creating variables
-    int points=0; //Points counter
-    int totalPacDots, eatenPacDots=0; //PacDots quantities
-
-    //Setting some useful variables
+    //Setting some useful pacman data
     pacman.lives=3; //Sets the initial number of lives of the pacman
-    speed=NORMAL_SPEED; //Sets the initial speed of the game
     pacman.pacDotActive=0; //Sets pacman "not powered"
 
     startLab(lab, &totalPacDots, &pacman, &fantasmas); // Set the initial positions of the game
     startMenu(); //Start message
+    timerInicial=clock();
 
     //THE GAME
     while(pacman.lives>=0) //While pacman still has lives, keeps playing the game
@@ -50,7 +50,9 @@ int main()
             }
         }
     }
+    //END OF THE GAME
 
+    pacman.duracao=clock()-timerInicial;
     if(pacman.lives==-1) //If the game ends with 0 lives, shows that the player lost
     {
         gameLost();
@@ -58,7 +60,7 @@ int main()
 
     if(pacman.lives!=-2)
     {
-        highscores(points); //Highscore Table
+        highscores(points, pacman.duracao); //Highscore Table
     }
 
 
@@ -69,12 +71,13 @@ int main()
 
 
 
-//Start of the game
+///Start of the game
 void gameStart(int *points, int *eatenPacDots, int totalPacDots)
 {
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1;//Game loop flag
     char key='j'; //Stroked key with a non useful, but known value
+    clock_t lastReviveTry = 0; //Last time the ghosts tried to respawn
 
     system("cls");
     if(showLab(lab, &pacman, &fantasmas))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
@@ -92,8 +95,8 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
     printf("Points: %5d         Lives: %d", *points, pacman.lives);
 
     //Starts timers, and makes the game to start
-    pacTimer=clock();
-    ghostsTimer=clock();
+    pacStartTimer=clock();
+    ghostsTime=clock();
     while(continueGame)
     {
         if(showStartMessage>-1)
@@ -115,7 +118,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
         }
 
 
-        if(!pacmanControl(eatenPacDots, points, &pacman, &pacTimer, speed, lab, &fantasmas))  //Controls pacman
+        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas))  //Controls pacman
         {
             pacman.next.coordinates='s';
             pacman.next.aumenta_diminui='0';
@@ -123,7 +126,13 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
 
         }
 
-        if(key!='j' && !ghostsControl(points, pacman, &ghostsTimer, lab, &fantasmas)) //Controls ghosts
+        // respawn the ghosts
+        if( (clock() - lastReviveTry) > RESPAWN){
+           reviveGhosts(&fantasmas);
+           lastReviveTry = clock();
+        }
+
+        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas)) //Controls ghosts
         {
             pacman.next.coordinates='s';
             pacman.next.aumenta_diminui='0';
@@ -132,8 +141,8 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
 
         if((*eatenPacDots)==totalPacDots) //If all pacDots have been eaten, ends the game
         {
-            *points+=((pacman.lives+1)*150); //Gives 150 points, each lasting life
-            gameWin();
+            (*points)+=((pacman.lives+1)*150); //Gives 150 points, each lasting life
+            gameWin((*points));
             return;
         }
 
@@ -145,7 +154,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
     return;
 }
 
-//Pausa o jogo
+///Pausa o jogo
 void gamePause(void)
 {
     char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
@@ -168,7 +177,7 @@ void gamePause(void)
     {
         if(kbhit())
         {
-            if(GetAsyncKeyState(0x52))  //Ao clicar no R sairÃ¡ desse loop
+            if(GetAsyncKeyState(0x52))  //Ao clicar no R sairá desse loop
             {
                 key='r';
             }
@@ -188,7 +197,7 @@ void gamePause(void)
     return;
 }
 
-//Mensagem de tÃ©rmino de jogo, caso jogador simplesmente desista
+///Mensagem de término de jogo, caso jogador simplesmente desista
 void gameEnd(void)
 {
     textcolor(BRANCO);
@@ -206,8 +215,8 @@ void gameEnd(void)
 
 }
 
-//Mensagem de tÃ©rmino de jogo, caso player ganhe o jogo
-void gameWin(void)
+//Mensagem de término de jogo, caso player ganhe o jogo
+void gameWin(int points)
 {
     int contador=0;
     char ch;
@@ -218,7 +227,7 @@ void gameWin(void)
     system("cls");
     gotoXY(26, contador+6);
     Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //ImpressÃ£o do PacMan
+    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
     {
         if(contador>19)
         {
@@ -247,7 +256,7 @@ void gameWin(void)
     return;
 }
 
-//Mensagem de tÃ©rmino de jogo, caso player perca o jogo
+///Mensagem de término de jogo, caso player perca o jogo
 void gameLost(void)
 {
     int contador=0;
@@ -259,7 +268,7 @@ void gameLost(void)
     system("cls");
     gotoXY(26, contador+6);
     Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //ImpressÃ£o do PacMan
+    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
     {
         if(contador>19)
         {
@@ -288,7 +297,7 @@ void gameLost(void)
 }
 
 
-//Detecta a tecla pressionada
+///Detecta a tecla pressionada
 char detectKey(void)
 {
     char key;
@@ -317,11 +326,11 @@ char detectKey(void)
     {
         key = 'p';
     }
-    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //Tecla 'ESC' ou tecla 'EspaÃ§o'
+    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //Tecla 'ESC' ou tecla 'Espaço'
     {
         key = ' ';
     }
-    else //SenÃ£o retorna uma letra que nÃ£o significa nenhuma direÃ§Ã£o, assim serÃ¡ utilizada a ultima direÃ§Ã£o andada
+    else //Senão retorna uma letra que não significa nenhuma direção, assim será utilizada a ultima direção andada
     {
         key='m';
     }
@@ -334,33 +343,29 @@ char detectKey(void)
 /*
 TODO LIST:
 
-â€¢ CMD
+• CMD
   - COMPLETO!!!
 
-â€¢ PACMAN
-  - Juntar origin na struct original
+• PACMAN
+  - COMPLETO!!
 
-â€¢ FANTASMAS
+• FANTASMAS
   - Timer para ressuscitar
-  - CorreÃ§Ã£o de entrada em caminhos sem saida
-  - Fantasmas virarem 'w' quando estÃ£o sob efeito de fraqueza
-  - Juntas origin na struct original
-  - Verificar limites do mapa
 
-â€¢ PASTILHAS
+• PASTILHAS
   - COMPLETO!!!
 
-â€¢ SUPER-PASTILHAS
+• SUPER-PASTILHAS
   - COMPLETO!!!
 
-â€¢ EXTRAS:
-  Dijkshtra - Sistema de detecÃ§Ã£o de caminho dos fantasmas mais inteligente, utilizando grafos
+• EXTRAS:
+  Dijkshtra - Sistema de detecção de caminho dos fantasmas mais inteligente, utilizando grafos
   HIGHSCORES -> FEITO
   EFEITOS SONOROS -> Super-pastilhas -> OK
                      Morte PACMAN -> TODO
                      Vitoria PACMAN -> TODO
-  Adicionar Cheat no F9 (Desativa deteccÃ§Ã£o de colisÃ£o com as paredes - Paredes valem 10000 pontos)
-  Menu inicial, com seleÃ§Ãµes de mapas e/ou dificuldades + crÃ©ditos
+  Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
+  Menu inicial, com seleções de mapas e/ou dificuldades + créditos
 
   FIM DO ARQUIVO
 */

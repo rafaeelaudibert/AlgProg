@@ -26,15 +26,15 @@
 	<string.h>
 	<ctype.h>
 
-1510879190 source:c:\users\rafae\documents\github\algprog\main.c
-	<stdio.h>
-	<stdlib.h>
-	<windows.h>
-	<ctype.h>
-	<time.h>
-	<conio.h>
-	<string.h>
+1511393768 source:c:\users\rafae\documents\github\algprog\main.c
+	"main.h"
+	"structs.h"
 	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
 
 1508887848 c:\users\rafae\documents\github\algprog\data\testalabirinto.c
 	<stdio.h>
@@ -55,7 +55,7 @@
 
 1508888115 c:\users\rafae\documents\github\algprog\testalabirinto.h
 
-1510878822 c:\users\rafae\documents\github\algprog\labirinto.h
+1511303717 c:\users\rafae\documents\github\algprog\labirinto.h
 
 1509327136 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
 	<stdio.h>
@@ -87,28 +87,29 @@
 	<conio.h>
 	"../labirinto.h"
 
-1510879247 source:c:\users\rafae\documents\github\algprog\labirinto.c
-	<stdio.h>
-	<stdlib.h>
-	<windows.h>
-	<string.h>
-	<ctype.h>
-	<conio.h>
-	<math.h>
-	<time.h>
-	"structs.h"
-	"labirinto.h"
-
-1511213400 source:c:\users\usuario\documents\github\algprog\labirinto.c
+1511388026 source:c:\users\rafae\documents\github\algprog\labirinto.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
+	"pacman.h"
 	"ghosts.h"
+	"objects.h"
+	"messages.h"
 	"auxiliars.h"
 
-1511197910 c:\users\usuario\documents\github\algprog\labirinto.h
+1511142310 source:c:\users\usuario\documents\github\algprog\labirinto.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
 
-1511213110 source:c:\users\usuario\documents\github\algprog\main.c
+1511142159 c:\users\usuario\documents\github\algprog\labirinto.h
+
+1511142159 source:c:\users\usuario\documents\github\algprog\main.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -184,7 +185,7 @@
 	<string.h>
 	"labirinto.h"
 
-1510874724 c:\users\rafae\documents\github\algprog\structs.h
+1511391889 c:\users\rafae\documents\github\algprog\structs.h
 
 1510854250 source:\\homes\aftrodrigues\windows config\desktop\algprog-master\main.c
 	<stdio.h>
@@ -250,7 +251,7 @@
 	<string.h>
 	"labirinto.h"
 
-1511212856 c:\users\usuario\documents\github\algprog\main.h
+1511142412 c:\users\usuario\documents\github\algprog\main.h
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -288,46 +289,229 @@
 1511128519 source:c:\users\usuario\documents\github\algprogteste\main.c
 	"main.h"
 
-1511213400 c:\users\usuario\documents\github\algprog\structs.h
+1511132740 c:\users\usuario\documents\github\algprog\structs.h
 
-1511196554 c:\users\usuario\documents\github\algprog\messages.h
+1511137002 c:\users\usuario\documents\github\algprog\messages.h
 
-1511212077 source:c:\users\usuario\documents\github\algprog\messages.c
+1511137357 source:c:\users\usuario\documents\github\algprog\messages.c
 	"main.h"
 	"structs.h"
-	"messages.h"
-	"auxiliars.h"
-
-1511213110 c:\users\usuario\documents\github\algprog\pacman.h
-
-1511213582 source:c:\users\usuario\documents\github\algprog\pacman.c
-	"main.h"
-	"structs.h"
+	"labirinto.h"
 	"pacman.h"
 	"ghosts.h"
 	"objects.h"
+	"messages.h"
 	"auxiliars.h"
 
-1511213563 c:\users\usuario\documents\github\algprog\objects.h
+1511138920 c:\users\usuario\documents\github\algprog\pacman.h
 
-1511213573 source:c:\users\usuario\documents\github\algprog\objects.c
+1511138912 source:c:\users\usuario\documents\github\algprog\pacman.c
 	"main.h"
 	"structs.h"
-	"objects.h"
-	"auxiliars.h"
-
-1511196554 c:\users\usuario\documents\github\algprog\auxiliars.h
-
-1511211994 source:c:\users\usuario\documents\github\algprog\auxiliars.c
-	"main.h"
-	"structs.h"
-	"auxiliars.h"
-
-1511196554 c:\users\usuario\documents\github\algprog\ghosts.h
-
-1511213110 source:c:\users\usuario\documents\github\algprog\ghosts.c
-	"main.h"
-	"structs.h"
+	"labirinto.h"
+	"pacman.h"
 	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511136479 c:\users\usuario\documents\github\algprog\objects.h
+
+1511141469 source:c:\users\usuario\documents\github\algprog\objects.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511137269 c:\users\usuario\documents\github\algprog\auxiliars.h
+
+1511137357 source:c:\users\usuario\documents\github\algprog\auxiliars.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511138839 c:\users\usuario\documents\github\algprog\ghosts.h
+
+1511141602 source:c:\users\usuario\documents\github\algprog\ghosts.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511301484 source:c:\users\rafae\documents\github\algprog\auxiliars.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511391503 c:\users\rafae\documents\github\algprog\main.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<math.h>
+
+1511311824 c:\users\rafae\documents\github\algprog\pacman.h
+
+1511388671 c:\users\rafae\documents\github\algprog\ghosts.h
+
+1511303352 c:\users\rafae\documents\github\algprog\objects.h
+
+1511391889 c:\users\rafae\documents\github\algprog\messages.h
+
+1511229893 c:\users\rafae\documents\github\algprog\auxiliars.h
+
+1511389786 source:c:\users\rafae\documents\github\algprog\ghosts.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511394066 source:c:\users\rafae\documents\github\algprog\messages.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511303344 source:c:\users\rafae\documents\github\algprog\objects.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511311814 source:c:\users\rafae\documents\github\algprog\pacman.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\auxiliars.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511384772 c:\users\andre\desktop\algprog-corre-omaster\main.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<math.h>
+
+1511383871 c:\users\andre\desktop\algprog-corre-omaster\structs.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\labirinto.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\pacman.h
+
+1511384652 c:\users\andre\desktop\algprog-corre-omaster\ghosts.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\objects.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\messages.h
+
+1511353326 c:\users\andre\desktop\algprog-corre-omaster\auxiliars.h
+
+1511384703 source:c:\users\andre\desktop\algprog-corre-omaster\labirinto.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511384883 source:c:\users\andre\desktop\algprog-corre-omaster\main.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\messages.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\objects.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511353326 source:c:\users\andre\desktop\algprog-corre-omaster\pacman.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511385291 source:c:\users\andre\desktop\algprog-corre-omaster\ghosts.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
 	"auxiliars.h"
 

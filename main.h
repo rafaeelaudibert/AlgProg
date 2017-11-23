@@ -18,7 +18,7 @@
 void gameStart(int*, int*, int);
 void gamePause(void);
 void gameEnd(void);
-void gameWin(void);
+void gameWin(int);
 void gameLost(void);
 char detectKey(void);
 
@@ -52,11 +52,12 @@ enum colors
 #define HEIGHT 30                   //Bottom map limit (Size in the vertical)
 #define WIDTH 100                   //Right map limit (Size in the horizontal)
 #define CURSOR 0                    //0 - no cursor; 1 - box cursor; 2 - normal cursor
+#define SLOW_SPEED 150              //Ghost's speed while under effect of PowerPellets (30% less than the normal speed)
 #define NORMAL_SPEED 115            //Default game's speed
-#define SLOW_SPEED 157              //Ghost's speed while under effect of PowerPellets (30% less than the normal speed)
-#define CHASE_CHANCE 6              //Chance of the Ghost to chase the Pacman (out of 10)
+#define CHASE_CHANCE 06             //Chance of the Ghost to chase the Pacman (out of 10)
 #define MAX_RANDOM 10               //Random function will generate a number in the interval [0,MAX_RANDOM]
-#define MAX_GHOSTS 5                //Maximum number of ghosts in the maze
-#define LAB "data/labirinto.txt"    //labirinto.txt to normal game, labirintoOneDot.txt to fast tests, labirintoProfessor.txt to test no-end ways
+#define MAX_GHOSTS 5                //Maximum number of ghosts in the lab
+#define RESPAWN 7000
+#define LAB "data/labirintoOneDot.txt"    //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos, labirintoProfessor.txt para testes de caminhos sem saida
 
 #endif // CONSTANTS_H_

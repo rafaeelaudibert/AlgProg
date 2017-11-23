@@ -1,10 +1,14 @@
 //Headers includes
 #include "main.h"
 #include "structs.h"
+#include "labirinto.h"
+#include "pacman.h"
+#include "ghosts.h"
+#include "objects.h"
 #include "messages.h"
 #include "auxiliars.h"
 
-void highscores(int points)
+void highscores(int points, clock_t duracao)
 {
     PLACAR Highscores[11];
     JOGO_ATUAL dados= {{'a','\0'}, -50};
@@ -37,6 +41,9 @@ void highscores(int points)
 
             fgets(Linha, 10, arq);
             Highscores[i].pontos=atoi(Linha);
+
+            fgets(Linha, 10, arq);
+            Highscores[i].duracao=atoi(Linha)*CLOCKS_PER_SEC;
 
             fgets(Linha, 16, arq);
             strcpy(Highscores[i].dateStr,Linha);
@@ -76,23 +83,52 @@ void highscores(int points)
     //Mensagem inicial
     textcolor(BRANCO);
     gotoXY(1,8);
-    printf("        POSICAO   NOME                         PONTUACAO         DATA            HORA");
+    printf("      POSICAO   NOME                         PONTUACAO       TEMPO       DATA            HORA");
 
 
     //Manipulação dos dados, e printagem do Ranking
     for(i=0; i<10; i++)
     {
-        if(Highscores[i].pontos<dados.pontos && flag)
+        if(Highscores[i].pontos==dados.pontos && Highscores[i].duracao>duracao && flag)
         {
             for(j=9; j>=i; j--)
             {
                 Highscores[j].pontos=Highscores[j-1].pontos;
+                Highscores[j].duracao=Highscores[j-1].duracao;
                 strcpy(Highscores[j].nome, Highscores[j-1].nome);
                 strcpy(Highscores[j].dateStr, Highscores[j-1].dateStr);
                 strcpy(Highscores[j].timeStr, Highscores[j-1].timeStr);
             }
             Highscores[i].pontos=dados.pontos;
             strcpy(Highscores[i].nome, dados.nome);
+            Highscores[i].duracao=duracao;
+
+            _strdate(Highscores[i].dateStr); //Data em formato MMDDAA
+            strcpy(dateStrTemp, Highscores[i].dateStr); //Transformação para DDMMAA
+            Highscores[i].dateStr[0]=dateStrTemp[3];
+            Highscores[i].dateStr[1]=dateStrTemp[4];
+            Highscores[i].dateStr[3]=dateStrTemp[0];
+            Highscores[i].dateStr[4]=dateStrTemp[1];
+            Highscores[i].dateStr[8]='\n';
+            Highscores[i].dateStr[9]='\0';
+
+            _strtime(Highscores[i].timeStr); //Hora no formato HHMMSS
+            Highscores[i].timeStr[8]='\n';
+            Highscores[i].timeStr[9]='\0';
+            flag=0;
+            flag2=1;
+        }else if(Highscores[i].pontos<dados.pontos && flag){
+            for(j=9; j>=i; j--)
+            {
+                Highscores[j].pontos=Highscores[j-1].pontos;
+                Highscores[j].duracao=Highscores[j-1].duracao;
+                strcpy(Highscores[j].nome, Highscores[j-1].nome);
+                strcpy(Highscores[j].dateStr, Highscores[j-1].dateStr);
+                strcpy(Highscores[j].timeStr, Highscores[j-1].timeStr);
+            }
+            Highscores[i].pontos=dados.pontos;
+            strcpy(Highscores[i].nome, dados.nome);
+            Highscores[i].duracao=duracao;
 
             _strdate(Highscores[i].dateStr); //Data em formato MMDDAA
             strcpy(dateStrTemp, Highscores[i].dateStr); //Transformação para DDMMAA
@@ -118,15 +154,17 @@ void highscores(int points)
         {
             textcolor(BRANCO);
         }
-        gotoXY(12, i+10);
+        gotoXY(10, i+10);
         printf("%d",Highscores[i].posicao);
-        gotoXY(19,i+10);
+        gotoXY(17,i+10);
         printf("%s", Highscores[i].nome);
-        gotoXY(50,i+10);
+        gotoXY(48,i+10);
         printf("%5d", Highscores[i].pontos);
         gotoXY(64,i+10);
+        printf("%d",Highscores[i].duracao/CLOCKS_PER_SEC);
+        gotoXY(72,i+10);
         printf("%s", Highscores[i].dateStr);
-        gotoXY(80,i+10);
+        gotoXY(88,i+10);
         printf("%s", Highscores[i].timeStr);
         flag2=0;
     }
@@ -151,6 +189,7 @@ void highscores(int points)
             fprintf(arq,"%d\n",Highscores[i].posicao);
             fprintf(arq,"%s",Highscores[i].nome);
             fprintf(arq,"%d\n",Highscores[i].pontos);
+            fprintf(arq,"%d\n",Highscores[i].duracao/CLOCKS_PER_SEC);
             fprintf(arq,"%s",Highscores[i].dateStr);
             fprintf(arq,"%s",Highscores[i].timeStr);
 

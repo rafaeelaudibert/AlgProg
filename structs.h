@@ -11,10 +11,12 @@ struct
 {
     coord pos;
     coord origin;
-    coord mov; //Where the ghost is going -> UP, RIGHT, DOWN, LEFT
+    coord mov;
     char key;
     int alive;
-} typedef ghost; //Stores ONE ghost Information
+    int reviveTime;
+    clock_t deathTime;
+}typedef ghost; //Stores ONE ghost Information
 
 struct
 {
@@ -36,6 +38,7 @@ struct
     int pacDotActive; //SuperPower
     directions next; //Next direction to walk
     directions last; //Last direction walked
+    int duracao;
 } typedef pacmanInfo; //Stores pacman information
 
 struct
@@ -43,6 +46,7 @@ struct
     int posicao;
     char nome[30];
     int pontos;
+    clock_t duracao;
     char dateStr[15]; //Date
     char timeStr[15]; //Time
 } typedef PLACAR; //Struct que guarda valores do HighScore

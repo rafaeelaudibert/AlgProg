@@ -2,17 +2,20 @@
 #include "main.h"
 #include "structs.h"
 #include "labirinto.h"
+#include "pacman.h"
 #include "ghosts.h"
+#include "objects.h"
+#include "messages.h"
 #include "auxiliars.h"
 
 //Inicia e carrega todas as estruturas
 int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas)
 {
     int i, j; //Contador do laço da matriz
-    int q_fantasmas=0;
 
-    fantasmas->quant=0;
+    //Inicialização de algumas variáveis
     *qtdePastilhas=0;
+    fantasmas->quant=0;
 
     // standard setup of the array dir[];
     setupDir();
@@ -33,32 +36,31 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
             {
             case 'c':
             case 'C':
-                //Origem
+                //Origin do pacman
                 pacman->origin.x = j+1;
                 pacman->origin.y = i+1;
 
-                //Atual
+                //Atual do pacman
                 pacman->pos.x = j+1;
-                pacman->pos.y=i+1;
+                pacman->pos.y = i+1;
 
-                //Matriz
                 lab[i][j] = ' ';
                 break;
             case 'w':
             case 'W': // Fantasmas
-                //Origem
-                fantasmas->unid[q_fantasmas].alive = 1; // seta a vida do ghost
-                fantasmas->unid[q_fantasmas].origin.x = j;
-                fantasmas->unid[q_fantasmas].origin.y = i;
-                fantasmas->unid[q_fantasmas].key='W';
+                if(fantasmas->quant < MAX_GHOSTS)
+                {
+                    //Origin dos fantasmas
+                    fantasmas->unid[fantasmas->quant].origin.x=j;
+                    fantasmas->unid[fantasmas->quant].origin.y=i;
 
-                //Atual
-                fantasmas->unid[q_fantasmas].pos.x = j;
-                fantasmas->unid[q_fantasmas].pos.y = i;
-
-                //Matriz e Contadores
-                fantasmas->quant++;
-                q_fantasmas++;
+                    //Posição atual dos fantasmas
+                    fantasmas->unid[fantasmas->quant].pos.x = j;
+                    fantasmas->unid[fantasmas->quant].pos.y = i;
+                    fantasmas->unid[fantasmas->quant].alive = 1; // seta a vida do ghost
+                    fantasmas->unid[fantasmas->quant].key = 'W';
+                    (fantasmas->quant)++;
+                }
                 lab[i][j] = ' ';
                 break;
             case 'o':
@@ -68,7 +70,8 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
         }
     }
 
-    return 0;
+   return 0;
+
 }
 
 
@@ -104,6 +107,7 @@ int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
                 break;
             }
         }
+        printf("\n");
     }
 
     //Seta a posição inicial do pacman

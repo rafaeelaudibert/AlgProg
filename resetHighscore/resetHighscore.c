@@ -1,25 +1,29 @@
+///ESSE PROGRAMA SERVE PARA PODER RESETAR O ARQUIVO HIGHSCORES.TXT, REFERENTE AO JOGO PACMAN
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct
 {
     char nome[30];
     int pontos;
+    clock_t duracao;
     char date[15];
     char time[15];
 } typedef DADOS;
 
 //Programa para resetar o arquivo Highscores.txt
-int main() 
+int main()
 {
 
-    DADOS Highscore={"-----",0,"--/--/--","--:--:--"};
+    DADOS Highscore={"-----",0,0,"--/--/--","--:--:--"};
     FILE *arq;
     char url[25]= {"../data/Highscores.txt"};
     int i;
 
     arq = fopen(url, "wt");
-    
+
     if (arq == NULL) // Se não conseguiu criar
     {
         printf("Problemas na CRIACAO do arquivo\n");
@@ -34,6 +38,7 @@ int main()
             fprintf(arq,"%d\n",i+1); //Colocação, começando do 1
             fprintf(arq,"%s\n",Highscore.nome);
             fprintf(arq,"%d\n",Highscore.pontos);
+            fprintf(arq,"%d\n",Highscore.duracao);
             fprintf(arq,"%s\n",Highscore.date);
             fprintf(arq,"%s\n",Highscore.time);
 
