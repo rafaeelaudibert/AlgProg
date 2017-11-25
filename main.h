@@ -53,6 +53,7 @@ enum colors
 #define HEIGHT 30                   //Bottom map limit (Size in the vertical)
 #define WIDTH 100                   //Right map limit (Size in the horizontal)
 #define CURSOR 0                    //0 - no cursor; 1 - box cursor; 2 - normal cursor
+#define QT_MAP 3                    //Quantity of available maps
 #define SLOW_SPEED 150              //Ghost's speed while under effect of PowerPellets (30% less than the normal speed)
 #define NORMAL_SPEED 115            //Default game's speed
 #define CHASE_CHANCE 06             //Chance of the Ghost to chase the Pacman (out of 10)

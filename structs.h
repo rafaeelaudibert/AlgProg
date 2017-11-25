@@ -38,7 +38,6 @@ struct
     int pacDotActive; //SuperPower
     directions next; //Next direction to walk
     directions last; //Last direction walked
-    int duracao;
 } typedef pacmanInfo; //Stores pacman information
 
 struct

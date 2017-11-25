@@ -7,6 +7,7 @@
 #include "objects.h"
 #include "messages.h"
 #include "auxiliars.h"
+#include "menu.h"
 
 
 ///Variaveis Globais
@@ -30,12 +31,27 @@ int main()
     srand(time(NULL)); // Feeds the rand seed with the system time
 
     //Setting some useful pacman data
-    pacman.lives=3; //Sets the initial number of lives of the pacman
+    pacman.lives=menu(); //Sets pacman lives and load the main menu
     pacman.pacDotActive=0; //Sets pacman "not powered"
 
-    startLab(lab, &totalPacDots, &pacman, &fantasmas); // Set the initial positions of the game
-    startMenu(); //Start message
-    timerInicial=clock();
+    if(pacman.lives!=-2) //If the options in menu wasn't to exit the game
+    {
+        system("cls"); //Cleans the screen
+        startLab(lab, &totalPacDots, &pacman, &fantasmas); // Set the initial positions of the game
+        startMenu(); //Start message
+        timerInicial=clock();
+    }
+    else //Shows the closing game message
+    {
+        system("cls"); //Cleans the screen
+        textcolor(BRANCO);
+        gotoXY(40,18);
+        printf("The game will be closed!");
+        gotoXY(46,19);
+        printf("_____________");
+        gotoXY(46,20);
+        printf("Press any key");
+    }
 
     //THE GAME
     while(pacman.lives>=0) //While pacman still has lives, keeps playing the game
@@ -52,7 +68,6 @@ int main()
     }
     //END OF THE GAME
 
-    pacman.duracao=clock()-timerInicial;
     if(pacman.lives==-1) //If the game ends with 0 lives, shows that the player lost
     {
         gameLost();
@@ -60,7 +75,7 @@ int main()
 
     if(pacman.lives!=-2)
     {
-        highscores(points, pacman.duracao); //Highscore Table
+        highscores(points, (clock()-timerInicial)); //Highscore Table
     }
 
 
@@ -127,9 +142,10 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
         }
 
         // respawn the ghosts
-        if( (clock() - lastReviveTry) > RESPAWN){
-           reviveGhosts(&fantasmas);
-           lastReviveTry = clock();
+        if( (clock() - lastReviveTry) > RESPAWN)
+        {
+            reviveGhosts(&fantasmas);
+            lastReviveTry = clock();
         }
 
         if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas)) //Controls ghosts
@@ -343,29 +359,29 @@ char detectKey(void)
 /*
 TODO LIST:
 
-• CMD
-  - COMPLETO!!!
-
-• PACMAN
-  - COMPLETO!!
-
-• FANTASMAS
-  - Timer para ressuscitar
-
-• PASTILHAS
-  - COMPLETO!!!
-
-• SUPER-PASTILHAS
-  - COMPLETO!!!
-
 • EXTRAS:
-  Dijkshtra - Sistema de detecção de caminho dos fantasmas mais inteligente, utilizando grafos
   HIGHSCORES -> FEITO
-  EFEITOS SONOROS -> Super-pastilhas -> OK
-                     Morte PACMAN -> TODO
+  Adicionar Cheat no F10 (Desativa deteccção de colisão com as paredes - Paredes valem 5000 pontos)
+  EFEITOS SONOROS -> Morte PACMAN -> TODO
                      Vitoria PACMAN -> TODO
-  Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
-  Menu inicial, com seleções de mapas e/ou dificuldades + créditos
+  Menu Inicial -> WIP
+            -> JOGAR -> COMPLETO!!
+            -> OPÇÕES -> TODO
+            -> CRÉDITOS -> TODO²
+            -> EXIT -> COMPLETO!!
 
-  FIM DO ARQUIVO
+*/
+
+/*
+TODO² LIST
+
+  OPÇÕES DO MENU OPÇÕES
+
+    • Dificuldade -> 0 até 10
+    • Velocidade -> 20 até 150
+    • Seletor de mapa -> 3 mapas por enquanto
+    • Tecla pra cima
+    • Tecla pra baixo
+    • Tecla pra esquerda
+    • Tecla pra direita
 */
