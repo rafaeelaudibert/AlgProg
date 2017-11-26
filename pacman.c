@@ -7,17 +7,17 @@
 #include "auxiliars.h"
 
 //Pacman Controller
-int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghosts* fantasmas)
+int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghosts* fantasmas, int speed)
 {
     float correcaoVelocidade= pacman->last.coordinates=='y' ? 1.4 : 1; //Correção de distorção das letras
     clock_t pacEndTimer=clock(); //Seta para verificar tempo atual do sistema
 
-    if((pacEndTimer-(*pacStartTimer))>NORMAL_SPEED*correcaoVelocidade) //Ao ter passado tempo igual a velocidade, executa o loop
+    if((pacEndTimer-(*pacStartTimer))>speed*correcaoVelocidade) //Ao ter passado tempo igual a velocidade, executa o loop
     {
         *pacStartTimer=pacEndTimer; //"Zera" o contador inicio
         movePacman(pacman, lab);
         checkPacDots(qtde_pacdots, points, lab, *pacman);
-        checkPowerPellets(points, lab, pacman, fantasmas);
+        checkPowerPellets(points, lab, pacman, fantasmas, speed);
 
         if(checkGhostCollision((*pacman), points, fantasmas) && !pacman->pacDotActive)
         {

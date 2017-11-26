@@ -7,7 +7,7 @@
 
 
 //Inicia e carrega todas as estruturas
-int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas)
+int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas, int labOption)
 {
     int i, j; //Contador do laço da matriz
 
@@ -19,7 +19,7 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
     setupDir();
 
     //Chamada das outras duas funções responsáveis pelo labirinto
-    if(readLab(lab))
+    if(readLab(lab, labOption))
     {
         return 1;
     }
@@ -123,14 +123,27 @@ int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
 }
 
 //Função que lê o arquivo labirinto.txt e configura a matriz do labirinto
-int readLab(char lab[HEIGHT][WIDTH])
+int readLab(char lab[HEIGHT][WIDTH], int labOption)
 {
     char str[101];
     int i=0, j=0;
     FILE *arq;
+    char url[30];
+
+    switch(labOption){
+case 1:
+    strcpy(url, "data/labirinto.txt");
+    break;
+case 2:
+    strcpy(url, "data/labirintoOneDot.txt");
+    break;
+case 3:
+    strcpy(url, "data/labirintoProfessor.txt");
+    break;
+    }
 
     //Ponteiro para leitura do arquivo no 'endereco'
-    arq = fopen(LAB, "r");
+    arq = fopen(url, "r");
 
     //Se não conseguiu ler o arquivo, sai e retorna 1
     if(arq == NULL)

@@ -3,6 +3,72 @@
 #include "structs.h"
 #include "auxiliars.h"
 
+//Reads the file with the settings of the game
+void readSettings(int *difficulty, int *speed, int *map, char *up, char *down, char *right, char *left, char *stop)
+{
+
+    FILE* arq;
+
+    arq=fopen("data/settings.bin", "rb");
+
+    if(!arq)
+    {
+        *difficulty=6;
+        *speed=115;
+        *map=1;
+        *up='W';
+        *down='X';
+        *right='D';
+        *left='A';
+        *stop='S';
+    }
+    else
+    {
+        fread(difficulty, sizeof(int), 1, arq);
+        fread(speed, sizeof(int), 1, arq);
+        fread(map, sizeof(int), 1, arq);
+        fread(up, sizeof(char), 1, arq);
+        fread(down, sizeof(char), 1, arq);
+        fread(right, sizeof(char), 1, arq);
+        fread(left, sizeof(char), 1, arq);
+        fread(stop, sizeof(char), 1, arq);
+    }
+
+    fclose(arq);
+
+    return;
+
+}
+
+
+//Writes the settings of the game in the file, after they have been changed
+void writeSettings(int difficulty, int speed, int map, char up, char down, char right, char left, char stop)
+{
+
+    FILE* arq;
+
+    arq=fopen("data/settings.bin", "wb");
+    if(!arq)
+    {
+        gotoXY(18,33);
+        printf("It wasn't possible to save the configurations to the next games!");
+    }
+    else
+    {
+        fwrite(&difficulty, sizeof(int), 1, arq);
+        fwrite(&speed, sizeof(int), 1, arq);
+        fwrite(&map, sizeof(int), 1, arq);
+        fwrite(&up, sizeof(char), 1, arq);
+        fwrite(&down, sizeof(char), 1, arq);
+        fwrite(&right, sizeof(char), 1, arq);
+        fwrite(&left, sizeof(char), 1, arq);
+        fwrite(&stop, sizeof(char), 1, arq);
+    }
+    fclose(arq);
+    return;
+}
+
+
 //Função que reconstroi parte do labirinto conforme parametros passados
 void reconstructMaze(int y_inicial, int y_final, int x_inicial, int x_final, char lab[HEIGHT][WIDTH], pacmanInfo pacman)
 {
@@ -79,4 +145,5 @@ void cursorType(int cursor)
     }
     SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 }
+
 

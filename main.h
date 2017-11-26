@@ -15,12 +15,12 @@
 #ifndef MAIN_FUNCTIONS_H_
 #define MAIN_FUNCTIONS_H_
 
-void gameStart(int*, int*, int);
+void gameStart(int*, int*, int, int, int, int, char, char, char, char, char);
 void gamePause(void);
 void gameEnd(void);
 void gameWin(int);
 void gameLost(void);
-char detectKey(void);
+char detectKey(char, char, char, char, char);
 
 #endif // MAIN_FUNCTIONS_H_
 
@@ -54,13 +54,9 @@ enum colors
 #define WIDTH 100                   //Right map limit (Size in the horizontal)
 #define CURSOR 0                    //0 - no cursor; 1 - box cursor; 2 - normal cursor
 #define QT_MAP 3                    //Quantity of available maps
-#define SLOW_SPEED 150              //Ghost's speed while under effect of PowerPellets (30% less than the normal speed)
-#define NORMAL_SPEED 115            //Default game's speed
-#define CHASE_CHANCE 06             //Chance of the Ghost to chase the Pacman (out of 10)
 #define MAX_RANDOM 10               //Random function will generate a number in the interval [0,MAX_RANDOM]
 #define MAX_GHOSTS 5                //Maximum number of ghosts in the lab
 #define RESPAWN 7000                //After this much of clocks, the game tries to revive a Ghost, if there is one already dead
-#define LAB "data/labirinto.txt"    //labirinto.txt para jogo normal, labirintoOneDot.txt para testes rapidos, labirintoProfessor.txt para testes de caminhos sem saida
 
 #endif // CONSTANTS_H_
 

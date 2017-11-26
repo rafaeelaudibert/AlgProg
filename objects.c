@@ -22,7 +22,7 @@ void checkPacDots(int* pacdots, int* points, char lab[HEIGHT][WIDTH], pacmanInfo
 }
 
 //Checagem das super-pastilhas
-void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
+void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas, int speed)
 {
 
     int i;
@@ -32,7 +32,7 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman,
         lab[pacman->pos.y-1][pacman->pos.x-1]=' ';
         *points+=50;
         Beep(1000, 50);
-        pacman->pacDotActive=5000/NORMAL_SPEED; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
+        pacman->pacDotActive=5000/speed; //Fica mais rapido pela quantidade de clocks possiveis em 5 segundos
 
         for(i=0; i<fantasmas->quant; i++){
             fantasmas->unid[i].key='w';
@@ -48,7 +48,7 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman,
         pacman->pacDotActive--;
         textcolor(BRANCO);
         gotoXY(32,33);
-        printf("Remaining invulnerability time: %4dms", pacman->pacDotActive*NORMAL_SPEED);
+        printf("Remaining invulnerability time: %4dms", pacman->pacDotActive*speed);
     }
     else
     {

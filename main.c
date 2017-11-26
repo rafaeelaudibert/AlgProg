@@ -9,7 +9,6 @@
 #include "auxiliars.h"
 #include "menu.h"
 
-
 ///Variaveis Globais
 pacmanInfo pacman; //Pacman informations
 ghosts fantasmas; //Ghost informations
@@ -22,22 +21,26 @@ int main()
     //Setting variables
     int points=0; //Points counter
     int totalPacDots, eatenPacDots=0; //PacDots quantities
-    clock_t timerInicial;
+    clock_t timerInicial; //Start timer
+
+    int difficulty, speed, map;  //Controllers of the game
+    char up, down, right, left, stop; //Shortcuts of movement
 
     //Initial definitions
-    system("mode 100, 37"); //Defines CMD's screen size
+    system("mode 100, 38"); //Defines CMD's screen size
     system("title Pacman - AlgProg - 2017/2"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR' (main.h)
     srand(time(NULL)); // Feeds the rand seed with the system time
 
-    //Setting some useful pacman data
-    pacman.lives=menu(); //Sets pacman lives and load the main menu
+    //Setting some useful game data
+    readSettings(&difficulty, &speed, &map, &up, &down, &right, &left, &stop); //Reads the main variables of the game from a file
+    pacman.lives=menu(&difficulty, &speed, &map, &up, &down, &right, &left, &stop); //Sets pacman lives and load the main menu
     pacman.pacDotActive=0; //Sets pacman "not powered"
 
     if(pacman.lives!=-2) //If the options in menu wasn't to exit the game
     {
         system("cls"); //Cleans the screen
-        startLab(lab, &totalPacDots, &pacman, &fantasmas); // Set the initial positions of the game
+        startLab(lab, &totalPacDots, &pacman, &fantasmas, map); // Set the initial positions of the game
         startMenu(); //Start message
         timerInicial=clock();
     }
@@ -59,7 +62,7 @@ int main()
         pacman.lives--; //When starts the game, takes one live out of pacman
         if(pacman.lives>=0)
         {
-            gameStart(&points, &eatenPacDots, totalPacDots); //The Game 'per se'
+            gameStart(&points, &eatenPacDots, totalPacDots, difficulty, speed, map, up, down, right, left, stop); //The Game 'per se'
             while(kbhit())
             {
                 getch();
@@ -87,7 +90,7 @@ int main()
 
 
 ///Start of the game
-void gameStart(int *points, int *eatenPacDots, int totalPacDots)
+void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty, int speed, int map, char up, char down, char right, char left, char stop)
 {
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1;//Game loop flag
@@ -128,12 +131,12 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
                 showStartMessage--;
             }
 
-            key=tolower(detectKey()); //Detects pressed key
+            key=tolower(detectKey(up, down, right, left, stop)); //Detects pressed key
             setDirection(key, &continueGame, &pacman); //Decodifies pressed key
         }
 
 
-        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas))  //Controls pacman
+        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas, speed))  //Controls pacman
         {
             pacman.next.coordinates='s';
             pacman.next.aumenta_diminui='0';
@@ -144,11 +147,11 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
         // respawn the ghosts
         if( (clock() - lastReviveTry) > RESPAWN)
         {
-            reviveGhosts(&fantasmas);
+            reviveGhosts(&fantasmas, speed);
             lastReviveTry = clock();
         }
 
-        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas)) //Controls ghosts
+        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas, speed, difficulty)) //Controls ghosts
         {
             pacman.next.coordinates='s';
             pacman.next.aumenta_diminui='0';
@@ -314,31 +317,31 @@ void gameLost(void)
 
 
 ///Detecta a tecla pressionada
-char detectKey(void)
+char detectKey(char up, char down, char right, char left, char stop)
 {
     char key;
 
-    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(0x57)) //Tecla para cima ou tecla 'W'
+    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(up)) //Tecla para cima
     {
         key = 'w';
     }
-    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(0x58)) //Tecla para baixo ou tecla 'X'
+    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(down)) //Tecla para baixo
     {
         key = 'x';
     }
-    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(0x41)) //Tecla para esquerda ou tecla 'A'
+    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(left)) //Tecla para esquerda
     {
         key = 'a';
     }
-    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(0x44)) //Tecla para direita ou tecla 'D'
+    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(right)) //Tecla para direita
     {
         key = 'd';
     }
-    else if (GetAsyncKeyState(0x53)) //Tecla 'S'
+    else if (GetAsyncKeyState(stop)) //Tecla de parar
     {
         key = 's';
     }
-    else if (GetAsyncKeyState(0x50)) //Tecla 'P'
+    else if (GetAsyncKeyState(0x50)) //Tecla 'P' -> Pause
     {
         key = 'p';
     }

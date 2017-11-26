@@ -10,17 +10,17 @@
 coord dir[4]; //Possíveis posições -> UP, RIGHT, DOWN, LEFT
 
 //Ghost Controller
-int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas)
+int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas, int speed, int chase_chance)
 {
 
     float correcaoVelocidade = pacman.last.coordinates=='y' ? 1.4 : 1;
     clock_t actualTime=clock();
 
-    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? SLOW_SPEED*correcaoVelocidade : NORMAL_SPEED*correcaoVelocidade))
+    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? speed*1.3*correcaoVelocidade : speed*correcaoVelocidade))
     {
         *ghostsTimer = actualTime;
-        moveGhost(pacman, lab, fantasmas); // update of the moviment of the ghosts
-        showGhosts(pacman, lab, fantasmas); // update and show the position of the ghosts
+        moveGhost(pacman, lab, fantasmas, chase_chance); // update of the moviment of the ghosts
+        showGhosts(pacman, lab, fantasmas, speed); // update and show the position of the ghosts
 
         if(checkGhostCollision(pacman, points, fantasmas) && !pacman.pacDotActive)
         {
@@ -58,7 +58,7 @@ void shuffleDir()
 }
 
 // algoritmo pra movimentar cada um dos fantasmas
-void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
+void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_chance)
 {
 
     int i, q = fantasmas->quant; //fantasmas.quant;
@@ -80,7 +80,7 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
         else if(mudarDirecao(g, lab) == 1)
         {
             // se o valor de perseguir pacman est� dentro da chance_persegui��o, persegue
-            if(chance < abs(CHASE_CHANCE-10))
+            if(chance < abs(chase_chance-10))
             {
 
                 // escolhe uma dire��o diferente da que veio, aleatoriamente
@@ -100,7 +100,7 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
 }
 
 // mostra os fantasma na tela
-void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
+void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
 {
     int i;
     for(i=0; i < fantasmas->quant; i++)
@@ -136,7 +136,7 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
         if(fantasmas->unid[i].alive==1)
         {
             // print na tela a nova posicao
-            if(pac.pacDotActive>(2000/NORMAL_SPEED))
+            if(pac.pacDotActive>(2000/speed))
             {
                 textcolor(VERDE_AGUA);
             }
@@ -333,7 +333,7 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
 }
 
 /// Revive o primeiro fantasma que encontrar morto
-void reviveGhosts(ghosts *ghosts)
+void reviveGhosts(ghosts *ghosts, int speed)
 {
 
     int i;
@@ -343,7 +343,7 @@ void reviveGhosts(ghosts *ghosts)
         if( !ghosts->unid[i].alive && (( clock() - ghosts->unid[i].deathTime) > RESPAWN) )
         {
             ghosts->unid[i].pos = ghosts->unid[i].origin;
-            ghosts->unid[i].reviveTime=4000/NORMAL_SPEED; //4 seconds blinking
+            ghosts->unid[i].reviveTime=4000/speed; //4 seconds blinking
             ghosts->unid[i].alive = 2;
             return;
         }
