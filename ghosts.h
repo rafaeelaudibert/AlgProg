@@ -1,17 +1,16 @@
 #ifndef GHOSTS_FUNCTIONS_H
 #define GHOSTS_FUNCTIONS_H
 
-int ghostsControl(int*, pacmanInfo, clock_t*, char[30][100], ghosts*); // controla o tempo de movimento dos fantasmas
-void setupDir(); //Seta as direcoes para o fantasma
-void shuffleDir(); //Random Sort of the dir[]
-void moveGhost(pacmanInfo, char[30][100], ghosts*); //Movimenta os fantasmas
-void showGhosts(pacmanInfo, char[30][100], ghosts*); // show the labirinto
-void escolheDirecao(pacmanInfo, ghost*, char[30][100]); //Direção válida aleatória do fantasma
-int mudarDirecao(ghost, char[30][100]); //Muda a direção do fantasma
-void perseguePacman(pacmanInfo, ghost, char[30][100]); //Altera o array dir, colocando as direções em ordem crescente de distância do ghost
-int ladosLivres(ghost, char[30][100]); //Retorna a quantidade de lados que o pacman tem disponivel para andar
-int testaLimites(ghost*); // Testa se o fantasma está fora dos limites do mapa
-int checkGhostCollision(pacmanInfo, int*, ghosts*); //Interações de colisão entre o pacman e os ghosts
-void reviveGhosts(ghosts *ghosts); // revive um fantasma dentre todos da struct ghosts
+int ghostsControl(int*, pacmanInfo, clock_t*, char[30][100], ghosts*, int, int); ///Controls ghost movement
+void shuffleDir(); ///Random Sort of the dir[]
+void moveGhost(pacmanInfo, char[30][100], ghosts*, int); ///Move the ghosts
+void showGhosts(pacmanInfo, char[30][100], ghosts*, int); ///Print the ghosts
+void chooseDirection(pacmanInfo, ghost*, char[30][100]); ///Ghost random valid direction
+int changeDirection(ghost, char[30][100]); ///Changes ghost direction
+void chasePacman(pacmanInfo, ghost, char[30][100]); ///Sorts dir[] array, according to the cartesian distance from the ghost to the pacman
+int freeSides(ghost, char[30][100]); ///Sums the sides with no walls, around the ghost
+int testGhostLimits(ghost*); ///Check if the ghost is outside of the map limits
+int checkGhostCollision(pacmanInfo, int*, ghosts*); ///Collision between ghosts and the pacman
+void reviveGhosts(ghosts *ghosts, int); ///Revives a ghost
 
 #endif // GHOSTS_FUNCTIONS_H

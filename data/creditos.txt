@@ -1,9 +1,0 @@
-###########################################
-PACMAN, by:
-RAFAEL BALDASSO AUDIBERT
-ANDREI FILIPE TEIXEIRA RODRIGUES
-Trabalho final de Algoritmos e Programação
-Trabalho inteiramente em Linguagem C
-Ciência da Computação
-2017/2
-###########################################

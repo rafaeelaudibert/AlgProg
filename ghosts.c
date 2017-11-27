@@ -7,22 +7,23 @@
 
 //Variaveis globais
 
-coord dir[4]; //Possíveis posições -> UP, RIGHT, DOWN, LEFT
+ //Available directions -> UP, RIGHT, DOWN, LEFT
+coord dir[4]={{0,-1},{1,0},{0,1},{-1,0}};
 
-//Ghost Controller
-int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas)
+///Ghost Controller
+int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas, int speed, int chase_chance)
 {
 
-    float correcaoVelocidade = pacman.last.coordinates=='y' ? 1.4 : 1;
+    float speedCorrection = pacman.last.coordinates=='y' ? 1.4 : 1; //Corrects the speed of the game, as the pacman's movement axis changes
     clock_t actualTime=clock();
 
-    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? SLOW_SPEED*correcaoVelocidade : NORMAL_SPEED*correcaoVelocidade))
+    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? speed*1.3*speedCorrection : speed*speedCorrection))
     {
         *ghostsTimer = actualTime;
-        moveGhost(pacman, lab, fantasmas); // update of the moviment of the ghosts
-        showGhosts(pacman, lab, fantasmas); // update and show the position of the ghosts
+        moveGhost(pacman, lab, fantasmas, chase_chance); // Updates the movement of the ghosts
+        showGhosts(pacman, lab, fantasmas, speed); // Updates and shows the position of the ghosts
 
-        if(checkGhostCollision(pacman, points, fantasmas) && !pacman.pacDotActive)
+        if(checkGhostCollision(pacman, points, fantasmas) && !pacman.pacDotActive) //If there is collision between a ghost and the pacman
         {
             return 0;
         }
@@ -30,23 +31,10 @@ int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab
     return 1;
 }
 
-// inicializa os elementos do array global dir
-void setupDir()
-{
-    dir[0].x = 0; // UP
-    dir[0].y = -1;
-    dir[1].x = 1; // RIGHT
-    dir[1].y = 0;
-    dir[2].x = 0; // DOWN
-    dir[2].y = 1;
-    dir[3].x = -1; // LEFT
-    dir[3].y = 0;
-}
-
-// embaralha o array das direções ( dir ), aleatoriamente
+///Unsorts the array of directions, randomically
 void shuffleDir()
 {
-    coord t; // auxiliar
+    coord t; //Auxiliar
     int i, j=0;
     for(i=0; i<4; i++)
     {
@@ -57,60 +45,59 @@ void shuffleDir()
     }
 }
 
-// algoritmo pra movimentar cada um dos fantasmas
-void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
+///Moves each one of the ghosts
+void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_chance)
 {
 
     int i, q = fantasmas->quant; //fantasmas.quant;
-    // passa por cada um dos fantasmas
+    // Iterates on each ghost
     for(i=0; i<q; i++)
     {
-        // fantasma do teste atual
+        // Actual test ghost
         ghost g = fantasmas->unid[i];
 
-        // chance do fantasma ir atr�s do pacman
+        // Ghost's chance of stalking the Pacman
         int chance = rand() % MAX_RANDOM;
 
-        // se o fantasma precisa decidir se muda de dire��o
-        if(ladosLivres(g, lab) == 1)
+        //Decisions to change direction
+        if(freeSides(g, lab) == 1) //Only one exit, inverts the movement direction
         {
             fantasmas->unid[i].mov.y = fantasmas->unid[i].mov.y * -1;
             fantasmas->unid[i].mov.x = fantasmas->unid[i].mov.x * -1;
         }
-        else if(mudarDirecao(g, lab) == 1)
+        else if(changeDirection(g, lab) == 1)
         {
-            // se o valor de perseguir pacman est� dentro da chance_persegui��o, persegue
-            if(chance < abs(CHASE_CHANCE-10))
+
+            if(chance < abs(chase_chance-10)) //If doesn't needs to chase
             {
 
-                // escolhe uma dire��o diferente da que veio, aleatoriamente
-                // mistura aleatoriamente o vetor de poss�veis dire��es
+                //Chooses a direction, different from the one that the ghost actually is
+                //Randomically sets the direction vector
                 shuffleDir();
             }
             else
             {
-                // escolhe o caminho que mais diminui a dist�ncia em rela��o ao pacman
-                // ordena o vetor das possiveis dire��es de acordo com a dist�ncia
-                // cartesiana do ghost para o pacman
-                perseguePacman(pac, g, lab);
+                //Chooses the path whose makes the distance to the pacman lower
+                //Sorts the vector of directions according to cartesian distance to the pacman
+                chasePacman(pac, g, lab);
             }
-            escolheDirecao(pac, &(fantasmas->unid[i]), lab);
+            chooseDirection(pac, &(fantasmas->unid[i]), lab);
         }
     }
 }
 
-// mostra os fantasma na tela
-void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
+///Prints the ghosts in the screen
+void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
 {
     int i;
     for(i=0; i < fantasmas->quant; i++)
     {
-        // reprinta a última posicao com o que continha
+        //Reprints the object who was under the ghost
         coord posg;
         posg.x = fantasmas->unid[i].pos.x;
         posg.y = fantasmas->unid[i].pos.y;
         gotoXY(posg.x+1, posg.y+1);
-        // cores para impresão
+        //Print colors
         if(lab[posg.y][posg.x] =='o')
         {
             textcolor(AMARELO);
@@ -124,19 +111,19 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
             printf(" ");
         }
 
-        // atualiza a posicao
+        //Updates the position
         if(fantasmas->unid[i].alive==1)
         {
             fantasmas->unid[i].pos.x += fantasmas->unid[i].mov.x;
             fantasmas->unid[i].pos.y += fantasmas->unid[i].mov.y;
         }
 
-        testaLimites(&fantasmas->unid[i]);
+        testGhostLimits(&fantasmas->unid[i]);
 
         if(fantasmas->unid[i].alive==1)
         {
-            // print na tela a nova posicao
-            if(pac.pacDotActive>(2000/NORMAL_SPEED))
+            //Prints the new position, if the ghost is alive
+            if(pac.pacDotActive>(2000/speed))
             {
                 textcolor(VERDE_AGUA);
             }
@@ -154,11 +141,11 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
             gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
             printf("%c", fantasmas->unid[i].key);
         }
-        else if(fantasmas->unid[i].alive==2)
+        else if(fantasmas->unid[i].alive==2) //If ghost is ressurecting
         {
             if (!(fantasmas->unid[i].reviveTime%2))
             {
-                textcolor(PRETO);
+                textcolor(PRETO); //Blinks the color of the ghost, while ressurecting
             }
             else
             {
@@ -177,34 +164,33 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas)
     }
 }
 
-// verifica quais são as possíveis direções que o fantasma pode ir
-// e escolhe uma de acordo com a ordem de prefêrencia no array dir[].
-void escolheDirecao(pacmanInfo pac, ghost *pg, char lab[30][100])
+///Verifies which are the possible directions for the ghost, and chooses one according to the preference order of the array dir[]
+void chooseDirection(pacmanInfo pac, ghost *pg, char lab[30][100])
 {
-    int i, d; // índice, limite, incremento
+    int i, d;
     ghost g = *pg;
 
-    // passa por cada uma das possiveis direcoes que ele pode ir
+    //Iterates in each of the possible directions
     for(i=0; i<4; i++)
     {
-        // por qual lado deve ser a leitura do array
-        // crescente se o fantasma estiver perseguindo o pacman, drescente se estiver fugindo
+        //Sees if must start in the directions who lets the ghost closer to the pacman, or further
         if(pac.pacDotActive != 0)
         {
-            d = i;
+            d = i; //Gets closes to the pacman
         }
         else
         {
-            d = 3 - i;
+            d = 3 - i; //Gets further from the pacman
         }
-        // verifica para quais lados nao sao paredes e se ele nao passa do limite do mapa com a nova dir
+
+        //Verifies which sides aren't walls
         if( lab[ (g.pos.y + dir[d].y) ][ (g.pos.x + dir[d].x) ] != '#')
         {
-            // verifica se a nova direcao nao eh a que ele vinha, para nao retornar pelo mesmo caminho
+            //Makes the ghost never returns to the way it is coming from
             if( dir[d].x != (g.mov.x * -1) ||
                     dir[d].y != (g.mov.y * -1) )
             {
-                // modifica direto no fantasma a nova dire��o e sai do la�o
+                // Modifies the directions in the ghost
                 pg->mov = dir[d];
                 d = 5;
             }
@@ -212,41 +198,39 @@ void escolheDirecao(pacmanInfo pac, ghost *pg, char lab[30][100])
     }
 }
 
-// verifica se o fantasma está em um local que é uma bifurcacao ou um canto
-// se precisa mudar sua direcao
-// retornos:  1 : se estiver e precisar decidir se muda de direcao ou se continua
-//            0 : nao muda de direcao
-int mudarDirecao(ghost g, char lab[30][100])
+///Verifies if the ghost are in a bifurcation or in a corner
+//Returns:  1: If needs to decide to change or not direction
+//          0: Doesn't need to decide to change direction
+int changeDirection(ghost g, char lab[30][100])
 {
-    // verifica em qual dire��o o fantasma est� indo
+    // Verifies which direction is the ghost going
     if( g.mov.x != 0)
     {
-        // dire��o na horizontal, verifica se pode ir pra cima ou pra baixo
+        // If horizontal, verifies if can go up or down
         if( lab[g.pos.y+1][g.pos.x] != '#' || lab[g.pos.y-1][g.pos.x] != '#') return 1;
     }
     else
     {
-        // dire��o na vertical, verifica se pode ir pra esquerda ou direita
+        // If vertical, verifies if can go right or left
         if( lab[g.pos.y][g.pos.x+1] != '#' || lab[g.pos.y][g.pos.x-1] != '#') return 1;
     }
     return 0;
 }
 
-// devolve um array de posiçoes ordenados pela distancia cartesiana
-// crescente do fantasma em direcao ao Pacman.
-void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100])
+///Returns an ordered growing array, according to the cartesian distance between the ghost and the pacman
+void chasePacman(pacmanInfo pac, ghost g, char lab[30][100])
 {
-    int d, i;
+    int d, i, t;
 
-    // vetor das dist�ncias em cada uma das novas posi��es poss�veis
+    //Distance array in each of the possible directions
     int dists[4];
     for(i=0; i<4; i++)
     {
-        // calculo da distância cartesiana
+        // Cartesian Distance (Pithagoras)
         dists[i] = pow( pac.pos.y - g.pos.y + dir[i].y, 2) + pow(pac.pos.x - g.pos.x + dir[i].x, 2);
     }
 
-    // ordena o vetor das distancias e o das direcoes de acordo com o das distancias
+    //Sorts the array according to its distances
     for(d=0; d<4; d++)
     {
         for(i=0; i<4; i++)
@@ -255,7 +239,7 @@ void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100])
             {
                 if(dists[d] > dists[i])
                 {
-                    int t = dists[d];
+                    t = dists[d];
                     dists[d] = dists[i];
                     dists[i] = t;
 
@@ -268,20 +252,22 @@ void perseguePacman(pacmanInfo pac, ghost g, char lab[30][100])
     }
 }
 
-// retorna quantos lados est�o livres
-int ladosLivres(ghost g, char lab[30][100])
+///Returns how many sides are free to the ghost walk
+int freeSides(ghost g, char lab[30][100])
 {
-    int soma = 0;
-    // testa cada uma das dire��es se est� livre
-    if( lab[g.pos.y][ g.pos.x + 1] != '#') soma++;
-    if( lab[g.pos.y][ g.pos.x - 1] != '#') soma++;
-    if( lab[ g.pos.y + 1][g.pos.x] != '#') soma++;
-    if( lab[ g.pos.y - 1][g.pos.x] != '#') soma++;
-    return soma;
+    int sum = 0;
+
+    //Test each of the possible directions
+    if( lab[g.pos.y][ g.pos.x + 1] != '#') sum++;
+    if( lab[g.pos.y][ g.pos.x - 1] != '#') sum++;
+    if( lab[ g.pos.y + 1][g.pos.x] != '#') sum++;
+    if( lab[ g.pos.y - 1][g.pos.x] != '#') sum++;
+    return sum;
 }
 
-// dentro dos limites do mapa, retorna 1, se não retorna 0;
-int testaLimites(ghost *fantasma)
+///Test if the ghost is inside or outside of the map limits
+//If outside, returns 1
+int testGhostLimits(ghost *fantasma)
 {
     if (fantasma->pos.x < 0)
     {
@@ -307,6 +293,7 @@ int testaLimites(ghost *fantasma)
     return 1;
 }
 
+///Checks if the actual ghost and the pacman are in the same spot
 int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
 {
     int i;
@@ -314,9 +301,9 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
     for(i=0; i<fantasmas->quant; i++)
     {
         ghost g = fantasmas->unid[i];
-        if(g.alive==1 && pac.pos.x-1 == g.pos.x && pac.pos.y-1 == g.pos.y)
+        if(g.alive==1 && pac.pos.x-1 == g.pos.x && pac.pos.y-1 == g.pos.y) //If ghost alive, and the same position as the pacman
         {
-            if(pac.pacDotActive)
+            if(pac.pacDotActive) //If pacman has powers, kills the ghost
             {
                 fantasmas->unid[i].alive = 0;
                 fantasmas->unid[i].deathTime = clock();
@@ -324,7 +311,7 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
 
                 textcolor(BRANCO);
                 gotoXY(36, 32);
-                printf("Points: %5d", *points);
+                printf("Points: %5d", *points); //Increases the points
             }
             return 1;
         }
@@ -332,8 +319,8 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
     return 0;
 }
 
-/// Revive o primeiro fantasma que encontrar morto
-void reviveGhosts(ghosts *ghosts)
+/// Revives the first found dead ghost
+void reviveGhosts(ghosts *ghosts, int speed)
 {
 
     int i;
@@ -343,7 +330,7 @@ void reviveGhosts(ghosts *ghosts)
         if( !ghosts->unid[i].alive && (( clock() - ghosts->unid[i].deathTime) > RESPAWN) )
         {
             ghosts->unid[i].pos = ghosts->unid[i].origin;
-            ghosts->unid[i].reviveTime=4000/NORMAL_SPEED; //4 seconds blinking
+            ghosts->unid[i].reviveTime=4000/speed; //4 seconds blinking
             ghosts->unid[i].alive = 2;
             return;
         }

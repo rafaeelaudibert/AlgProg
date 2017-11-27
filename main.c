@@ -7,7 +7,7 @@
 #include "objects.h"
 #include "messages.h"
 #include "auxiliars.h"
-
+#include "menu.h"
 
 ///Variaveis Globais
 pacmanInfo pacman; //Pacman informations
@@ -15,27 +15,48 @@ ghosts fantasmas; //Ghost informations
 char lab[30][100]; //Variable whose stores the maze
 clock_t pacStartTimer, ghostsTime; //Game timers
 
+
+
 ///Pac-man Main
 int main()
 {
     //Setting variables
     int points=0; //Points counter
     int totalPacDots, eatenPacDots=0; //PacDots quantities
-    clock_t timerInicial;
+    clock_t initialTimer; //Start timer
+
+    int difficulty, speed, map;  //Controllers of the game
+    char up, down, right, left, stop; //Shortcuts of movement
 
     //Initial definitions
-    system("mode 100, 37"); //Defines CMD's screen size
+    system("mode 100, 38"); //Defines CMD's screen size
     system("title Pacman - AlgProg - 2017/2"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR' (main.h)
     srand(time(NULL)); // Feeds the rand seed with the system time
 
-    //Setting some useful pacman data
-    pacman.lives=3; //Sets the initial number of lives of the pacman
+    //Setting some useful game data
+    readSettings(&difficulty, &speed, &map, &up, &down, &right, &left, &stop); //Reads the main variables of the game from a file
+    pacman.lives=menu(&difficulty, &speed, &map, &up, &down, &right, &left, &stop); //Sets pacman lives and load the main menu
     pacman.pacDotActive=0; //Sets pacman "not powered"
 
-    startLab(lab, &totalPacDots, &pacman, &fantasmas); // Set the initial positions of the game
-    startMenu(); //Start message
-    timerInicial=clock();
+    if(pacman.lives!=-2) //If the options in menu wasn't to exit the game
+    {
+        system("cls"); //Cleans the screen
+        startLab(lab, &totalPacDots, &pacman, &fantasmas, map); // Set the initial positions of the game
+        startMenu(); //Start message
+        initialTimer=clock();
+    }
+    else //Shows the closing game message
+    {
+        system("cls"); //Cleans the screen
+        textcolor(BRANCO);
+        gotoXY(40,18);
+        printf("The game will be closed!");
+        gotoXY(46,19);
+        printf("_____________");
+        gotoXY(46,20);
+        printf("Press any key");
+    }
 
     //THE GAME
     while(pacman.lives>=0) //While pacman still has lives, keeps playing the game
@@ -43,7 +64,8 @@ int main()
         pacman.lives--; //When starts the game, takes one live out of pacman
         if(pacman.lives>=0)
         {
-            gameStart(&points, &eatenPacDots, totalPacDots); //The Game 'per se'
+            gameStart(&points, &eatenPacDots, totalPacDots, difficulty, speed, map, up, down, right, left, stop); //The Game 'per se'
+            beepLost();
             while(kbhit())
             {
                 getch();
@@ -52,7 +74,6 @@ int main()
     }
     //END OF THE GAME
 
-    pacman.duracao=clock()-timerInicial;
     if(pacman.lives==-1) //If the game ends with 0 lives, shows that the player lost
     {
         gameLost();
@@ -60,19 +81,20 @@ int main()
 
     if(pacman.lives!=-2)
     {
-        highscores(points, pacman.duracao); //Highscore Table
+        highscores(points, (clock()-initialTimer)); //Highscore Table
     }
 
 
     gotoXY(1,40);
     textcolor(PRETO);
     return EXIT_SUCCESS; //End of the program
+
 }
 
 
 
 ///Start of the game
-void gameStart(int *points, int *eatenPacDots, int totalPacDots)
+void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty, int speed, int map, char up, char down, char right, char left, char stop)
 {
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1;//Game loop flag
@@ -87,7 +109,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
         return; //If there is an error at loading it, finishes the game
     }
 
-    //Exit message
+    //Information message
     textcolor(BRANCO);
     gotoXY(36, 31);
     printf("Press 'Space' or 'ESC' to quit");
@@ -113,29 +135,30 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
                 showStartMessage--;
             }
 
-            key=tolower(detectKey()); //Detects pressed key
+            key=tolower(detectKey(up, down, right, left, stop)); //Detects pressed key
             setDirection(key, &continueGame, &pacman); //Decodifies pressed key
         }
 
 
-        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas))  //Controls pacman
+        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas, speed))  //Controls pacman
         {
             pacman.next.coordinates='s';
-            pacman.next.aumenta_diminui='0';
+            pacman.next.up_down='0';
             return;  //Ends the game loop, if there is a collision between the ghost and the pacman
 
         }
 
-        // respawn the ghosts
-        if( (clock() - lastReviveTry) > RESPAWN){
-           reviveGhosts(&fantasmas);
-           lastReviveTry = clock();
+        // Respawn the ghosts
+        if( (clock() - lastReviveTry) > RESPAWN)
+        {
+            reviveGhosts(&fantasmas, speed);
+            lastReviveTry = clock();
         }
 
-        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas)) //Controls ghosts
+        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas, speed, difficulty)) //Controls the ghosts
         {
             pacman.next.coordinates='s';
-            pacman.next.aumenta_diminui='0';
+            pacman.next.up_down='0';
             return; //Ends the game loop, if there is a collision between the ghost and the pacman
         }
 
@@ -154,50 +177,47 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots)
     return;
 }
 
-///Pausa o jogo
+///Pauses the game
 void gamePause(void)
 {
-    char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
+    char key='m';
     int count;
-
     textcolor(BRANCO);
-    gotoXY(41,13);
-    printf("                     ");
-    gotoXY(41,14);
-    printf("    Game paused!     ");
-    gotoXY(41,15);
-    printf(" Press 'R' to resume ");
-    gotoXY(41,16);
-    printf("                     ");
-    gotoXY(41,17);
-    printf("                     ");
+    gotoXY(39,12);
+    printf("/---------------------\\");
+    gotoXY(39,13);
+    printf("|                     |");
+    gotoXY(39,14);
+    printf("|    Game paused!     |");
+    gotoXY(39,15);
+    printf("| Press 'R' to resume |");
+    gotoXY(39,16);
+    printf("|                     |");
+    gotoXY(39,17);
+    printf("|                     |");
+    gotoXY(39,18);
+    printf("\\---------------------/");
 
-
-    while(key!='r')
-    {
-        if(kbhit())
-        {
-            if(GetAsyncKeyState(0x52))  //Ao clicar no R sairá desse loop
-            {
-                key='r';
-            }
+    while(key!='r'){
+        if(GetAsyncKeyState(0x52)){ //'R' key
+            key='r';
         }
     }
 
-    for(count=3; count>0; count--)  //Contagem regressiva ao voltar para o jogo
+    for(count=3; count>0; count--)  //Countdown
     {
         textcolor(BRANCO);
         gotoXY(45, 16);
         printf("%d seconds...", count);
-        Sleep(1000);
+        Sleep(1000000/CLOCKS_PER_SEC); //1 second delay
     }
 
-    reconstructMaze(12,18,40,62, lab, pacman);
+    reconstructMaze(11,18,38,65, lab, pacman);
 
     return;
 }
 
-///Mensagem de término de jogo, caso jogador simplesmente desista
+///End message, if the player gives up
 void gameEnd(void)
 {
     textcolor(BRANCO);
@@ -208,28 +228,28 @@ void gameEnd(void)
     gotoXY(29,33);
     printf("                                              ");
 
-    textcolor(PRETO); //Deixa texto em preto, tornando-o invisivel
+    textcolor(PRETO); //Black text, "invisible"
     gotoXY(1,33);
     system("pause");
     textcolor(BRANCO);
 
 }
 
-//Mensagem de término de jogo, caso player ganhe o jogo
+///End game message, if player has won
 void gameWin(int points)
 {
-    int contador=0;
+    int counter=0;
     char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
+    FILE *arq;
 
     arq = fopen("data/pacmanWin.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
 
     system("cls");
-    gotoXY(26, contador+6);
+    gotoXY(26, counter+6);
     Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    while( (ch=fgetc(arq))!=EOF)   //Message printing
     {
-        if(contador>19)
+        if(counter>19)
         {
             textcolor(BRANCO);
         }
@@ -240,11 +260,11 @@ void gameWin(int points)
 
         printf("%c", ch);
 
-        if(ch=='\n' && contador<25)
+        if(ch=='\n' && counter<25)
         {
-            contador++;
-            gotoXY(26, contador+6);
-            Sleep(10); //Imprime uma linha por vez
+            counter++;
+            gotoXY(26, counter+6);
+            Sleep(10); //One line each time
         }
     }
 
@@ -256,19 +276,19 @@ void gameWin(int points)
     return;
 }
 
-///Mensagem de término de jogo, caso player perca o jogo
+///End game message, if the player has lost it
 void gameLost(void)
 {
     int contador=0;
     char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
+    FILE *arq;
 
-    arq = fopen("data/pacmanLost.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+    arq = fopen("data/pacmanLost.txt", "r");
 
     system("cls");
     gotoXY(26, contador+6);
     Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    while( (ch=fgetc(arq))!=EOF)   //Message printing
     {
         if(contador>19)
         {
@@ -285,7 +305,7 @@ void gameLost(void)
         {
             contador++;
             gotoXY(26, contador+6);
-            Sleep(10); //Imprime uma linha por vez
+            Sleep(10); //Prints one line each time
         }
     }
 
@@ -297,75 +317,73 @@ void gameLost(void)
 }
 
 
-///Detecta a tecla pressionada
-char detectKey(void)
+///Detects stroked key
+char detectKey(char up, char down, char right, char left, char stop)
 {
-    char key;
+    char key='m';
 
-    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(0x57)) //Tecla para cima ou tecla 'W'
+    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(up)) //Up key
     {
         key = 'w';
     }
-    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(0x58)) //Tecla para baixo ou tecla 'X'
+    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(down)) //Down key
     {
         key = 'x';
     }
-    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(0x41)) //Tecla para esquerda ou tecla 'A'
+    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(left)) //Left key
     {
         key = 'a';
     }
-    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(0x44)) //Tecla para direita ou tecla 'D'
+    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(right)) //Right key
     {
         key = 'd';
     }
-    else if (GetAsyncKeyState(0x53)) //Tecla 'S'
+    else if (GetAsyncKeyState(stop)) //Stop key
     {
         key = 's';
     }
-    else if (GetAsyncKeyState(0x50)) //Tecla 'P'
+    else if (GetAsyncKeyState(0x50)) //Key 'P' -> Pause
     {
         key = 'p';
     }
-    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //Tecla 'ESC' ou tecla 'Espaço'
+    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //'Esc' or 'Space' key
     {
         key = ' ';
-    }
-    else //Senão retorna uma letra que não significa nenhuma direção, assim será utilizada a ultima direção andada
-    {
-        key='m';
     }
 
     return key;
 
 }
 
+void beepLost(void){
+
+Beep(880,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(830,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(783,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(739,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(698,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(659,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(659,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(880,100);
+Sleep(100);
+Beep(880,100);
+}
+
 
 /*
 TODO LIST:
 
-• CMD
-  - COMPLETO!!!
-
-• PACMAN
-  - COMPLETO!!
-
-• FANTASMAS
-  - Timer para ressuscitar
-
-• PASTILHAS
-  - COMPLETO!!!
-
-• SUPER-PASTILHAS
-  - COMPLETO!!!
-
 • EXTRAS:
-  Dijkshtra - Sistema de detecção de caminho dos fantasmas mais inteligente, utilizando grafos
   HIGHSCORES -> FEITO
-  EFEITOS SONOROS -> Super-pastilhas -> OK
-                     Morte PACMAN -> TODO
+  Adicionar Cheat no F10 (Desativa deteccção de colisão com as paredes - Paredes valem 5000 pontos)
+  EFEITOS SONOROS -> Morte PACMAN -> TODO
                      Vitoria PACMAN -> TODO
-  Adicionar Cheat no F9 (Desativa deteccção de colisão com as paredes - Paredes valem 10000 pontos)
-  Menu inicial, com seleções de mapas e/ou dificuldades + créditos
-
-  FIM DO ARQUIVO
-*/
+  Menu Inicial -> COMPLETO
+  */

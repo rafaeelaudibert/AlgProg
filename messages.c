@@ -4,24 +4,24 @@
 #include "messages.h"
 #include "auxiliars.h"
 
-void highscores(int points, clock_t duracao)
+///HIGHSCORES
+void highscores(int points, clock_t duration)
 {
-    PLACAR Highscores[11];
-    JOGO_ATUAL dados= {{'a','\0'}, -50};
+    SCORE Highscores[11];
+    ACTUAL_GAME data= {{'a','\0'}, -50};
     FILE *arq;
     char url[25]= {"data/Highscores.txt"};
 
-    // Abre um arquivo TEXTO para LEITURA
+    // Opens the highscores file for reading
     arq = fopen(url, "rt");
-    leituraArquivo(arq, Highscores);
+    readHighscore(arq, Highscores);
     fclose(arq);
 
     system("cls");
     textcolor(BRANCO);
     gotoXY(1,1);
-    if(points>Highscores[9].pontos) //Verifica se essa partida entrará para o placar
+    if(points>Highscores[9].points) //Verifies if this match will be in the highscore
     {
-        //MENSAGEM
         fflush(stdin);
         gotoXY(32,17);
         printf("CONGRATULATIONS, YOU ARE IN THE TOP10!\n");
@@ -30,23 +30,23 @@ void highscores(int points, clock_t duracao)
         gotoXY(35,19);
         printf("Please, insert your first name: ");
         printTop10();
-        cursorType(2); //Faz cursor aparecer
+
+        cursorType(2); //Makes cursor to appear
         textcolor(VERMELHO);
         gotoXY(47,20);
-
-        //Operações para conseguir nome e pontos caso esteja no TOP10
-        gets(dados.nome);
-        dados.nome[strlen(dados.nome)]='\n';
-        dados.nome[strlen(dados.nome)+1]='\0';
-        dados.pontos=points;
+        gets(data.name); //Reads the name
+        data.name[strlen(data.name)]='\n';
+        data.name[strlen(data.name)+1]='\0';
+        data.points=points;
+        cursorType(CURSOR);
     }
 
-    //MANIPULAÇÃO E PRINTAGEM DOS DADOS DO PLACAR
-    manipulacaoDados(Highscores, dados, duracao);
+    //Manipulation and printing of the game data
+    dataManipulation(Highscores, data, duration);
 
-    //GRAVAÇÃO do ARQUIVO já editado
+    //Writing the already changed file
     arq = fopen(url, "wt");
-    gravacaoHighscore(arq, Highscores);
+    writeHighscore(arq, Highscores);
     fclose(arq);
 
     colorHeader(); //Makes the header colorful, and switching colors
@@ -55,18 +55,18 @@ void highscores(int points, clock_t duracao)
 
 }
 
-//Apresenta menu de inicio do jogo
+///Starting game menu
 void startMenu(void)
 {
     int contador=0;
     char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
+    FILE *arq;
 
-    arq = fopen("data/pacmanStart.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+    arq = fopen("data/pacmanStart.txt", "r");
 
     gotoXY(26, contador+5);
     Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    while( (ch=fgetc(arq))!=EOF)   //Messsage printing
     {
         if(contador>20)
         {
@@ -82,7 +82,7 @@ void startMenu(void)
         {
             contador++;
             gotoXY(26, contador+5);
-            Sleep((contador-25)*-6); //Acelera a impressão de cada linha aos poucos
+            Sleep((contador-25)*-6); //Each passing line shows faster
         }
     }
 
@@ -91,67 +91,80 @@ void startMenu(void)
     return;
 }
 
-//Mensagem que aparece no inicio do jogo
+///Starting game message
 int startMessage(int flag, pacmanInfo pacman, char lab[HEIGHT][WIDTH])
 {
 
-    if (flag)  //Mensagem de inicio
+    if (flag)
     {
         switch(pacman.lives)
         {
         case 2:
             textcolor(BRANCO);
-            gotoXY(39,14);
-            printf("                         ");
-            gotoXY(39,15);
-            printf(" Press any key to start  ");
-            gotoXY(39,16);
-            printf("                         ");
+            gotoXY(38,13);
+            printf("/------------------------\\");
+            gotoXY(38,14);
+            printf("|                        |");
+            gotoXY(38,15);
+            printf("| Press any key to start |");
+            gotoXY(38,16);
+            printf("|                        |");
+            gotoXY(38,17);
+            printf("\\------------------------/");
             break;
         case 1:
             textcolor(BRANCO);
-            gotoXY(39,14);
-            printf("                          ");
-            gotoXY(39,15);
-            printf(" You've died! Be careful! ");
-            gotoXY(39,16);
-            printf(" Press any key to restart ");
-            gotoXY(39,17);
-            printf("                          ");
+            gotoXY(38,13);
+            printf("/--------------------------\\");
+            gotoXY(38,14);
+            printf("|                          |");
+            gotoXY(38,15);
+            printf("| You've died! Be careful! |");
+            gotoXY(38,16);
+            printf("| Press any key to restart |");
+            gotoXY(38,17);
+            printf("|                          |");
+            gotoXY(38,18);
+            printf("\\--------------------------/");
             break;
         case 0:
             textcolor(BRANCO);
-            gotoXY(39,14);
-            printf("                          ");
-            gotoXY(39,15);
-            printf(" This is your LAST chance ");
-            gotoXY(39,16);
-            printf(" Press any key to restart ");
-            gotoXY(39,17);
-            printf("                          ");
-            break;
+            gotoXY(38,13);
+            printf("/--------------------------\\");
+            gotoXY(38,14);
+            printf("|                          |");
+            gotoXY(38,15);
+            printf("| This is your LAST chance |");
+            gotoXY(38,16);
+            printf("| Press any key to restart |");
+            gotoXY(38,17);
+            printf("|                          |");
+            gotoXY(38,18);
+            printf("\\--------------------------/");
         }
     }
     else
     {
-        reconstructMaze(13,17,38,70, lab, pacman);
+        reconstructMaze(12,19,37,68, lab, pacman);
         flag--;
     }
 
     return flag;
 }
 
+
+///Prints the TOP10 "image"
 void printTop10(void)
 {
     int i=3;
     char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
+    FILE *arq;
 
-    arq = fopen("data/top10.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+    arq = fopen("data/top10.txt", "r");
 
     gotoXY(4, i);
     i++;
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do TOP10
+    while( (ch=fgetc(arq))!=EOF)   //TOP10 printing
     {
         textcolor(BRANCO);
         printf("%c", ch);
@@ -167,25 +180,25 @@ void printTop10(void)
 
 }
 
-void gravacaoHighscore(FILE* arq, PLACAR Highscores[10])
+void writeHighscore(FILE* arq, SCORE Highscores[10])
 {
 
     int i;
 
-    if (arq == NULL) // Se nào conseguiu criar
+    if (arq == NULL) // If error on opening
     {
-        printf("Problemas na CRIACAO do arquivo\n");
+        printf("CREATION file problems\n");
         return;
     }
-    else //Grava os novos dados no arquivo
+    else //Write the new data
     {
         for(i=0; i<10; i++)
         {
 
-            fprintf(arq,"%d\n",Highscores[i].posicao);
-            fprintf(arq,"%s",Highscores[i].nome);
-            fprintf(arq,"%d\n",Highscores[i].pontos);
-            fprintf(arq,"%ld\n",Highscores[i].duracao/CLOCKS_PER_SEC);
+            fprintf(arq,"%d\n",Highscores[i].position);
+            fprintf(arq,"%s",Highscores[i].name);
+            fprintf(arq,"%d\n",Highscores[i].points);
+            fprintf(arq,"%ld\n",Highscores[i].duration/CLOCKS_PER_SEC);
             fprintf(arq,"%s",Highscores[i].dateStr);
             fprintf(arq,"%s",Highscores[i].timeStr);
 
@@ -195,13 +208,14 @@ void gravacaoHighscore(FILE* arq, PLACAR Highscores[10])
     return;
 }
 
+
+///Makes theHighscore header to blink
 void colorHeader(void)
 {
 
-
     int k=AZUL, flag=1;
 
-    while(flag) //While para ficar trocando as cores do banner
+    while(flag)
     {
         textcolor(k);
         gotoXY(1,2);
@@ -229,78 +243,80 @@ void colorHeader(void)
     }
 }
 
-void leituraArquivo(FILE* arq, PLACAR Highscores[10])
+void readHighscore(FILE* arq, SCORE Highscores[10])
 {
 
     int i;
-    char Linha[100];
+    char line[100];
 
-    if (arq == NULL)  // Se houve erro na abertura
+    if (arq == NULL)  // If opening error
     {
-        printf("Problemas na abertura do arquivo\n");
+        printf("Opening file error\n");
         return;
     }
-    else //Lê arquivo
+    else //Reads file
     {
         for(i=0; i<10; i++)
         {
-            // Lê uma linha (inclusive com o '\n')
-            fgets(Linha, 10, arq);  // o 'fgets' lê até 14 caracteres ou até o '\n'
-            Highscores[i].posicao=atoi(Linha);
+            // Reads a line ('\n' included)
+            fgets(line, 10, arq);  // 'fgets' reads until 14 characters or a '\n'
+            Highscores[i].position=atoi(line);
 
-            fgets(Linha, 31, arq); // o 'fgets' lê até 30 caracteres ou até o '\n'
-            strcpy(Highscores[i].nome,Linha);
+            fgets(line, 31, arq);  // 'fgets' reads until 30 characters or a '\n'
+            strcpy(Highscores[i].name,line);
 
-            fgets(Linha, 10, arq);
-            Highscores[i].pontos=atoi(Linha);
+            fgets(line, 10, arq);
+            Highscores[i].points=atoi(line);
 
-            fgets(Linha, 10, arq);
-            Highscores[i].duracao=atoi(Linha)*CLOCKS_PER_SEC;
+            fgets(line, 10, arq);
+            Highscores[i].duration=atoi(line)*CLOCKS_PER_SEC;
 
-            fgets(Linha, 16, arq);
-            strcpy(Highscores[i].dateStr,Linha);
+            fgets(line, 16, arq);
+            strcpy(Highscores[i].dateStr,line);
 
-            fgets(Linha, 16, arq);
-            strcpy(Highscores[i].timeStr,Linha);
+            fgets(line, 16, arq);
+            strcpy(Highscores[i].timeStr,line);
 
         }
     }
 }
 
-void manipulacaoDados(PLACAR Highscores[10], JOGO_ATUAL dados, clock_t duracao)
+void dataManipulation(SCORE Highscores[10], ACTUAL_GAME data, clock_t duration)
 {
 
     int i,j, flagRankingPosition=1, flagColor=0;
     char dateStrTemp[9];
 
-    cursorType(CURSOR); //Faz cursor desaparecer novamente
-    system("cls"); //Limpa a tela
+    cursorType(CURSOR);
+    system("cls"); //Clear screen
 
-    //Mensagem inicial
+    //Starting message
     textcolor(BRANCO);
     gotoXY(1,8);
-    printf("      POSICAO   NOME                         PONTUACAO       TEMPO       DATA            HORA");
+    printf("      POSITION  NAME                         PONTUACTION      TIME       DATE            TIME");
 
     //Manipulação dos dados
     for(i=0; i<10; i++)
     {
-        if(Highscores[i].pontos==dados.pontos && Highscores[i].duracao>duracao && flagRankingPosition)
+        if(Highscores[i].points==data.points && Highscores[i].duration>duration && flagRankingPosition) //If same points, but a lower time
         {
-            for(j=9; j>=i; j--)
+            for(j=9; j>=i; j--) //Makes all the following position, go down one position
             {
-                Highscores[j].pontos=Highscores[j-1].pontos;
-                Highscores[j].duracao=Highscores[j-1].duracao;
-                strcpy(Highscores[j].nome, Highscores[j-1].nome);
+                Highscores[j].points=Highscores[j-1].points;
+                Highscores[j].duration=Highscores[j-1].duration;
+                strcpy(Highscores[j].name, Highscores[j-1].name);
                 strcpy(Highscores[j].dateStr, Highscores[j-1].dateStr);
                 strcpy(Highscores[j].timeStr, Highscores[j-1].timeStr);
             }
-            Highscores[i].pontos=dados.pontos;
-            strcpy(Highscores[i].nome, dados.nome);
-            Highscores[i].duracao=duracao;
 
-            _strdate(Highscores[i].dateStr); //Data em formato MMDDAA
+            //Sets the actual position
+            Highscores[i].points=data.points;
+            strcpy(Highscores[i].name, data.name);
+            Highscores[i].duration=duration;
 
-            strcpy(dateStrTemp, Highscores[i].dateStr); //Transformação para DDMMAA
+            _strdate(Highscores[i].dateStr); //MMDDAA shape data
+
+            strcpy(dateStrTemp, Highscores[i].dateStr); //Transformation to DDMMAA
             Highscores[i].dateStr[0]=dateStrTemp[3];
             Highscores[i].dateStr[1]=dateStrTemp[4];
             Highscores[i].dateStr[3]=dateStrTemp[0];
@@ -308,28 +324,29 @@ void manipulacaoDados(PLACAR Highscores[10], JOGO_ATUAL dados, clock_t duracao)
             Highscores[i].dateStr[8]='\n';
             Highscores[i].dateStr[9]='\0';
 
-            _strtime(Highscores[i].timeStr); //Hora no formato HHMMSS
+            _strtime(Highscores[i].timeStr); //Time in the HHMMSS shape
             Highscores[i].timeStr[8]='\n';
             Highscores[i].timeStr[9]='\0';
             flagRankingPosition=0;
             flagColor=1;
         }
-        else if(Highscores[i].pontos<dados.pontos && flagRankingPosition)
+        else if(Highscores[i].points<data.points && flagRankingPosition) //If has more points than the actual position
         {
             for(j=9; j>=i; j--)
             {
-                Highscores[j].pontos=Highscores[j-1].pontos;
-                Highscores[j].duracao=Highscores[j-1].duracao;
-                strcpy(Highscores[j].nome, Highscores[j-1].nome);
+                Highscores[j].points=Highscores[j-1].points;
+                Highscores[j].duration=Highscores[j-1].duration;
+                strcpy(Highscores[j].name, Highscores[j-1].name);
                 strcpy(Highscores[j].dateStr, Highscores[j-1].dateStr);
                 strcpy(Highscores[j].timeStr, Highscores[j-1].timeStr);
             }
-            Highscores[i].pontos=dados.pontos;
-            strcpy(Highscores[i].nome, dados.nome);
-            Highscores[i].duracao=duracao;
 
-            _strdate(Highscores[i].dateStr); //Data em formato MMDDAA
-            strcpy(dateStrTemp, Highscores[i].dateStr); //Transformação para DDMMAA
+            //Sets the actual position
+            Highscores[i].points=data.points;
+            strcpy(Highscores[i].name, data.name);
+            Highscores[i].duration=duration;
+
+            strcpy(dateStrTemp, Highscores[i].dateStr); //Transformation to DDMMAA
             Highscores[i].dateStr[0]=dateStrTemp[3];
             Highscores[i].dateStr[1]=dateStrTemp[4];
             Highscores[i].dateStr[3]=dateStrTemp[0];
@@ -337,13 +354,14 @@ void manipulacaoDados(PLACAR Highscores[10], JOGO_ATUAL dados, clock_t duracao)
             Highscores[i].dateStr[8]='\n';
             Highscores[i].dateStr[9]='\0';
 
-            _strtime(Highscores[i].timeStr); //Hora no formato HHMMSS
+            _strtime(Highscores[i].timeStr); //Time in the HHMMSS shape
             Highscores[i].timeStr[8]='\n';
             Highscores[i].timeStr[9]='\0';
             flagRankingPosition=0;
             flagColor=1;
         }
 
+        //Sets the position color
         if(flagColor)
         {
             textcolor(LILAS);
@@ -352,14 +370,16 @@ void manipulacaoDados(PLACAR Highscores[10], JOGO_ATUAL dados, clock_t duracao)
         {
             textcolor(BRANCO);
         }
+
+        //Prints the position
         gotoXY(10, i+10);
-        printf("%d",Highscores[i].posicao);
+        printf("%d",Highscores[i].position);
         gotoXY(17,i+10);
-        printf("%s", Highscores[i].nome);
+        printf("%s", Highscores[i].name);
         gotoXY(48,i+10);
-        printf("%5d", Highscores[i].pontos);
+        printf("%5d", Highscores[i].points);
         gotoXY(60,i+10);
-        printf("%5ld",Highscores[i].duracao/CLOCKS_PER_SEC);
+        printf("%5ld",Highscores[i].duration/CLOCKS_PER_SEC);
         gotoXY(72,i+10);
         printf("%s", Highscores[i].dateStr);
         gotoXY(88,i+10);
