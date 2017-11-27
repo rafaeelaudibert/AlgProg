@@ -15,13 +15,15 @@ ghosts fantasmas; //Ghost informations
 char lab[30][100]; //Variable whose stores the maze
 clock_t pacStartTimer, ghostsTime; //Game timers
 
+
+
 ///Pac-man Main
 int main()
 {
     //Setting variables
     int points=0; //Points counter
     int totalPacDots, eatenPacDots=0; //PacDots quantities
-    clock_t timerInicial; //Start timer
+    clock_t initialTimer; //Start timer
 
     int difficulty, speed, map;  //Controllers of the game
     char up, down, right, left, stop; //Shortcuts of movement
@@ -42,7 +44,7 @@ int main()
         system("cls"); //Cleans the screen
         startLab(lab, &totalPacDots, &pacman, &fantasmas, map); // Set the initial positions of the game
         startMenu(); //Start message
-        timerInicial=clock();
+        initialTimer=clock();
     }
     else //Shows the closing game message
     {
@@ -63,6 +65,7 @@ int main()
         if(pacman.lives>=0)
         {
             gameStart(&points, &eatenPacDots, totalPacDots, difficulty, speed, map, up, down, right, left, stop); //The Game 'per se'
+            beepLost();
             while(kbhit())
             {
                 getch();
@@ -78,13 +81,14 @@ int main()
 
     if(pacman.lives!=-2)
     {
-        highscores(points, (clock()-timerInicial)); //Highscore Table
+        highscores(points, (clock()-initialTimer)); //Highscore Table
     }
 
 
     gotoXY(1,40);
     textcolor(PRETO);
     return EXIT_SUCCESS; //End of the program
+
 }
 
 
@@ -105,7 +109,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
         return; //If there is an error at loading it, finishes the game
     }
 
-    //Exit message
+    //Information message
     textcolor(BRANCO);
     gotoXY(36, 31);
     printf("Press 'Space' or 'ESC' to quit");
@@ -139,22 +143,22 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
         if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas, speed))  //Controls pacman
         {
             pacman.next.coordinates='s';
-            pacman.next.aumenta_diminui='0';
+            pacman.next.up_down='0';
             return;  //Ends the game loop, if there is a collision between the ghost and the pacman
 
         }
 
-        // respawn the ghosts
+        // Respawn the ghosts
         if( (clock() - lastReviveTry) > RESPAWN)
         {
             reviveGhosts(&fantasmas, speed);
             lastReviveTry = clock();
         }
 
-        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas, speed, difficulty)) //Controls ghosts
+        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas, speed, difficulty)) //Controls the ghosts
         {
             pacman.next.coordinates='s';
-            pacman.next.aumenta_diminui='0';
+            pacman.next.up_down='0';
             return; //Ends the game loop, if there is a collision between the ghost and the pacman
         }
 
@@ -173,10 +177,10 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
     return;
 }
 
-///Pausa o jogo
+///Pauses the game
 void gamePause(void)
 {
-    char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
+    char key='m';
     int count;
     textcolor(BRANCO);
     gotoXY(39,12);
@@ -195,12 +199,12 @@ void gamePause(void)
     printf("\\---------------------/");
 
     while(key!='r'){
-        if(GetAsyncKeyState(0x52)){ //Tecla 'r'
+        if(GetAsyncKeyState(0x52)){ //'R' key
             key='r';
         }
     }
 
-    for(count=3; count>0; count--)  //Contagem regressiva ao voltar para o jogo
+    for(count=3; count>0; count--)  //Countdown
     {
         textcolor(BRANCO);
         gotoXY(45, 16);
@@ -213,7 +217,7 @@ void gamePause(void)
     return;
 }
 
-///Mensagem de término de jogo, caso jogador simplesmente desista
+///End message, if the player gives up
 void gameEnd(void)
 {
     textcolor(BRANCO);
@@ -224,28 +228,28 @@ void gameEnd(void)
     gotoXY(29,33);
     printf("                                              ");
 
-    textcolor(PRETO); //Deixa texto em preto, tornando-o invisivel
+    textcolor(PRETO); //Black text, "invisible"
     gotoXY(1,33);
     system("pause");
     textcolor(BRANCO);
 
 }
 
-//Mensagem de término de jogo, caso player ganhe o jogo
+///End game message, if player has won
 void gameWin(int points)
 {
-    int contador=0;
+    int counter=0;
     char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
+    FILE *arq;
 
     arq = fopen("data/pacmanWin.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
 
     system("cls");
-    gotoXY(26, contador+6);
+    gotoXY(26, counter+6);
     Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    while( (ch=fgetc(arq))!=EOF)   //Message printing
     {
-        if(contador>19)
+        if(counter>19)
         {
             textcolor(BRANCO);
         }
@@ -256,11 +260,11 @@ void gameWin(int points)
 
         printf("%c", ch);
 
-        if(ch=='\n' && contador<25)
+        if(ch=='\n' && counter<25)
         {
-            contador++;
-            gotoXY(26, contador+6);
-            Sleep(10); //Imprime uma linha por vez
+            counter++;
+            gotoXY(26, counter+6);
+            Sleep(10); //One line each time
         }
     }
 
@@ -272,19 +276,19 @@ void gameWin(int points)
     return;
 }
 
-///Mensagem de término de jogo, caso player perca o jogo
+///End game message, if the player has lost it
 void gameLost(void)
 {
     int contador=0;
     char ch;
-    FILE *arq; //Cria um ponteiro para um tipo arquivo
+    FILE *arq;
 
-    arq = fopen("data/pacmanLost.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+    arq = fopen("data/pacmanLost.txt", "r");
 
     system("cls");
     gotoXY(26, contador+6);
     Sleep(50);
-    while( (ch=fgetc(arq))!=EOF)   //Impressão do PacMan
+    while( (ch=fgetc(arq))!=EOF)   //Message printing
     {
         if(contador>19)
         {
@@ -301,7 +305,7 @@ void gameLost(void)
         {
             contador++;
             gotoXY(26, contador+6);
-            Sleep(10); //Imprime uma linha por vez
+            Sleep(10); //Prints one line each time
         }
     }
 
@@ -313,46 +317,63 @@ void gameLost(void)
 }
 
 
-///Detecta a tecla pressionada
+///Detects stroked key
 char detectKey(char up, char down, char right, char left, char stop)
 {
-    char key;
+    char key='m';
 
-    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(up)) //Tecla para cima
+    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(up)) //Up key
     {
         key = 'w';
     }
-    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(down)) //Tecla para baixo
+    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(down)) //Down key
     {
         key = 'x';
     }
-    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(left)) //Tecla para esquerda
+    else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(left)) //Left key
     {
         key = 'a';
     }
-    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(right)) //Tecla para direita
+    else if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(right)) //Right key
     {
         key = 'd';
     }
-    else if (GetAsyncKeyState(stop)) //Tecla de parar
+    else if (GetAsyncKeyState(stop)) //Stop key
     {
         key = 's';
     }
-    else if (GetAsyncKeyState(0x50)) //Tecla 'P' -> Pause
+    else if (GetAsyncKeyState(0x50)) //Key 'P' -> Pause
     {
         key = 'p';
     }
-    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //Tecla 'ESC' ou tecla 'Espaço'
+    else if (GetAsyncKeyState(VK_ESCAPE) || GetAsyncKeyState(VK_SPACE)) //'Esc' or 'Space' key
     {
         key = ' ';
-    }
-    else //Senão retorna uma letra que não significa nenhuma direção, assim será utilizada a ultima direção andada
-    {
-        key='m';
     }
 
     return key;
 
+}
+
+void beepLost(void){
+
+Beep(880,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(830,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(783,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(739,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(698,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(659,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(659,40);Sleep(20);
+Beep(587,40);Sleep(20);
+Beep(880,100);
+Sleep(100);
+Beep(880,100);
 }
 
 

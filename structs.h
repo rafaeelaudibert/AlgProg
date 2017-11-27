@@ -27,7 +27,7 @@ struct
 struct
 {
     char coordinates; //'x', 'y' ou 's'
-    int aumenta_diminui; //1 - Aumenta; -1 - Diminui; 0 - parado
+    int up_down; //1 - Grows; -1 - Decreases; 0 - stop
 } typedef directions; //Stores axis and direction in it
 
 struct
@@ -42,18 +42,18 @@ struct
 
 struct
 {
-    int posicao;
-    char nome[30];
-    int pontos;
-    clock_t duracao;
+    int position;
+    char name[30];
+    int points;
+    clock_t duration;
     char dateStr[15]; //Date
     char timeStr[15]; //Time
-} typedef PLACAR; //Struct que guarda valores do HighScore
+} typedef SCORE; //Struct which stores highscore data
 
 struct
 {
-    char nome[30];
-    int pontos;
-} typedef JOGO_ATUAL; //Struct que guarda nome do jogador atual e sua pontuação
+    char name[30];
+    int points;
+} typedef ACTUAL_GAME; //Struct which stores actual player name, and its points
 
 #endif //STRUCTS_H_

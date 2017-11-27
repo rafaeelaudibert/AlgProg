@@ -4,7 +4,7 @@
 #include "auxiliars.h"
 #include "menu.h"
 
-//Main Menu
+///Main Menu
 int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *right, char *left, char *stop)
 {
 
@@ -79,7 +79,7 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
 
         }
 
-        if(key=='e') //If 'enter' pressed, verifies what function must be called
+        if(key=='d') //If 'd' was pressed, verifies what function must be called
         {
             switch(menuOption)
             {
@@ -547,6 +547,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
         colorCounter++; //Makes the color varies
     }
 
+    //Save the values in the file, and shows the saved message
     writeSettings(*difficulty, *speed, *map, *up, *down, *right, *left, *stop);
     textcolor(BRANCO);
     gotoXY(43,29);
@@ -562,7 +563,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
 
 }
 
-//Credits Menu
+///Credits Menu
 void credits(void)
 {
 
@@ -571,10 +572,12 @@ void credits(void)
     FILE* arq;
 
     system("cls");
-    arq=fopen("data/creditos.txt", "r");
+    arq=fopen("data/credits.txt", "r"); //Opens the file
     if(!arq)
     {
-        printf("Erro na abertura do arquivo");
+        printf("File opening ERROR");
+        system("pause");
+        return;
     }
     else
     {
@@ -602,7 +605,7 @@ void credits(void)
             printf("                                                     ");
         }
 
-        scrollCounter==24 ? Sleep(5000) : Sleep(250); //Pauses the game for a longer time when needed
+        scrollCounter==24 ? pacMusic() : Sleep(250); //Pauses the game for a longer time when needed
 
     }
 
@@ -715,5 +718,49 @@ char detectKeyMenu(void)
     }
 
     return key;
+
+}
+
+void pacMusic(void){
+
+Beep(493.88,100);Sleep(50);
+Beep(987.77,100);Sleep(50);
+Beep(739.99,100);Sleep(50);
+Beep(622.25,100);Sleep(50);
+Beep(987.77,100);Sleep(50);
+Beep(739.99,100);Sleep(50);
+Beep(622.25,200);Sleep(50);
+Beep(523.25,100);Sleep(50);
+Sleep(70);
+Beep(1046.5,100);Sleep(50);
+Beep(783.99,100);Sleep(50);
+Beep(659.25,100);Sleep(50);
+Beep(1046.5,100);Sleep(50);
+Beep(793.99,100);Sleep(50);
+Beep(659.25,200);Sleep(50);
+Beep(493.88,100);Sleep(50);
+Sleep(70);
+Beep(987.77,100);Sleep(50);
+Beep(739.99,100);Sleep(50);
+Beep(622.25,100);Sleep(50);
+Beep(987.77,100);Sleep(50);
+Beep(739.99,100);Sleep(50);
+Beep(622.25,200);Sleep(50);
+
+Sleep(100);
+
+Beep(622.25,70);Sleep(20);
+Beep(659.25,70);Sleep(20);
+Beep(698.46,80);Sleep(20);
+Beep(698.46,70);Sleep(20);
+Beep(739.99,70);Sleep(20);
+Beep(793.99,80);Sleep(20);
+Beep(793.99,70);Sleep(20);
+Beep(830.61,70);Sleep(20);
+Beep(880,80);Sleep(20);
+Sleep(50);
+Beep(987.77,100);Sleep(20);
+
+Sleep(500);
 
 }

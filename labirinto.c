@@ -6,23 +6,22 @@
 #include "labirinto.h"
 
 
-//Inicia e carrega todas as estruturas
-int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, ghosts *fantasmas, int labOption)
+///Starts and load all the structs
+int startLab(char lab[HEIGHT][WIDTH], int *qtPacDots, pacmanInfo *pacman, ghosts *fantasmas, int labOption)
 {
-    int i, j; //Contador do laço da matriz
+    int i, j; //Matrix counter
 
-    //Inicialização de algumas variáveis
-    *qtdePastilhas=0;
+    //Variables inicializations
+    *qtPacDots=0;
     fantasmas->quant=0;
 
 
-    //Chamada das outras duas funções responsáveis pelo labirinto
-    if(readLab(lab, labOption))
+    if(readLab(lab, labOption)) //Reads the lab
     {
         return 1;
     }
 
-    //Printagem do labirinto na tela
+    //Prints the lab
     gotoXY(1,1);
     for(i=0; i<HEIGHT; i++)
     {
@@ -32,53 +31,53 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
             {
             case 'c':
             case 'C':
-                //Origin do pacman
+                //Pacman's origin (x,y)
                 pacman->origin.x = j+1;
                 pacman->origin.y = i+1;
 
-                //Atual do pacman
+                //Pacman's actual (x,y)
                 pacman->pos.x = j+1;
                 pacman->pos.y = i+1;
 
                 lab[i][j] = ' ';
                 break;
             case 'w':
-            case 'W': // Fantasmas
+            case 'W': // Ghosts
                 if(fantasmas->quant < MAX_GHOSTS)
                 {
-                    //Origin dos fantasmas
+                    //Ghost's origin (x,y)
                     fantasmas->unid[fantasmas->quant].origin.x=j;
                     fantasmas->unid[fantasmas->quant].origin.y=i;
 
-                    //Posição atual dos fantasmas
+                    //Ghost's actual (x,y)
                     fantasmas->unid[fantasmas->quant].pos.x = j;
                     fantasmas->unid[fantasmas->quant].pos.y = i;
-                    fantasmas->unid[fantasmas->quant].alive = 1; // seta a vida do ghost
+                    fantasmas->unid[fantasmas->quant].alive = 1; // Ghost live
                     fantasmas->unid[fantasmas->quant].key = 'W';
                     (fantasmas->quant)++;
                 }
                 lab[i][j] = ' ';
                 break;
-            case 'o':
-                (*qtdePastilhas)++;
+            case 'o': //Pastils
+                (*qtPacDots)++;
                 break;
             }
         }
     }
 
-   return 0;
+    return 0;
 
 }
 
 
-//Mostra o labirinto na tela
+///Prints the lab in the screen
 int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
 {
 
-    int i, j; //Contador do laço da matriz
+    int i, j;
     int q_fantasmas=fantasmas->quant;
 
-    //Printagem/reprintagem do labirinto na tela
+    //Lab's Print/reprint
     gotoXY(1,1);
     for(i=0; i<HEIGHT; i++)
     {
@@ -103,24 +102,24 @@ int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
                 break;
             }
         }
-        //printf("\n");
+        //printf("\n"); //Must uncomment in some PC's
     }
 
-    //Seta a posição inicial do pacman
+    //Sets the position of the pacman
     pacman->pos.x=pacman->origin.x;
     pacman->pos.y=pacman->origin.y;
 
-    // seta os fantasmas para as posições iniciais
+    //Sets the initial position of the ghost
     for(i=0; i<q_fantasmas; i++)
     {
         fantasmas->unid[i].pos.x = fantasmas->unid[i].origin.x;
         fantasmas->unid[i].pos.y = fantasmas->unid[i].origin.y;
-        fantasmas->unid[i].alive = 1; // seta a vida do ghost
+        fantasmas->unid[i].alive = 1; // Sets ghosts lives
     }
     return 0;
 }
 
-//Função que lê o arquivo labirinto.txt e configura a matriz do labirinto
+///Reads the maze archive
 int readLab(char lab[HEIGHT][WIDTH], int labOption)
 {
     char str[101];
@@ -128,36 +127,38 @@ int readLab(char lab[HEIGHT][WIDTH], int labOption)
     FILE *arq;
     char url[30];
 
-    switch(labOption){
-case 1:
-    strcpy(url, "data/labirinto.txt");
-    break;
-case 2:
-    strcpy(url, "data/labirintoOneDot.txt");
-    break;
-case 3:
-    strcpy(url, "data/labirintoProfessor.txt");
-    break;
+    switch(labOption)
+    {
+    case 1:
+        strcpy(url, "data/labirinto.txt");
+        break;
+    case 2:
+        strcpy(url, "data/labirintoOneDot.txt");
+        break;
+    case 3:
+        strcpy(url, "data/labirintoProfessor.txt");
+        break;
     }
 
-    //Ponteiro para leitura do arquivo no 'endereco'
+    //Pointer to the file read
     arq = fopen(url, "r");
 
-    //Se não conseguiu ler o arquivo, sai e retorna 1
+    //Tests the file opening
     if(arq == NULL)
     {
-        printf("ERROR: nao foi possivel abrir o arquivo\n");
+        printf("ERROR: The lab couldn't be opened\n");
+        fclose(arq);
         return 1;
     }
 
 
-    //Lê cada uma das linhas do arquivo
+    //Reads each of the file's line
     while(fgets(str, 101, arq) != NULL || i<30)
     {
-        //Se a leitura retornar uma linha em branco, ignora
+        //If the line it isn't a blank line
         if(str[0] != '\n')
         {
-            //Senão, adiciona à matriz lab uma linha
+            //Add's to the lab the string
             for(j=0; j<100; j++)
             {
                 lab[i][j] = str[j];
@@ -166,6 +167,7 @@ case 3:
             i++;
         }
     }
+    fclose(arq);
 
     return 0;
 }

@@ -9,17 +9,17 @@
 //Pacman Controller
 int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghosts* fantasmas, int speed)
 {
-    float correcaoVelocidade= pacman->last.coordinates=='y' ? 1.4 : 1; //Correção de distorção das letras
-    clock_t pacEndTimer=clock(); //Seta para verificar tempo atual do sistema
+    float correcaoVelocidade= pacman->last.coordinates=='y' ? 1.4 : 1; //Letter distorction correction
+    clock_t pacEndTimer=clock(); //Verifies actual system time
 
-    if((pacEndTimer-(*pacStartTimer))>speed*correcaoVelocidade) //Ao ter passado tempo igual a velocidade, executa o loop
+    if((pacEndTimer-(*pacStartTimer))>speed*correcaoVelocidade) //After the game has taken 'speed' time, executes the movement of the pacman
     {
-        *pacStartTimer=pacEndTimer; //"Zera" o contador inicio
+        *pacStartTimer=pacEndTimer; //"Start counter=0"
         movePacman(pacman, lab);
         checkPacDots(qtde_pacdots, points, lab, *pacman);
         checkPowerPellets(points, lab, pacman, fantasmas, speed);
 
-        if(checkGhostCollision((*pacman), points, fantasmas) && !pacman->pacDotActive)
+        if(checkGhostCollision((*pacman), points, fantasmas) && !pacman->pacDotActive) //Checks collision with the ghost
         {
             return 0;
         }
@@ -31,27 +31,27 @@ int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* p
 
 }
 
-//Movimentação e impressão do PacMan na posição correta
+///Movement and printing of the pacman in the right position
 void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
 {
 
-    gotoXY(pacman->pos.x, pacman->pos.y); //Apaga a posição atual do pacman
+    gotoXY(pacman->pos.x, pacman->pos.y); //Erases the actual pacman position
     printf(" ");
 
-    switch(pacman->next.coordinates) //Calcula a proxima posição do pacman
+    switch(pacman->next.coordinates) //Especulates the next pacman position
     {
     case 'y':
-        pacman->pos.y+=pacman->next.aumenta_diminui;
+        pacman->pos.y+=pacman->next.up_down;
         break;
     case 'x':
-        pacman->pos.x+=pacman->next.aumenta_diminui;
+        pacman->pos.x+=pacman->next.up_down;
         break;
     }
 
-    testColision(pacman, lab); //Caso comando coloque o pacman dentro de uma parede, tira ele de lá
-    testLimits(pacman); //Caso tenha chegado nos limites do mapa, coloca pacman no outro lado
+    testColision(pacman, lab); //If pacman is inside a wall, takes it out from there
+    testLimits(pacman); //If pacman is out of the map limits, prints it the right place
 
-    //Imprime a nova posição do pacman
+    //Prints new pacman position
     textcolor(AMARELO);
     gotoXY(pacman->pos.x,pacman->pos.y);
     printf("%c", PAC);
@@ -59,7 +59,7 @@ void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
     return;
 }
 
-//Testa se pacman chegou no limite do mapa, mandando ele para o outro lado
+///Test map limits
 void testLimits(pacmanInfo *pacman)
 {
 
@@ -83,91 +83,93 @@ void testLimits(pacmanInfo *pacman)
     return;
 }
 
-//Testa colisão do pacman com as paredes
+///Tests pacman collisions with walls
 void testColision(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
 {
 
-    if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#' && (pacman->pos.y > TOP-1 && pacman->pos.y < HEIGHT+1) && (pacman->pos.x > LEFT-1 && pacman->pos.x < WIDTH+1)) //Caso esteja dentro de um campo 'parede' E dentro do mapa
+    if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#' && (pacman->pos.y > TOP-1 && pacman->pos.y < HEIGHT+1) && (pacman->pos.x > LEFT-1 && pacman->pos.x < WIDTH+1)) //If inside a wall
     {
-        switch(pacman->next.coordinates) //Volta a ultima posição andada
+        switch(pacman->next.coordinates) //Undo the 'entering in the wall' movement
         {
         case 'y':
-            pacman->pos.y -= pacman->next.aumenta_diminui;
+            pacman->pos.y -= pacman->next.up_down;
             break;
         case 'x':
-            pacman->pos.x -= pacman->next.aumenta_diminui;
+            pacman->pos.x -= pacman->next.up_down;
             break;
         }
 
-        //Faz pacman continuar andando
+        //Makes the pacman keeps walking
         switch(pacman->last.coordinates)
         {
         case 'y':
-            pacman->pos.y += pacman->last.aumenta_diminui;
+            pacman->pos.y += pacman->last.up_down;
             break;
         case 'x':
-            pacman->pos.x += pacman->last.aumenta_diminui;
+            pacman->pos.x += pacman->last.up_down;
             break;
         }
 
-
-        if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#') //Caso ja esteja em uma esquina, e seja forçado a entrar na parede, faz não entrar nela
+        //If in a corner, and pacman is forced to get in a wall, makes it come back again
+        if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#')
         {
             switch(pacman->last.coordinates)
             {
             case 'y':
-                pacman->pos.y -= pacman->last.aumenta_diminui;
+                pacman->pos.y -= pacman->last.up_down;
                 break;
             case 'x':
-                pacman->pos.x -= pacman->last.aumenta_diminui;
+                pacman->pos.x -= pacman->last.up_down;
                 break;
             }
         }
     }
 
-    else //Senão, confirma que ocorreu um movimento valido, e seta a ultima posição para ser igual a atual, para funcionar a proxima iteração
+    else //Else, agrees with the movement action, and sets as a correct movement
     {
         pacman->last.coordinates=pacman->next.coordinates;
-        pacman->last.aumenta_diminui=pacman->next.aumenta_diminui;
+        pacman->last.up_down=pacman->next.up_down;
     }
 
     return;
 }
 
-//Seta direção que o PacMan irá seguir
+///Sets the direction that the pacman must go
 void setDirection(char key, int* continua, pacmanInfo *pacman)
 {
 
-    switch(key) //Verifica para onde será a nova direção
+    switch(key) //Verifies the pressed key
     {
     case 'w':
-        pacman->next.coordinates='y'; //Seta direção no eixo y
-        pacman->next.aumenta_diminui=-1; //Seta direção negativa
+        pacman->next.coordinates='y'; //Sets 'y-axis' direction
+        pacman->next.up_down=-1; //Sets negative direction
         break;
     case 'x':
         pacman->next.coordinates='y';
-        pacman->next.aumenta_diminui=1; //Seta direção positiva
+        pacman->next.up_down=1; //Sets positive direction
         break;
     case 'a':
-        pacman->next.coordinates='x'; //Seta direção no eixo x
-        pacman->next.aumenta_diminui=-1;
+        pacman->next.coordinates='x'; //Sets 'x-axis' direction
+        pacman->next.up_down=-1;
         break;
     case 'd':
         pacman->next.coordinates='x';
-        pacman->next.aumenta_diminui=1;
+        pacman->next.up_down=1;
         break;
     case 's':
-        pacman->next.coordinates='s';
-        pacman->next.aumenta_diminui=0;
+        pacman->next.coordinates='s'; //Stop the pacman
+        pacman->next.up_down=0;
         break;
-    case 'p': //Pausa o jogo ao pressionar 'P'
+    case 'p': //Pauses the game when 'p' is pressed
         gamePause();
         break;
     case ' ':
-        *continua=0; //Irá fazer o programa terminar sua execução
-        pacman->next.coordinates='s'; //Faz pacman parar sua movimentação
-        pacman->next.aumenta_diminui=0;
+        *continua=0; //Makes the game to end
+        pacman->next.coordinates='s'; //Stops the pacman movement
+        pacman->next.up_down=0;
         break;
     }
+
+    return;
 
 }

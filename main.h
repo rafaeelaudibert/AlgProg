@@ -15,12 +15,13 @@
 #ifndef MAIN_FUNCTIONS_H_
 #define MAIN_FUNCTIONS_H_
 
-void gameStart(int*, int*, int, int, int, int, char, char, char, char, char);
-void gamePause(void);
-void gameEnd(void);
-void gameWin(int);
-void gameLost(void);
-char detectKey(char, char, char, char, char);
+void gameStart(int*, int*, int, int, int, int, char, char, char, char, char); ///Starts the game
+void gamePause(void); ///Pauses the game
+void gameEnd(void); ///Finishes the game, when given up by the player
+void gameWin(int); ///Finishes the game, when won by the player
+void gameLost(void); ///Finishes the game, when lost by the player
+void beepLost(void); ///Sound when the pacman dies
+char detectKey(char, char, char, char, char); ///Detects the stroked key
 
 #endif // MAIN_FUNCTIONS_H_
 
