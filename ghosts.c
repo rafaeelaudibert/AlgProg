@@ -7,22 +7,23 @@
 
 //Variaveis globais
 
-coord dir[4]; //Possíveis posições -> UP, RIGHT, DOWN, LEFT
+ //Available directions -> UP, RIGHT, DOWN, LEFT
+coord dir[4]={{0,-1},{1,0},{0,1},{-1,0}};
 
-//Ghost Controller
+///Ghost Controller
 int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas, int speed, int chase_chance)
 {
 
-    float correcaoVelocidade = pacman.last.coordinates=='y' ? 1.4 : 1;
+    float speedCorrection = pacman.last.coordinates=='y' ? 1.4 : 1; //Corrects the speed of the game, as the pacman's movement axis changes
     clock_t actualTime=clock();
 
-    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? speed*1.3*correcaoVelocidade : speed*correcaoVelocidade))
+    if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? speed*1.3*speedCorrection : speed*speedCorrection))
     {
         *ghostsTimer = actualTime;
-        moveGhost(pacman, lab, fantasmas, chase_chance); // update of the moviment of the ghosts
-        showGhosts(pacman, lab, fantasmas, speed); // update and show the position of the ghosts
+        moveGhost(pacman, lab, fantasmas, chase_chance); // Updates the movement of the ghosts
+        showGhosts(pacman, lab, fantasmas, speed); // Updates and shows the position of the ghosts
 
-        if(checkGhostCollision(pacman, points, fantasmas) && !pacman.pacDotActive)
+        if(checkGhostCollision(pacman, points, fantasmas) && !pacman.pacDotActive) //If there is collision between a ghost and the pacman
         {
             return 0;
         }
@@ -30,23 +31,10 @@ int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab
     return 1;
 }
 
-// inicializa os elementos do array global dir
-void setupDir()
-{
-    dir[0].x = 0; // UP
-    dir[0].y = -1;
-    dir[1].x = 1; // RIGHT
-    dir[1].y = 0;
-    dir[2].x = 0; // DOWN
-    dir[2].y = 1;
-    dir[3].x = -1; // LEFT
-    dir[3].y = 0;
-}
-
-// embaralha o array das direções ( dir ), aleatoriamente
+///Unsorts the array of directions, randomically
 void shuffleDir()
 {
-    coord t; // auxiliar
+    coord t; //Auxiliar
     int i, j=0;
     for(i=0; i<4; i++)
     {
@@ -57,22 +45,22 @@ void shuffleDir()
     }
 }
 
-// algoritmo pra movimentar cada um dos fantasmas
+///Moves each one of the ghosts
 void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_chance)
 {
 
     int i, q = fantasmas->quant; //fantasmas.quant;
-    // passa por cada um dos fantasmas
+    // Iterates on each ghost
     for(i=0; i<q; i++)
     {
-        // fantasma do teste atual
+        // Actual test ghost
         ghost g = fantasmas->unid[i];
 
-        // chance do fantasma ir atr�s do pacman
+        // Ghost's chance of stalking the Pacman
         int chance = rand() % MAX_RANDOM;
 
-        // se o fantasma precisa decidir se muda de dire��o
-        if(ladosLivres(g, lab) == 1)
+        //Decisions to change direction
+        if(ladosLivres(g, lab) == 1) //Only one exit, inverts the movement direction
         {
             fantasmas->unid[i].mov.y = fantasmas->unid[i].mov.y * -1;
             fantasmas->unid[i].mov.x = fantasmas->unid[i].mov.x * -1;

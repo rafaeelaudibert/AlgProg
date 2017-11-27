@@ -101,40 +101,51 @@ int startMessage(int flag, pacmanInfo pacman, char lab[HEIGHT][WIDTH])
         {
         case 2:
             textcolor(BRANCO);
-            gotoXY(39,14);
-            printf("                         ");
-            gotoXY(39,15);
-            printf(" Press any key to start  ");
-            gotoXY(39,16);
-            printf("                         ");
+            gotoXY(38,13);
+            printf("/------------------------\\");
+            gotoXY(38,14);
+            printf("|                        |");
+            gotoXY(38,15);
+            printf("| Press any key to start |");
+            gotoXY(38,16);
+            printf("|                        |");
+            gotoXY(38,17);
+            printf("\\------------------------/");
             break;
         case 1:
             textcolor(BRANCO);
-            gotoXY(39,14);
-            printf("                          ");
-            gotoXY(39,15);
-            printf(" You've died! Be careful! ");
-            gotoXY(39,16);
-            printf(" Press any key to restart ");
-            gotoXY(39,17);
-            printf("                          ");
+            gotoXY(38,13);
+            printf("/--------------------------\\");
+            gotoXY(38,14);
+            printf("|                          |");
+            gotoXY(38,15);
+            printf("| You've died! Be careful! |");
+            gotoXY(38,16);
+            printf("| Press any key to restart |");
+            gotoXY(38,17);
+            printf("|                          |");
+            gotoXY(38,18);
+            printf("\\--------------------------/");
             break;
         case 0:
             textcolor(BRANCO);
-            gotoXY(39,14);
-            printf("                          ");
-            gotoXY(39,15);
-            printf(" This is your LAST chance ");
-            gotoXY(39,16);
-            printf(" Press any key to restart ");
-            gotoXY(39,17);
-            printf("                          ");
-            break;
+            gotoXY(37,13);
+            printf("/--------------------------\\");
+            gotoXY(38,14);
+            printf("|                          |");
+            gotoXY(38,15);
+            printf("| This is your LAST chance |");
+            gotoXY(38,16);
+            printf("| Press any key to restart |");
+            gotoXY(38,17);
+            printf("|                          |");
+            gotoXY(38,18);
+            printf("\\--------------------------/");
         }
     }
     else
     {
-        reconstructMaze(13,17,38,70, lab, pacman);
+        reconstructMaze(12,19,37,68, lab, pacman);
         flag--;
     }
 

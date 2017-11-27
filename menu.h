@@ -7,5 +7,5 @@ void printsOptions(int*, int*, int*, char*, char*, char*, char*, char*);
 void printsSelectOptions(void);
 char detectKeyMenu(void);
 void options(int*, int*, int*, char*, char*, char*, char*, char*);
-void creditos(void);
+void credits(void);
 #endif // MENU_FUCNTIONS_H_

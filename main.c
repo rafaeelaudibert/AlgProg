@@ -178,28 +178,25 @@ void gamePause(void)
 {
     char key='m'; //Inicializa com qualquer outro valor, para nao cair no While
     int count;
-
     textcolor(BRANCO);
-    gotoXY(41,13);
-    printf("                     ");
-    gotoXY(41,14);
-    printf("    Game paused!     ");
-    gotoXY(41,15);
-    printf(" Press 'R' to resume ");
-    gotoXY(41,16);
-    printf("                     ");
-    gotoXY(41,17);
-    printf("                     ");
+    gotoXY(39,12);
+    printf("/---------------------\\");
+    gotoXY(39,13);
+    printf("|                     |");
+    gotoXY(39,14);
+    printf("|    Game paused!     |");
+    gotoXY(39,15);
+    printf("| Press 'R' to resume |");
+    gotoXY(39,16);
+    printf("|                     |");
+    gotoXY(39,17);
+    printf("|                     |");
+    gotoXY(39,18);
+    printf("\\---------------------/");
 
-
-    while(key!='r')
-    {
-        if(kbhit())
-        {
-            if(GetAsyncKeyState(0x52))  //Ao clicar no R sairá desse loop
-            {
-                key='r';
-            }
+    while(key!='r'){
+        if(GetAsyncKeyState(0x52)){ //Tecla 'r'
+            key='r';
         }
     }
 
@@ -208,10 +205,10 @@ void gamePause(void)
         textcolor(BRANCO);
         gotoXY(45, 16);
         printf("%d seconds...", count);
-        Sleep(1000);
+        Sleep(1000000/CLOCKS_PER_SEC); //1 second delay
     }
 
-    reconstructMaze(12,18,40,62, lab, pacman);
+    reconstructMaze(11,18,38,65, lab, pacman);
 
     return;
 }
@@ -367,24 +364,5 @@ TODO LIST:
   Adicionar Cheat no F10 (Desativa deteccção de colisão com as paredes - Paredes valem 5000 pontos)
   EFEITOS SONOROS -> Morte PACMAN -> TODO
                      Vitoria PACMAN -> TODO
-  Menu Inicial -> WIP
-            -> JOGAR -> COMPLETO!!
-            -> OPÇÕES -> TODO
-            -> CRÉDITOS -> TODO²
-            -> EXIT -> COMPLETO!!
-
-*/
-
-/*
-TODO² LIST
-
-  OPÇÕES DO MENU OPÇÕES
-
-    • Dificuldade -> 0 até 10
-    • Velocidade -> 20 até 150
-    • Seletor de mapa -> 3 mapas por enquanto
-    • Tecla pra cima
-    • Tecla pra baixo
-    • Tecla pra esquerda
-    • Tecla pra direita
-*/
+  Menu Inicial -> COMPLETO
+  */

@@ -8,7 +8,7 @@
 int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *right, char *left, char *stop)
 {
 
-    int menuFlag=1, opcaoMenu=1, endGame=3; //Flags
+    int menuFlag=1, menuOption=1, endGame=3; //Flags
     int colorCounter=3500, color=VERMELHO; //Colors
     char key; //Key pressed
 
@@ -24,24 +24,24 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
             switch(key) //Verifies if we should go up or down in the options
             {
             case 'w':
-                opcaoMenu--;
+                menuOption--;
                 colorCounter=3500; //The next options starts red
                 printsHeader();
                 break;
             case 'x':
-                opcaoMenu++;
+                menuOption++;
                 colorCounter=3500;
                 printsHeader();
                 break;
             }
 
-            if (opcaoMenu>4) //Limits
+            if (menuOption>4) //Limits
             {
-                opcaoMenu=1;
+                menuOption=1;
             }
-            else if(opcaoMenu<1)
+            else if(menuOption<1)
             {
-                opcaoMenu=4;
+                menuOption=4;
             }
         }
 
@@ -54,7 +54,7 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
             color=BRANCO;
         }
 
-        switch(opcaoMenu) //The actual selection
+        switch(menuOption) //The actual selection
         {
         case 1:
             gotoXY(46,15);
@@ -81,7 +81,7 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
 
         if(key=='e') //If 'enter' pressed, verifies what function must be called
         {
-            switch(opcaoMenu)
+            switch(menuOption)
             {
             case 1:
                 menuFlag=0; //Closes the menu and enters in the game
@@ -90,7 +90,7 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
                 options(difficulty, speed, map, up, down, right, left, stop); //Menu Options
                 break;
             case 3:
-                creditos(); //Menu Credits
+                credits(); //Call Credits
                 break;
             case 4:
                 menuFlag=0; //Closes the menu
@@ -100,7 +100,7 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
 
             colorCounter=3500;
             key='m';
-            opcaoMenu=1;
+            menuOption=1;
         }
 
         colorCounter++;
@@ -118,7 +118,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
     int dfDifficulty=6, dfSpeed=115, dfMap=1;
     char dfUp='W', dfDown='X', dfRight='D', dfLeft='A', dfStop='S';
 
-    int menuFlag=1, opcaoMenu=1; //Flags
+    int menuFlag=1, menuOption=1; //Flags
     int colorCounter=3500, color=VERMELHO; //Colors
     char key; //Pressed key
 
@@ -133,28 +133,27 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
             key=tolower(detectKeyMenu()); //Detects pressed key
             getch(); //Just one 'stroke' of the key each time
 
-
             switch(key) //Verifies if we should go up or down in the options
             {
             case 'w':
-                opcaoMenu--;
+                menuOption--;
                 colorCounter=3500; //The next options starts red
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 break;
             case 'x':
-                opcaoMenu++;
+                menuOption++;
                 colorCounter=3500;
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 break;
             }
 
-            if (opcaoMenu>10) //Limits of the menu
+            if (menuOption>10) //Limits of the menu
             {
-                opcaoMenu=1;
+                menuOption=1;
             }
-            else if(opcaoMenu<1)
+            else if(menuOption<1)
             {
-                opcaoMenu=10;
+                menuOption=10;
             }
         }
 
@@ -167,7 +166,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
             color=BRANCO;
         }
 
-        switch(opcaoMenu) //The actual selection
+        switch(menuOption) //The actual selection
         {
         case 1:
             gotoXY(37,6);
@@ -225,7 +224,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
         if(key=='d') //Changes the values
         {
             cursorType(2);
-            switch(opcaoMenu)
+            switch(menuOption)
             {
             case 1: //SET DIFFICULTY
                 do
@@ -255,6 +254,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     scanf("%d", difficulty);
                 }
                 while(*difficulty<0 || *difficulty>10); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
@@ -287,6 +287,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     scanf("%d", speed);
                 }
                 while(*speed<20 || *speed>150); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
@@ -312,6 +313,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     scanf("%d", map);
                 }
                 while(*map<0 || *map>3); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
@@ -344,6 +346,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     *up=toupper(*up);
                 }
                 while((*up<65 || (*up>90 && *up<97) || *up>122) || *up==*down || *up==*left || *up==*right || *up==*stop); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
@@ -376,6 +379,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     *down=toupper(*down);
                 }
                 while(*down<65 || (*down>90 && *down<97) || *down>122 || *down==*up || *down==*left || *down==*right || *down==*stop); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
@@ -408,6 +412,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     *left=toupper(*left);
                 }
                 while(*left<65 || (*left>90 && *left<97) || *left>122 || *left==*up || *left==*down || *left==*right || *left==*stop); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
@@ -440,6 +445,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     *right=toupper(*right);
                 }
                 while(*right<65 || (*right>90 && *right<97) || *right>122 || *right==*up || *right==*down || *right==*left || *right==*stop); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
@@ -472,19 +478,20 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     *stop=toupper(*stop);
                 }
                 while(*stop<65 || (*stop>90 && *stop<97) || *stop>122 || *stop==*up || *stop==*down || *stop==*left || *stop==*right); //Compatibility check
+
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
             case 9:
-                opcaoMenu++; //Goes to the default button
+                menuOption++; //Goes to the default button
                 colorCounter=3500;
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
             case 10:
-                opcaoMenu--; //Goes to the save button
+                menuOption--; //Goes to the save button
                 colorCounter=3500;
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
@@ -496,17 +503,17 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
         }
         else if(key=='a') //Used just on Save or Default button
         {
-            switch(opcaoMenu)
+            switch(menuOption)
             {
             case 9:
-                opcaoMenu++; //Goes to default button
+                menuOption++; //Goes to default button
                 colorCounter=3500;
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
             case 10:
-                opcaoMenu--; //Goes to save button
+                menuOption--; //Goes to save button
                 colorCounter=3500;
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
@@ -516,7 +523,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
         }
         else if(key=='e') //If enter was pressed (works in Save and Default button)
         {
-            switch(opcaoMenu)
+            switch(menuOption)
             {
             case 9: //SAVE BUTTON
                 menuFlag=0; //Saves and closes the option menu
@@ -556,7 +563,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
 }
 
 //Credits Menu
-void creditos(void)
+void credits(void)
 {
 
     int i, scrollCounter, counter;

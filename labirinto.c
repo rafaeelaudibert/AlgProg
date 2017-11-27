@@ -15,8 +15,6 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtdePastilhas, pacmanInfo *pacman, gh
     *qtdePastilhas=0;
     fantasmas->quant=0;
 
-    // standard setup of the array dir[];
-    setupDir();
 
     //Chamada das outras duas funções responsáveis pelo labirinto
     if(readLab(lab, labOption))

@@ -2,7 +2,6 @@
 #define GHOSTS_FUNCTIONS_H
 
 int ghostsControl(int*, pacmanInfo, clock_t*, char[30][100], ghosts*, int, int); // controla o tempo de movimento dos fantasmas
-void setupDir(); //Seta as direcoes para o fantasma
 void shuffleDir(); //Random Sort of the dir[]
 void moveGhost(pacmanInfo, char[30][100], ghosts*, int); //Movimenta os fantasmas
 void showGhosts(pacmanInfo, char[30][100], ghosts*, int); // show the labirinto
