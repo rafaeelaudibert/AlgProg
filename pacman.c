@@ -7,7 +7,7 @@
 #include "auxiliars.h"
 
 //Pacman Controller
-int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghosts* fantasmas, int speed)
+int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghosts* fantasmas, int speed, int condition)
 {
     float correcaoVelocidade= pacman->last.coordinates=='y' ? 1.4 : 1; //Letter distorction correction
     clock_t pacEndTimer=clock(); //Verifies actual system time
@@ -15,7 +15,7 @@ int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* p
     if((pacEndTimer-(*pacStartTimer))>speed*correcaoVelocidade) //After the game has taken 'speed' time, executes the movement of the pacman
     {
         *pacStartTimer=pacEndTimer; //"Start counter=0"
-        movePacman(pacman, lab);
+        movePacman(pacman, lab, points, condition);
         checkPacDots(qtde_pacdots, points, lab, *pacman);
         checkPowerPellets(points, lab, pacman, fantasmas, speed);
 
@@ -32,7 +32,7 @@ int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* p
 }
 
 ///Movement and printing of the pacman in the right position
-void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
+void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH], int* points, int condition)
 {
 
     gotoXY(pacman->pos.x, pacman->pos.y); //Erases the actual pacman position
@@ -48,7 +48,11 @@ void movePacman(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
         break;
     }
 
-    testColision(pacman, lab); //If pacman is inside a wall, takes it out from there
+    if(condition==1){
+        testColision(pacman, lab); //If pacman is inside a wall, takes it out from there
+    }else{
+        testWalls(pacman, lab, points); //TOP SECRET
+    }
     testLimits(pacman); //If pacman is out of the map limits, prints it the right place
 
     //Prints new pacman position
@@ -134,8 +138,22 @@ void testColision(pacmanInfo *pacman, char lab[HEIGHT][WIDTH])
     return;
 }
 
+///TOP SECRET
+void testWalls(pacmanInfo *pacman, char lab[HEIGHT][WIDTH], int *points){
+
+    if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#' && (pacman->pos.y > TOP-1 && pacman->pos.y < HEIGHT+1) && (pacman->pos.x > LEFT-1 && pacman->pos.x < WIDTH+1)){
+        *points+=5000;
+
+        textcolor(BRANCO);
+        gotoXY(36, 32);
+        printf("Points: %5d", *points);
+    }
+
+    return;
+}
+
 ///Sets the direction that the pacman must go
-void setDirection(char key, int* continua, pacmanInfo *pacman)
+void setDirection(char key, int* continua, pacmanInfo *pacman, int *condition)
 {
 
     switch(key) //Verifies the pressed key
@@ -162,6 +180,12 @@ void setDirection(char key, int* continua, pacmanInfo *pacman)
         break;
     case 'p': //Pauses the game when 'p' is pressed
         gamePause();
+        break;
+    case 'b': //TOP SECRET
+        *condition=0;
+        break;
+    case 't': //TOP SECRET
+        *condition=1;
         break;
     case ' ':
         *continua=0; //Makes the game to end

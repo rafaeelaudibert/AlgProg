@@ -293,7 +293,7 @@ void dataManipulation(SCORE Highscores[10], ACTUAL_GAME data, clock_t duration)
     //Starting message
     textcolor(BRANCO);
     gotoXY(1,8);
-    printf("      POSITION  NAME                         PONTUACTION      TIME       DATE            TIME");
+    printf("      POSITION  NAME                           POINTS        TIME        DATE            HOUR");
 
     //Manipulação dos dados
     for(i=0; i<10; i++)
@@ -332,7 +332,7 @@ void dataManipulation(SCORE Highscores[10], ACTUAL_GAME data, clock_t duration)
         }
         else if(Highscores[i].points<data.points && flagRankingPosition) //If has more points than the actual position
         {
-            for(j=9; j>=i; j--)
+            for(j=9; j>=i; j--) //Makes all the following position, go down one position
             {
                 Highscores[j].points=Highscores[j-1].points;
                 Highscores[j].duration=Highscores[j-1].duration;
@@ -345,6 +345,8 @@ void dataManipulation(SCORE Highscores[10], ACTUAL_GAME data, clock_t duration)
             Highscores[i].points=data.points;
             strcpy(Highscores[i].name, data.name);
             Highscores[i].duration=duration;
+
+            _strdate(Highscores[i].dateStr); //MMDDAA shape data
 
             strcpy(dateStrTemp, Highscores[i].dateStr); //Transformation to DDMMAA
             Highscores[i].dateStr[0]=dateStrTemp[3];
