@@ -65,7 +65,11 @@ int main()
         if(pacman.lives>=0)
         {
             gameStart(&points, &eatenPacDots, totalPacDots, difficulty, speed, map, up, down, right, left, stop); //The Game 'per se'
-            beepLost();
+            if(pacman.lives>=0){
+                beepLost();
+            }else{
+                beepWin();
+            }
             while(kbhit())
             {
                 getch();
@@ -198,6 +202,7 @@ void gamePause(void)
     gotoXY(39,18);
     printf("\\---------------------/");
 
+
     while(key!='r'){
         if(GetAsyncKeyState(0x52)){ //'R' key
             key='r';
@@ -242,7 +247,7 @@ void gameWin(int points)
     char ch;
     FILE *arq;
 
-    arq = fopen("data/pacmanWin.txt", "r"); //Abre arquivo pacman.txt onde temos a imagem do PacMan
+    arq = fopen("data/pacmanWin.txt", "r");
 
     system("cls");
     gotoXY(26, counter+6);
@@ -374,6 +379,23 @@ Beep(587,40);Sleep(20);
 Beep(880,100);
 Sleep(100);
 Beep(880,100);
+
+return;
+}
+
+void beepWin(void){
+
+Beep(784,60);Sleep(30);
+Beep(784,60);Sleep(30);
+Beep(784,60);Sleep(120);
+Beep(784,120);Sleep(150);
+Beep(1150,220);Sleep(50);
+Beep(1150,100);Sleep(50);
+Beep(1567,500);Sleep(100);
+Beep(1567,500);Sleep(100);
+
+    return;
+
 }
 
 
@@ -383,7 +405,6 @@ TODO LIST:
 • EXTRAS:
   HIGHSCORES -> FEITO
   Adicionar Cheat no F10 (Desativa deteccção de colisão com as paredes - Paredes valem 5000 pontos)
-  EFEITOS SONOROS -> Morte PACMAN -> TODO
-                     Vitoria PACMAN -> TODO
+  EFEITOS SONOROS -> FEITO
   Menu Inicial -> COMPLETO
   */

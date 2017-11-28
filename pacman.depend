@@ -26,7 +26,7 @@
 	<string.h>
 	<ctype.h>
 
-1511826078 source:c:\users\rafae\documents\github\algprog\main.c
+1511827992 source:c:\users\rafae\documents\github\algprog\main.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -56,7 +56,7 @@
 
 1508888115 c:\users\rafae\documents\github\algprog\testalabirinto.h
 
-1511821321 c:\users\rafae\documents\github\algprog\labirinto.h
+1511827992 c:\users\rafae\documents\github\algprog\labirinto.h
 
 1509327136 source:c:\users\rafae\documents\github\algprog\data\labirinto.c
 	<stdio.h>
@@ -88,7 +88,7 @@
 	<conio.h>
 	"../labirinto.h"
 
-1511821311 source:c:\users\rafae\documents\github\algprog\labirinto.c
+1511827992 source:c:\users\rafae\documents\github\algprog\labirinto.c
 	"main.h"
 	"structs.h"
 	"ghosts.h"
@@ -183,7 +183,7 @@
 	<string.h>
 	"labirinto.h"
 
-1511827830 c:\users\rafae\documents\github\algprog\structs.h
+1511827992 c:\users\rafae\documents\github\algprog\structs.h
 
 1510854250 source:\\homes\aftrodrigues\windows config\desktop\algprog-master\main.c
 	<stdio.h>
@@ -349,12 +349,12 @@
 	"messages.h"
 	"auxiliars.h"
 
-1511817312 source:c:\users\rafae\documents\github\algprog\auxiliars.c
+1511827992 source:c:\users\rafae\documents\github\algprog\auxiliars.c
 	"main.h"
 	"structs.h"
 	"auxiliars.h"
 
-1511826059 c:\users\rafae\documents\github\algprog\main.h
+1511908562 c:\users\rafae\documents\github\algprog\main.h
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -364,36 +364,36 @@
 	<string.h>
 	<math.h>
 
-1511827787 c:\users\rafae\documents\github\algprog\pacman.h
+1511827992 c:\users\rafae\documents\github\algprog\pacman.h
 
-1511820994 c:\users\rafae\documents\github\algprog\ghosts.h
+1511827992 c:\users\rafae\documents\github\algprog\ghosts.h
 
-1511827389 c:\users\rafae\documents\github\algprog\objects.h
+1511827992 c:\users\rafae\documents\github\algprog\objects.h
 
-1511827149 c:\users\rafae\documents\github\algprog\messages.h
+1511827992 c:\users\rafae\documents\github\algprog\messages.h
 
-1511821846 c:\users\rafae\documents\github\algprog\auxiliars.h
+1511827992 c:\users\rafae\documents\github\algprog\auxiliars.h
 
-1511820877 source:c:\users\rafae\documents\github\algprog\ghosts.c
+1511827992 source:c:\users\rafae\documents\github\algprog\ghosts.c
 	"main.h"
 	"structs.h"
 	"ghosts.h"
 	"objects.h"
 	"auxiliars.h"
 
-1511827049 source:c:\users\rafae\documents\github\algprog\messages.c
+1511827992 source:c:\users\rafae\documents\github\algprog\messages.c
 	"main.h"
 	"structs.h"
 	"messages.h"
 	"auxiliars.h"
 
-1511827407 source:c:\users\rafae\documents\github\algprog\objects.c
+1511827992 source:c:\users\rafae\documents\github\algprog\objects.c
 	"main.h"
 	"structs.h"
 	"objects.h"
 	"auxiliars.h"
 
-1511827788 source:c:\users\rafae\documents\github\algprog\pacman.c
+1511827992 source:c:\users\rafae\documents\github\algprog\pacman.c
 	"main.h"
 	"structs.h"
 	"ghosts.h"
@@ -495,9 +495,9 @@
 	"messages.h"
 	"auxiliars.h"
 
-1511827913 c:\users\rafae\documents\github\algprog\menu.h
+1511827992 c:\users\rafae\documents\github\algprog\menu.h
 
-1511823826 source:c:\users\rafae\documents\github\algprog\menu.c
+1511827992 source:c:\users\rafae\documents\github\algprog\menu.c
 	"main.h"
 	"structs.h"
 	"auxiliars.h"
