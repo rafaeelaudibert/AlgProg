@@ -70,6 +70,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="pacman.h" />
+		<Unit filename="recursos.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="resources.h" />
 		<Unit filename="structs.h" />
 		<Extensions>
 			<code_completion />

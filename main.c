@@ -8,6 +8,7 @@
 #include "messages.h"
 #include "auxiliars.h"
 #include "menu.h"
+#include "resources.h"
 
 ///Variaveis Globais
 pacmanInfo pacman; //Pacman informations
@@ -67,8 +68,6 @@ int main()
             gameStart(&points, &eatenPacDots, totalPacDots, difficulty, speed, map, up, down, right, left, stop); //The Game 'per se'
             if(pacman.lives>=0){
                 beepLost();
-            }else{
-                beepWin();
             }
             while(kbhit())
             {
@@ -170,6 +169,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
         if((*eatenPacDots)==totalPacDots) //If all pacDots have been eaten, ends the game
         {
             (*points)+=((pacman.lives+1)*150); //Gives 150 points, each lasting life
+            beepWin();
             gameWin((*points));
             return;
         }
