@@ -26,7 +26,7 @@
 	<string.h>
 	<ctype.h>
 
-1511827992 source:c:\users\rafae\documents\github\algprog\main.c
+1511912557 source:c:\users\rafae\documents\github\algprog\main.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -364,7 +364,7 @@
 	<string.h>
 	<math.h>
 
-1511827992 c:\users\rafae\documents\github\algprog\pacman.h
+1511909777 c:\users\rafae\documents\github\algprog\pacman.h
 
 1511827992 c:\users\rafae\documents\github\algprog\ghosts.h
 
@@ -381,7 +381,7 @@
 	"objects.h"
 	"auxiliars.h"
 
-1511827992 source:c:\users\rafae\documents\github\algprog\messages.c
+1511912497 source:c:\users\rafae\documents\github\algprog\messages.c
 	"main.h"
 	"structs.h"
 	"messages.h"
@@ -393,7 +393,7 @@
 	"objects.h"
 	"auxiliars.h"
 
-1511827992 source:c:\users\rafae\documents\github\algprog\pacman.c
+1511910159 source:c:\users\rafae\documents\github\algprog\pacman.c
 	"main.h"
 	"structs.h"
 	"ghosts.h"
@@ -502,4 +502,173 @@
 	"structs.h"
 	"auxiliars.h"
 	"menu.h"
+
+1511962417 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\auxiliars.c
+	"main.h"
+	"structs.h"
+	"auxiliars.h"
+
+1511962418 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\main.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<math.h>
+
+1511962418 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\structs.h
+
+1511962417 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\auxiliars.h
+
+1511962417 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\ghosts.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"objects.h"
+	"auxiliars.h"
+
+1511962417 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\ghosts.h
+
+1511962418 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\objects.h
+
+1511962417 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\labirinto.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"auxiliars.h"
+	"labirinto.h"
+
+1511962417 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\labirinto.h
+
+1511962795 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\main.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+	"menu.h"
+
+1511962418 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\pacman.h
+
+1511962418 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\messages.h
+
+1511962418 c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\menu.h
+
+1511962418 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\messages.c
+	"main.h"
+	"structs.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511962418 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\objects.c
+	"main.h"
+	"structs.h"
+	"objects.h"
+	"auxiliars.h"
+
+1511962418 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\pacman.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"pacman.h"
+	"objects.h"
+	"auxiliars.h"
+
+1511962418 source:c:\users\rbaudibert\downloads\algprog-cheat\algprog-cheat\menu.c
+	"main.h"
+	"structs.h"
+	"auxiliars.h"
+	"menu.h"
+
+1511962417 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\auxiliars.c
+	"main.h"
+	"structs.h"
+	"auxiliars.h"
+
+1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\main.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<math.h>
+
+1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\structs.h
+
+1511962417 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\auxiliars.h
+
+1511962417 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\ghosts.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"objects.h"
+	"auxiliars.h"
+
+1511962417 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\ghosts.h
+
+1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\objects.h
+
+1511962417 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\labirinto.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"auxiliars.h"
+	"labirinto.h"
+
+1511962417 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\labirinto.h
+
+1511963820 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\main.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+	"menu.h"
+	"resources.h"
+
+1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\pacman.h
+
+1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\messages.h
+
+1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\menu.h
+
+1511962418 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\menu.c
+	"main.h"
+	"structs.h"
+	"auxiliars.h"
+	"menu.h"
+
+1511962418 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\messages.c
+	"main.h"
+	"structs.h"
+	"messages.h"
+	"auxiliars.h"
+
+1511962418 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\objects.c
+	"main.h"
+	"structs.h"
+	"objects.h"
+	"auxiliars.h"
+
+1511962418 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\pacman.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"pacman.h"
+	"objects.h"
+	"auxiliars.h"
+
+1511963609 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\recursos.rc
+
+1511963820 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\resources.h
 

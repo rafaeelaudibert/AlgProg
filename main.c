@@ -8,6 +8,7 @@
 #include "messages.h"
 #include "auxiliars.h"
 #include "menu.h"
+#include "resources.h"
 
 ///Variaveis Globais
 pacmanInfo pacman; //Pacman informations
@@ -67,8 +68,6 @@ int main()
             gameStart(&points, &eatenPacDots, totalPacDots, difficulty, speed, map, up, down, right, left, stop); //The Game 'per se'
             if(pacman.lives>=0){
                 beepLost();
-            }else{
-                beepWin();
             }
             while(kbhit())
             {
@@ -102,6 +101,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
 {
     int showStartMessage=1; //Starting Message Flag
     int continueGame=1;//Game loop flag
+    int condition=1;//TOP SECRET
     char key='j'; //Stroked key with a non useful, but known value
     clock_t lastReviveTry = 0; //Last time the ghosts tried to respawn
 
@@ -140,11 +140,11 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
             }
 
             key=tolower(detectKey(up, down, right, left, stop)); //Detects pressed key
-            setDirection(key, &continueGame, &pacman); //Decodifies pressed key
+            setDirection(key, &continueGame, &pacman, &condition); //Decodifies pressed key
         }
 
 
-        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas, speed))  //Controls pacman
+        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas, speed, condition))  //Controls pacman
         {
             pacman.next.coordinates='s';
             pacman.next.up_down='0';
@@ -169,6 +169,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
         if((*eatenPacDots)==totalPacDots) //If all pacDots have been eaten, ends the game
         {
             (*points)+=((pacman.lives+1)*150); //Gives 150 points, each lasting life
+            beepWin();
             gameWin((*points));
             return;
         }
@@ -346,6 +347,12 @@ char detectKey(char up, char down, char right, char left, char stop)
     else if (GetAsyncKeyState(stop)) //Stop key
     {
         key = 's';
+    }
+    else if (GetAsyncKeyState(VK_BACK)){ //BackSpace - TOP SECRET
+        key = 'b';
+    }
+    else if (GetAsyncKeyState(VK_TAB)){ //BackSpace - TOP SECRET
+        key = 't';
     }
     else if (GetAsyncKeyState(0x50)) //Key 'P' -> Pause
     {
