@@ -4,59 +4,9 @@
 #include "messages.h"
 #include "auxiliars.h"
 
-///HIGHSCORES
-void highscores(int points, clock_t duration)
-{
-    SCORE Highscores[11];
-    ACTUAL_GAME data= {{'a','\0'}, -50};
-    FILE *arq;
-    char url[25]= {"data/Highscores.txt"};
-
-    // Opens the highscores file for reading
-    arq = fopen(url, "rt");
-    readHighscore(arq, Highscores);
-    fclose(arq);
-
-    system("cls");
-    textcolor(BRANCO);
-    gotoXY(1,1);
-    if(points>Highscores[9].points) //Verifies if this match will be in the highscore
-    {
-        fflush(stdin);
-        gotoXY(32,17);
-        printf("CONGRATULATIONS, YOU ARE IN THE TOP10!\n");
-        gotoXY(38,18);
-        printf("You have made %d points!\n", points);
-        gotoXY(35,19);
-        printf("Please, insert your first name: ");
-        printTop10();
-
-        cursorType(2); //Makes cursor to appear
-        textcolor(VERMELHO);
-        gotoXY(47,20);
-        gets(data.name); //Reads the name
-        data.name[strlen(data.name)]='\n';
-        data.name[strlen(data.name)+1]='\0';
-        data.points=points;
-        cursorType(CURSOR);
-    }
-
-    //Manipulation and printing of the game data
-    dataManipulation(Highscores, data, duration);
-
-    //Writing the already changed file
-    arq = fopen(url, "wt");
-    writeHighscore(arq, Highscores);
-    fclose(arq);
-
-    colorHeader(); //Makes the header colorful, and switching colors
-
-    return;
-
-}
 
 ///Starting game menu
-void startMenu(void)
+void startGameMenu(void)
 {
     int contador=0;
     char ch;
@@ -90,6 +40,7 @@ void startMenu(void)
     system("cls");
     return;
 }
+
 
 ///Starting game message
 int startMessage(int flag, pacmanInfo pacman, char lab[HEIGHT][WIDTH])
@@ -153,96 +104,58 @@ int startMessage(int flag, pacmanInfo pacman, char lab[HEIGHT][WIDTH])
 }
 
 
-///Prints the TOP10 "image"
-void printTop10(void)
+///HIGHSCORES
+void highscores(int points, clock_t duration)
 {
-    int i=3;
-    char ch;
+    SCORE Highscores[11];
+    ACTUAL_GAME data= {{'a','\0'}, -50};
     FILE *arq;
+    char url[25]= {"data/Highscores.txt"};
 
-    arq = fopen("data/top10.txt", "r");
+    // Opens the highscores file for reading
+    arq = fopen(url, "rt");
+    readHighscore(arq, Highscores);
+    fclose(arq);
 
-    gotoXY(4, i);
-    i++;
-    while( (ch=fgetc(arq))!=EOF)   //TOP10 printing
+    system("cls");
+    textcolor(BRANCO);
+    gotoXY(1,1);
+    if(points>Highscores[9].points) //Verifies if this match will be in the highscore
     {
-        textcolor(BRANCO);
-        printf("%c", ch);
+        fflush(stdin);
+        gotoXY(32,17);
+        printf("CONGRATULATIONS, YOU ARE IN THE TOP10!\n");
+        gotoXY(38,18);
+        printf("You have made %d points!\n", points);
+        gotoXY(35,19);
+        printf("Please, insert your first name: ");
+        printTop10();
 
-        if(ch=='\n')
-        {
-            gotoXY(4,i);
-            i++;
-        }
+        cursorType(2); //Makes cursor to appear
+        textcolor(VERMELHO);
+        gotoXY(47,20);
+        gets(data.name); //Reads the name
+        data.name[strlen(data.name)]='\n';
+        data.name[strlen(data.name)+1]='\0';
+        data.points=points;
+        cursorType(CURSOR);
     }
+
+    //Manipulation and printing of the game data
+    dataManipulation(Highscores, data, duration);
+
+    //Writing the already changed file
+    arq = fopen(url, "wt");
+    writeHighscore(arq, Highscores);
+    fclose(arq);
+
+    colorHeader(); //Makes the header colorful, and switching colors
 
     return;
 
 }
 
-void writeHighscore(FILE* arq, SCORE Highscores[10])
-{
-
-    int i;
-
-    if (arq == NULL) // If error on opening
-    {
-        printf("CREATION file problems\n");
-        return;
-    }
-    else //Write the new data
-    {
-        for(i=0; i<10; i++)
-        {
-
-            fprintf(arq,"%d\n",Highscores[i].position);
-            fprintf(arq,"%s",Highscores[i].name);
-            fprintf(arq,"%d\n",Highscores[i].points);
-            fprintf(arq,"%ld\n",Highscores[i].duration/CLOCKS_PER_SEC);
-            fprintf(arq,"%s",Highscores[i].dateStr);
-            fprintf(arq,"%s",Highscores[i].timeStr);
-
-        }
-    }
-
-    return;
-}
-
-
-///Makes theHighscore header to blink
-void colorHeader(void)
-{
-
-    int k=AZUL, flag=1;
-
-    while(flag)
-    {
-        textcolor(k);
-        gotoXY(1,2);
-        printf("   ##############################################################################################\n");
-        printf("  ##########################################               #######################################\n");
-        printf(" ##########################################                 #######################################\n");
-        printf("  ##########################################               #######################################\n");
-        printf("   ##############################################################################################\n");
-        k++;
-
-        textcolor(BRANCO);
-        gotoXY(48,4);
-        printf("HIGHSCORE");
-
-        if(k>AMARELO)
-        {
-            k=AZUL;
-        }
-        if(kbhit())
-        {
-            flag=0;
-        }
-
-        Sleep(150);
-    }
-}
-
+///Reads the highscore file stored in the PC
 void readHighscore(FILE* arq, SCORE Highscores[10])
 {
 
@@ -281,6 +194,38 @@ void readHighscore(FILE* arq, SCORE Highscores[10])
     }
 }
 
+
+///Reads the new Highscore file, with the match data included in it
+void writeHighscore(FILE* arq, SCORE Highscores[10])
+{
+
+    int i;
+
+    if (arq == NULL) // If error on opening
+    {
+        printf("CREATION file problems\n");
+        return;
+    }
+    else //Write the new data
+    {
+        for(i=0; i<10; i++)
+        {
+
+            fprintf(arq,"%d\n",Highscores[i].position);
+            fprintf(arq,"%s",Highscores[i].name);
+            fprintf(arq,"%d\n",Highscores[i].points);
+            fprintf(arq,"%ld\n",Highscores[i].duration/CLOCKS_PER_SEC);
+            fprintf(arq,"%s",Highscores[i].dateStr);
+            fprintf(arq,"%s",Highscores[i].timeStr);
+
+        }
+    }
+
+    return;
+}
+
+
+///Manipulates the data taken from the Highscores with the actual game data
 void dataManipulation(SCORE Highscores[10], ACTUAL_GAME data, clock_t duration)
 {
 
@@ -396,4 +341,67 @@ void dataManipulation(SCORE Highscores[10], ACTUAL_GAME data, clock_t duration)
     printf("Press any key to close the game window");
 
     return;
+}
+
+
+///Prints the TOP10 "image"
+void printTop10(void)
+{
+    int i=3;
+    char ch;
+    FILE *arq;
+
+    arq = fopen("data/top10.txt", "r");
+
+    gotoXY(4, i);
+    i++;
+    while( (ch=fgetc(arq))!=EOF)   //TOP10 printing
+    {
+        textcolor(BRANCO);
+        printf("%c", ch);
+
+        if(ch=='\n')
+        {
+            gotoXY(4,i);
+            i++;
+        }
+    }
+
+    return;
+
+}
+
+
+///Makes theHighscore header to blink
+void colorHeader(void)
+{
+
+    int k=AZUL, flag=1;
+
+    while(flag)
+    {
+        textcolor(k);
+        gotoXY(1,2);
+        printf("   ##############################################################################################\n");
+        printf("  ##########################################               #######################################\n");
+        printf(" ##########################################                 #######################################\n");
+        printf("  ##########################################               #######################################\n");
+        printf("   ##############################################################################################\n");
+        k++;
+
+        textcolor(BRANCO);
+        gotoXY(48,4);
+        printf("HIGHSCORE");
+
+        if(k>AMARELO)
+        {
+            k=AZUL;
+        }
+        if(kbhit())
+        {
+            flag=0;
+        }
+
+        Sleep(150);
+    }
 }

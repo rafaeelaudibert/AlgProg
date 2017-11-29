@@ -110,7 +110,8 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
 
 }
 
-//Options Menu
+
+///Options Menu
 void options(int *difficulty, int *speed, int *map, char *up, char *down, char *right, char *left, char *stop)
 {
 
@@ -563,6 +564,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
 
 }
 
+
 ///Credits Menu
 void credits(void)
 {
@@ -592,8 +594,10 @@ void credits(void)
     for(scrollCounter=0; scrollCounter<51; scrollCounter++) //Prints the credits
     {
 
-        for(counter=0, i=11; counter<=12; counter++, i--){ //Prints each line, scrolling it through the screen
-            if(scrollCounter>counter && scrollCounter<counter+38){
+        for(counter=0, i=11; counter<=12; counter++, i--)  //Prints each line, scrolling it through the screen
+        {
+            if(scrollCounter>counter && scrollCounter<counter+38)
+            {
                 gotoXY(30,scrollCounter-counter);
                 printf("%s", text[i]);
             }
@@ -615,7 +619,53 @@ void credits(void)
 
 }
 
-//Prints the header of the Main Menu
+
+///Pacman theme
+void pacMusic(void)
+{
+
+    Beep(493.88,100); Sleep(50);
+    Beep(987.77,100); Sleep(50);
+    Beep(739.99,100); Sleep(50);
+    Beep(622.25,100); Sleep(50);
+    Beep(987.77,100); Sleep(50);
+    Beep(739.99,100); Sleep(50);
+    Beep(622.25,200); Sleep(50);
+    Beep(523.25,100); Sleep(50);
+    Sleep(70);
+    Beep(1046.5,100); Sleep(50);
+    Beep(783.99,100); Sleep(50);
+    Beep(659.25,100); Sleep(50);
+    Beep(1046.5,100); Sleep(50);
+    Beep(793.99,100); Sleep(50);
+    Beep(659.25,200); Sleep(50);
+    Beep(493.88,100); Sleep(50);
+    Sleep(70);
+    Beep(987.77,100); Sleep(50);
+    Beep(739.99,100); Sleep(50);
+    Beep(622.25,100); Sleep(50);
+    Beep(987.77,100); Sleep(50);
+    Beep(739.99,100); Sleep(50);
+    Beep(622.25,200); Sleep(50);
+    Sleep(100);
+    Beep(622.25,70);  Sleep(20);
+    Beep(659.25,70);  Sleep(20);
+    Beep(698.46,80);  Sleep(20);
+    Beep(698.46,70);  Sleep(20);
+    Beep(739.99,70);  Sleep(20);
+    Beep(793.99,80);  Sleep(20);
+    Beep(793.99,70);  Sleep(20);
+    Beep(830.61,70);  Sleep(20);
+    Beep(880.23,80);  Sleep(20);
+    Sleep(50);
+    Beep(987.77,100); Sleep(20);
+    Sleep(500);
+
+    return;
+}
+
+
+///Prints the header of the Main Menu
 void printsHeader(void)
 {
 
@@ -631,7 +681,8 @@ void printsHeader(void)
     return;
 }
 
-//Prints the Options Menu
+
+///Prints the Options Menu
 void printsOptions(int *difficulty, int *speed, int *map, char *up, char *down, char *right, char *left, char *stop)
 {
 
@@ -660,7 +711,8 @@ void printsOptions(int *difficulty, int *speed, int *map, char *up, char *down, 
     return;
 }
 
-//Prints the canvas of the Option Selection
+
+///Prints the canvas of the Option Selection
 void printsSelectOptions(void)
 {
 
@@ -687,7 +739,8 @@ void printsSelectOptions(void)
 
 }
 
-//Detects the pressed key
+
+///Detects the pressed key
 char detectKeyMenu(void)
 {
     char key;
@@ -721,46 +774,4 @@ char detectKeyMenu(void)
 
 }
 
-void pacMusic(void){
 
-Beep(493.88,100);Sleep(50);
-Beep(987.77,100);Sleep(50);
-Beep(739.99,100);Sleep(50);
-Beep(622.25,100);Sleep(50);
-Beep(987.77,100);Sleep(50);
-Beep(739.99,100);Sleep(50);
-Beep(622.25,200);Sleep(50);
-Beep(523.25,100);Sleep(50);
-Sleep(70);
-Beep(1046.5,100);Sleep(50);
-Beep(783.99,100);Sleep(50);
-Beep(659.25,100);Sleep(50);
-Beep(1046.5,100);Sleep(50);
-Beep(793.99,100);Sleep(50);
-Beep(659.25,200);Sleep(50);
-Beep(493.88,100);Sleep(50);
-Sleep(70);
-Beep(987.77,100);Sleep(50);
-Beep(739.99,100);Sleep(50);
-Beep(622.25,100);Sleep(50);
-Beep(987.77,100);Sleep(50);
-Beep(739.99,100);Sleep(50);
-Beep(622.25,200);Sleep(50);
-
-Sleep(100);
-
-Beep(622.25,70);Sleep(20);
-Beep(659.25,70);Sleep(20);
-Beep(698.46,80);Sleep(20);
-Beep(698.46,70);Sleep(20);
-Beep(739.99,70);Sleep(20);
-Beep(793.99,80);Sleep(20);
-Beep(793.99,70);Sleep(20);
-Beep(830.61,70);Sleep(20);
-Beep(880,80);Sleep(20);
-Sleep(50);
-Beep(987.77,100);Sleep(20);
-
-Sleep(500);
-
-}

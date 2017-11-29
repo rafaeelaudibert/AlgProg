@@ -10,6 +10,7 @@
  //Available directions -> UP, RIGHT, DOWN, LEFT
 coord dir[4]={{0,-1},{1,0},{0,1},{-1,0}};
 
+
 ///Ghost Controller
 int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas, int speed, int chase_chance)
 {
@@ -31,19 +32,6 @@ int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab
     return 1;
 }
 
-///Unsorts the array of directions, randomically
-void shuffleDir()
-{
-    coord t; //Auxiliar
-    int i, j=0;
-    for(i=0; i<4; i++)
-    {
-        j = rand() % 4;
-        t = dir[j];
-        dir[j] = dir[i];
-        dir[i] = t;
-    }
-}
 
 ///Moves each one of the ghosts
 void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_chance)
@@ -85,6 +73,7 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_c
         }
     }
 }
+
 
 ///Prints the ghosts in the screen
 void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
@@ -164,6 +153,27 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
     }
 }
 
+
+///Verifies if the ghost are in a bifurcation or in a corner
+//Returns:  1: If needs to decide to change or not direction
+//          0: Doesn't need to decide to change direction
+int changeDirection(ghost g, char lab[30][100])
+{
+    // Verifies which direction is the ghost going
+    if( g.mov.x != 0)
+    {
+        // If horizontal, verifies if can go up or down
+        if( lab[g.pos.y+1][g.pos.x] != '#' || lab[g.pos.y-1][g.pos.x] != '#') return 1;
+    }
+    else
+    {
+        // If vertical, verifies if can go right or left
+        if( lab[g.pos.y][g.pos.x+1] != '#' || lab[g.pos.y][g.pos.x-1] != '#') return 1;
+    }
+    return 0;
+}
+
+
 ///Verifies which are the possible directions for the ghost, and chooses one according to the preference order of the array dir[]
 void chooseDirection(pacmanInfo pac, ghost *pg, char lab[30][100])
 {
@@ -198,26 +208,8 @@ void chooseDirection(pacmanInfo pac, ghost *pg, char lab[30][100])
     }
 }
 
-///Verifies if the ghost are in a bifurcation or in a corner
-//Returns:  1: If needs to decide to change or not direction
-//          0: Doesn't need to decide to change direction
-int changeDirection(ghost g, char lab[30][100])
-{
-    // Verifies which direction is the ghost going
-    if( g.mov.x != 0)
-    {
-        // If horizontal, verifies if can go up or down
-        if( lab[g.pos.y+1][g.pos.x] != '#' || lab[g.pos.y-1][g.pos.x] != '#') return 1;
-    }
-    else
-    {
-        // If vertical, verifies if can go right or left
-        if( lab[g.pos.y][g.pos.x+1] != '#' || lab[g.pos.y][g.pos.x-1] != '#') return 1;
-    }
-    return 0;
-}
 
-///Returns an ordered growing array, according to the cartesian distance between the ghost and the pacman
+///Returns an ordered ascending array, according to the cartesian distance between the ghost and the pacman
 void chasePacman(pacmanInfo pac, ghost g, char lab[30][100])
 {
     int d, i, t;
@@ -252,18 +244,6 @@ void chasePacman(pacmanInfo pac, ghost g, char lab[30][100])
     }
 }
 
-///Returns how many sides are free to the ghost walk
-int freeSides(ghost g, char lab[30][100])
-{
-    int sum = 0;
-
-    //Test each of the possible directions
-    if( lab[g.pos.y][ g.pos.x + 1] != '#') sum++;
-    if( lab[g.pos.y][ g.pos.x - 1] != '#') sum++;
-    if( lab[ g.pos.y + 1][g.pos.x] != '#') sum++;
-    if( lab[ g.pos.y - 1][g.pos.x] != '#') sum++;
-    return sum;
-}
 
 ///Test if the ghost is inside or outside of the map limits
 //If outside, returns 1
@@ -293,6 +273,7 @@ int testGhostLimits(ghost *fantasma)
     return 1;
 }
 
+
 ///Checks if the actual ghost and the pacman are in the same spot
 int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
 {
@@ -319,6 +300,7 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
     return 0;
 }
 
+
 /// Revives the first found dead ghost
 void reviveGhosts(ghosts *ghosts, int speed)
 {
@@ -336,4 +318,33 @@ void reviveGhosts(ghosts *ghosts, int speed)
         }
     }
     return;
+}
+
+
+///Returns how many sides are free to the ghost walk
+int freeSides(ghost g, char lab[30][100])
+{
+    int sum = 0;
+
+    //Test each of the possible directions
+    if( lab[g.pos.y][ g.pos.x + 1] != '#') sum++;
+    if( lab[g.pos.y][ g.pos.x - 1] != '#') sum++;
+    if( lab[ g.pos.y + 1][g.pos.x] != '#') sum++;
+    if( lab[ g.pos.y - 1][g.pos.x] != '#') sum++;
+    return sum;
+}
+
+
+///Unsorts the array of directions, randomically
+void shuffleDir()
+{
+    coord t; //Auxiliar
+    int i, j=0;
+    for(i=0; i<4; i++)
+    {
+        j = rand() % 4;
+        t = dir[j];
+        dir[j] = dir[i];
+        dir[i] = t;
+    }
 }

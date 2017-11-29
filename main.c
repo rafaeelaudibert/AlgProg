@@ -17,7 +17,6 @@ char lab[30][100]; //Variable whose stores the maze
 clock_t pacStartTimer, ghostsTime; //Game timers
 
 
-
 ///Pac-man Main
 int main()
 {
@@ -44,7 +43,7 @@ int main()
     {
         system("cls"); //Cleans the screen
         startLab(lab, &totalPacDots, &pacman, &fantasmas, map); // Set the initial positions of the game
-        startMenu(); //Start message
+        startGameMenu(); //Start message
         initialTimer=clock();
     }
     else //Shows the closing game message
@@ -66,7 +65,8 @@ int main()
         if(pacman.lives>=0)
         {
             gameStart(&points, &eatenPacDots, totalPacDots, difficulty, speed, map, up, down, right, left, stop); //The Game 'per se'
-            if(pacman.lives>=0){
+            if(pacman.lives>=0)
+            {
                 beepLost();
             }
             while(kbhit())
@@ -93,7 +93,6 @@ int main()
     return EXIT_SUCCESS; //End of the program
 
 }
-
 
 
 ///Start of the game
@@ -182,6 +181,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
     return;
 }
 
+
 ///Pauses the game
 void gamePause(void)
 {
@@ -204,8 +204,10 @@ void gamePause(void)
     printf("\\---------------------/");
 
 
-    while(key!='r'){
-        if(GetAsyncKeyState(0x52)){ //'R' key
+    while(key!='r')
+    {
+        if(GetAsyncKeyState(0x52))  //'R' key
+        {
             key='r';
         }
     }
@@ -222,6 +224,7 @@ void gamePause(void)
 
     return;
 }
+
 
 ///End message, if the player gives up
 void gameEnd(void)
@@ -240,6 +243,7 @@ void gameEnd(void)
     textcolor(BRANCO);
 
 }
+
 
 ///End game message, if player has won
 void gameWin(int points)
@@ -282,6 +286,7 @@ void gameWin(int points)
     return;
 }
 
+
 ///End game message, if the player has lost it
 void gameLost(void)
 {
@@ -323,6 +328,48 @@ void gameLost(void)
 }
 
 
+///Sound played when the player wins the game
+void beepWin(void)
+{
+
+    Beep(784,60);   Sleep(30);
+    Beep(784,60);   Sleep(30);
+    Beep(784,60);   Sleep(120);
+    Beep(784,120);  Sleep(150);
+    Beep(1150,220); Sleep(50);
+    Beep(1150,100); Sleep(50);
+    Beep(1567,500); Sleep(100);
+    Beep(1567,500); Sleep(100);
+
+    return;
+
+}
+
+///Sound played when the player loses the game
+void beepLost(void)
+{
+
+    Beep(880,40);  Sleep(20);
+    Beep(587,40);  Sleep(20);
+    Beep(830,40);  Sleep(20);
+    Beep(587,40);  Sleep(20);
+    Beep(783,40);  Sleep(20);
+    Beep(587,40);  Sleep(20);
+    Beep(739,40);  Sleep(20);
+    Beep(587,40);  Sleep(20);
+    Beep(698,40);  Sleep(20);
+    Beep(587,40);  Sleep(20);
+    Beep(659,40);  Sleep(20);
+    Beep(587,40);  Sleep(20);
+    Beep(659,40);  Sleep(20);
+    Beep(587,40);  Sleep(20);
+    Beep(880,100); Sleep(100);
+    Beep(880,100); Sleep(100);
+
+    return;
+}
+
+
 ///Detects stroked key
 char detectKey(char up, char down, char right, char left, char stop)
 {
@@ -348,10 +395,12 @@ char detectKey(char up, char down, char right, char left, char stop)
     {
         key = 's';
     }
-    else if (GetAsyncKeyState(VK_BACK)){ //BackSpace - TOP SECRET
+    else if (GetAsyncKeyState(VK_BACK))  //BackSpace - TOP SECRET
+    {
         key = 'b';
     }
-    else if (GetAsyncKeyState(VK_TAB)){ //BackSpace - TOP SECRET
+    else if (GetAsyncKeyState(VK_TAB))  //BackSpace - TOP SECRET
+    {
         key = 't';
     }
     else if (GetAsyncKeyState(0x50)) //Key 'P' -> Pause
@@ -367,43 +416,8 @@ char detectKey(char up, char down, char right, char left, char stop)
 
 }
 
-void beepLost(void){
 
-Beep(880,40);Sleep(20);
-Beep(587,40);Sleep(20);
-Beep(830,40);Sleep(20);
-Beep(587,40);Sleep(20);
-Beep(783,40);Sleep(20);
-Beep(587,40);Sleep(20);
-Beep(739,40);Sleep(20);
-Beep(587,40);Sleep(20);
-Beep(698,40);Sleep(20);
-Beep(587,40);Sleep(20);
-Beep(659,40);Sleep(20);
-Beep(587,40);Sleep(20);
-Beep(659,40);Sleep(20);
-Beep(587,40);Sleep(20);
-Beep(880,100);
-Sleep(100);
-Beep(880,100);
 
-return;
-}
-
-void beepWin(void){
-
-Beep(784,60);Sleep(30);
-Beep(784,60);Sleep(30);
-Beep(784,60);Sleep(120);
-Beep(784,120);Sleep(150);
-Beep(1150,220);Sleep(50);
-Beep(1150,100);Sleep(50);
-Beep(1567,500);Sleep(100);
-Beep(1567,500);Sleep(100);
-
-    return;
-
-}
 
 
 /*

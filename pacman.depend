@@ -590,7 +590,7 @@
 	"structs.h"
 	"auxiliars.h"
 
-1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\main.h
+1511968908 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\main.h
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
@@ -602,29 +602,29 @@
 
 1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\structs.h
 
-1511962417 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\auxiliars.h
+1511968174 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\auxiliars.h
 
-1511962417 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\ghosts.c
+1511968588 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\ghosts.c
 	"main.h"
 	"structs.h"
 	"ghosts.h"
 	"objects.h"
 	"auxiliars.h"
 
-1511962417 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\ghosts.h
+1511968565 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\ghosts.h
 
 1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\objects.h
 
-1511962417 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\labirinto.c
+1511968622 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\labirinto.c
 	"main.h"
 	"structs.h"
 	"ghosts.h"
 	"auxiliars.h"
 	"labirinto.h"
 
-1511962417 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\labirinto.h
+1511968622 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\labirinto.h
 
-1511963820 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\main.c
+1511969757 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\main.c
 	"main.h"
 	"structs.h"
 	"labirinto.h"
@@ -638,23 +638,23 @@
 
 1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\pacman.h
 
-1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\messages.h
+1511969899 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\messages.h
 
-1511962418 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\menu.h
+1511969322 \\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\menu.h
 
-1511962418 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\menu.c
+1511969511 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\menu.c
 	"main.h"
 	"structs.h"
 	"auxiliars.h"
 	"menu.h"
 
-1511962418 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\messages.c
+1511969922 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\messages.c
 	"main.h"
 	"structs.h"
 	"messages.h"
 	"auxiliars.h"
 
-1511962418 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\objects.c
+1511969939 source:\\homes\rbaudibert\windows config\desktop\prog\algprog-cheat\objects.c
 	"main.h"
 	"structs.h"
 	"objects.h"

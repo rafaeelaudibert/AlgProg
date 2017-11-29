@@ -6,6 +6,61 @@
 #include "labirinto.h"
 
 
+
+///Reads the maze archive
+int readLab(char lab[HEIGHT][WIDTH], int labOption)
+{
+    char str[101];
+    int i=0, j=0;
+    FILE *arq;
+    char url[30];
+
+    switch(labOption)
+    {
+    case 1:
+        strcpy(url, "data/labirinto.txt");
+        break;
+    case 2:
+        strcpy(url, "data/labirintoOneDot.txt");
+        break;
+    case 3:
+        strcpy(url, "data/labirintoProfessor.txt");
+        break;
+    }
+
+    //Pointer to the file read
+    arq = fopen(url, "r");
+
+    //Tests the file opening
+    if(arq == NULL)
+    {
+        printf("ERROR: The lab couldn't be opened\n");
+        fclose(arq);
+        return 1;
+    }
+
+
+    //Reads each of the file's line
+    while(fgets(str, 101, arq) != NULL || i<30)
+    {
+        //If the line it isn't a blank line
+        if(str[0] != '\n')
+        {
+            //Add's to the lab the string
+            for(j=0; j<100; j++)
+            {
+                lab[i][j] = str[j];
+            }
+
+            i++;
+        }
+    }
+    fclose(arq);
+
+    return 0;
+}
+
+
 ///Starts and load all the structs
 int startLab(char lab[HEIGHT][WIDTH], int *qtPacDots, pacmanInfo *pacman, ghosts *fantasmas, int labOption)
 {
@@ -116,58 +171,5 @@ int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
         fantasmas->unid[i].pos.y = fantasmas->unid[i].origin.y;
         fantasmas->unid[i].alive = 1; // Sets ghosts lives
     }
-    return 0;
-}
-
-///Reads the maze archive
-int readLab(char lab[HEIGHT][WIDTH], int labOption)
-{
-    char str[101];
-    int i=0, j=0;
-    FILE *arq;
-    char url[30];
-
-    switch(labOption)
-    {
-    case 1:
-        strcpy(url, "data/labirinto.txt");
-        break;
-    case 2:
-        strcpy(url, "data/labirintoOneDot.txt");
-        break;
-    case 3:
-        strcpy(url, "data/labirintoProfessor.txt");
-        break;
-    }
-
-    //Pointer to the file read
-    arq = fopen(url, "r");
-
-    //Tests the file opening
-    if(arq == NULL)
-    {
-        printf("ERROR: The lab couldn't be opened\n");
-        fclose(arq);
-        return 1;
-    }
-
-
-    //Reads each of the file's line
-    while(fgets(str, 101, arq) != NULL || i<30)
-    {
-        //If the line it isn't a blank line
-        if(str[0] != '\n')
-        {
-            //Add's to the lab the string
-            for(j=0; j<100; j++)
-            {
-                lab[i][j] = str[j];
-            }
-
-            i++;
-        }
-    }
-    fclose(arq);
-
     return 0;
 }

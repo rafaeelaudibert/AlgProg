@@ -20,8 +20,8 @@ void gamePause(void); ///Pauses the game
 void gameEnd(void); ///Finishes the game, when given up by the player
 void gameWin(int); ///Finishes the game, when won by the player
 void gameLost(void); ///Finishes the game, when lost by the player
-void beepLost(void); ///Sound when the pacman dies
 void beepWin(void); ///Sound when the player wins the game
+void beepLost(void); ///Sound when the pacman dies
 char detectKey(char, char, char, char, char); ///Detects the stroked key
 
 #endif // MAIN_FUNCTIONS_H_

@@ -6,6 +6,6 @@ void writeSettings(int, int, int, char, char, char, char, char); ///Prints in th
 void reconstructMaze(int, int, int, int, char[HEIGHT][WIDTH], pacmanInfo); ///Rebuilds a given part of the lab
 void gotoXY(int, int); ///Goes to a given position
 void cursorType(int); ///Sets the cursor type
-void textcolor(); //Conio.c Prototype
+void textcolor(); ///Conio.c Prototype
 
 #endif // AUXILIARS_FUNCTIONS_H_
