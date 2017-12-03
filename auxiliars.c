@@ -123,23 +123,18 @@ void cursorType(int cursor)
 {
     CONSOLE_CURSOR_INFO cursorInfo;
 
-    // Sets the cursor type to
-    //
-    // _NOCURSOR	Turns off the cursor
-    // _NORMALCURSOR	Normal underscore cursor
-    // _SOLIDCURSOR	Solid block cursor
     switch(cursor)
     {
-    case 0:
+    case 0: //Turns off the cursor
         cursorInfo.dwSize = 100;
         cursorInfo.bVisible = FALSE;
         break;
-    case 1:
+    case 1: //Solid block cursor
         cursorInfo.dwSize = 100;
         cursorInfo.bVisible = TRUE;
         break;
     case 2:
-        cursorInfo.dwSize = 10;
+        cursorInfo.dwSize = 10; //Normal underscore cursor
         cursorInfo.bVisible = TRUE;
         break;
     }

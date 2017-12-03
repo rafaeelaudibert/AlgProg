@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Pacman" />
+		<Option title="Pacman - The Game" />
 		<Option platforms="Windows;" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -29,6 +29,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="conio/libconio.a" />
 				</Linker>
 			</Target>
 		</Build>

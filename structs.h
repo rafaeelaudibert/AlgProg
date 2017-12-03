@@ -22,7 +22,7 @@ struct
 {
     int quant;
     ghost unid[MAX_GHOSTS];
-} typedef ghosts; //Ghosts Group
+} typedef ghostsInfo; //Ghosts Group
 
 struct
 {

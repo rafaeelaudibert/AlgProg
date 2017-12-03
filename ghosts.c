@@ -5,14 +5,14 @@
 #include "objects.h"
 #include "auxiliars.h"
 
-//Variaveis globais
+//Global Variables
 
- //Available directions -> UP, RIGHT, DOWN, LEFT
+//Available directions -> UP, RIGHT, DOWN, LEFT
 coord dir[4]={{0,-1},{1,0},{0,1},{-1,0}};
 
 
 ///Ghost Controller
-int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghosts *fantasmas, int speed, int chase_chance)
+int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab[HEIGHT][WIDTH], ghostsInfo *ghosts, int speed, int chase_chance)
 {
 
     float speedCorrection = pacman.last.coordinates=='y' ? 1.4 : 1; //Corrects the speed of the game, as the pacman's movement axis changes
@@ -21,10 +21,10 @@ int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab
     if((actualTime - *ghostsTimer) > ( pacman.pacDotActive ? speed*1.3*speedCorrection : speed*speedCorrection))
     {
         *ghostsTimer = actualTime;
-        moveGhost(pacman, lab, fantasmas, chase_chance); // Updates the movement of the ghosts
-        showGhosts(pacman, lab, fantasmas, speed); // Updates and shows the position of the ghosts
+        moveGhost(pacman, lab, ghosts, chase_chance); // Updates the movement of the ghosts
+        showGhosts(pacman, lab, ghosts, speed); // Updates and shows the position of the ghosts
 
-        if(checkGhostCollision(pacman, points, fantasmas) && !pacman.pacDotActive) //If there is collision between a ghost and the pacman
+        if(checkGhostCollision(pacman, points, ghosts) && !pacman.pacDotActive) //If there is collision between a ghost and the pacman
         {
             return 0;
         }
@@ -34,15 +34,15 @@ int ghostsControl(int *points, pacmanInfo pacman, clock_t *ghostsTimer, char lab
 
 
 ///Moves each one of the ghosts
-void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_chance)
+void moveGhost(pacmanInfo pac, char lab[30][100], ghostsInfo *ghosts, int chase_chance)
 {
 
-    int i, q = fantasmas->quant; //fantasmas.quant;
+    int i, q = ghosts->quant; //fantasmas.quant;
     // Iterates on each ghost
     for(i=0; i<q; i++)
     {
         // Actual test ghost
-        ghost g = fantasmas->unid[i];
+        ghost g = ghosts->unid[i];
 
         // Ghost's chance of stalking the Pacman
         int chance = rand() % MAX_RANDOM;
@@ -50,8 +50,8 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_c
         //Decisions to change direction
         if(freeSides(g, lab) == 1) //Only one exit, inverts the movement direction
         {
-            fantasmas->unid[i].mov.y = fantasmas->unid[i].mov.y * -1;
-            fantasmas->unid[i].mov.x = fantasmas->unid[i].mov.x * -1;
+            ghosts->unid[i].mov.y = ghosts->unid[i].mov.y * -1;
+            ghosts->unid[i].mov.x = ghosts->unid[i].mov.x * -1;
         }
         else if(changeDirection(g, lab) == 1)
         {
@@ -69,24 +69,24 @@ void moveGhost(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int chase_c
                 //Sorts the vector of directions according to cartesian distance to the pacman
                 chasePacman(pac, g, lab);
             }
-            chooseDirection(pac, &(fantasmas->unid[i]), lab);
+            chooseDirection(pac, &(ghosts->unid[i]), lab);
         }
     }
 }
 
 
 ///Prints the ghosts in the screen
-void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
+void showGhosts(pacmanInfo pac, char lab[30][100], ghostsInfo *ghosts, int speed)
 {
     int i;
-    for(i=0; i < fantasmas->quant; i++)
+    for(i=0; i < ghosts->quant; i++) //Reprints the object who was under the ghost
     {
-        //Reprints the object who was under the ghost
-        coord posg;
-        posg.x = fantasmas->unid[i].pos.x;
-        posg.y = fantasmas->unid[i].pos.y;
+        coord posg; //Decreasing size code/complexity
+        posg.x = ghosts->unid[i].pos.x;
+        posg.y = ghosts->unid[i].pos.y;
         gotoXY(posg.x+1, posg.y+1);
-        //Print colors
+
+        //Prints with the right colors
         if(lab[posg.y][posg.x] =='o')
         {
             textcolor(AMARELO);
@@ -101,23 +101,24 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
         }
 
         //Updates the position
-        if(fantasmas->unid[i].alive==1)
+        if(ghosts->unid[i].alive==1)
         {
-            fantasmas->unid[i].pos.x += fantasmas->unid[i].mov.x;
-            fantasmas->unid[i].pos.y += fantasmas->unid[i].mov.y;
+            ghosts->unid[i].pos.x += ghosts->unid[i].mov.x;
+            ghosts->unid[i].pos.y += ghosts->unid[i].mov.y;
         }
 
-        testGhostLimits(&fantasmas->unid[i]);
+        testGhostLimits(&ghosts->unid[i]);
 
-        if(fantasmas->unid[i].alive==1)
+        if(ghosts->unid[i].alive==1) //If ghost is alive
         {
-            //Prints the new position, if the ghost is alive
+            //Prints the new position, with the right color
             if(pac.pacDotActive>(2000/speed))
             {
                 textcolor(VERDE_AGUA);
             }
             else
             {
+                //Makes the ghost blink when super power is ending, or to be the right color when not not powered
                 if(pac.pacDotActive%2)
                 {
                     textcolor(VERDE_AGUA);
@@ -127,12 +128,13 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
                     textcolor(LILAS);
                 }
             }
-            gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
-            printf("%c", fantasmas->unid[i].key);
+
+            gotoXY(ghosts->unid[i].pos.x+1, ghosts->unid[i].pos.y+1);
+            printf("%c", ghosts->unid[i].key);
         }
-        else if(fantasmas->unid[i].alive==2) //If ghost is ressurecting
+        else if(ghosts->unid[i].alive==2) //If ghost is ressurecting
         {
-            if (!(fantasmas->unid[i].reviveTime%2))
+            if (!(ghosts->unid[i].reviveTime%2))
             {
                 textcolor(PRETO); //Blinks the color of the ghost, while ressurecting
             }
@@ -140,15 +142,15 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
             {
                 textcolor(LILAS);
             }
-            fantasmas->unid[i].reviveTime--;
+            ghosts->unid[i].reviveTime--; //Decreases the lefting ressurecting time
 
-            if(!(fantasmas->unid[i].reviveTime))
+            if(!(ghosts->unid[i].reviveTime))
             {
-                fantasmas->unid[i].alive=1;
+                ghosts->unid[i].alive=1; //If the time to ressurect is over, ressurects it completely
             }
 
-            gotoXY(fantasmas->unid[i].pos.x+1, fantasmas->unid[i].pos.y+1);
-            printf("%c", fantasmas->unid[i].key);
+            gotoXY(ghosts->unid[i].pos.x+1, ghosts->unid[i].pos.y+1);
+            printf("%c", ghosts->unid[i].key);
         }
     }
 }
@@ -157,28 +159,28 @@ void showGhosts(pacmanInfo pac, char lab[30][100], ghosts *fantasmas, int speed)
 ///Verifies if the ghost are in a bifurcation or in a corner
 //Returns:  1: If needs to decide to change or not direction
 //          0: Doesn't need to decide to change direction
-int changeDirection(ghost g, char lab[30][100])
+int changeDirection(ghost gh, char lab[30][100])
 {
     // Verifies which direction is the ghost going
-    if( g.mov.x != 0)
+    if( gh.mov.x != 0)
     {
         // If horizontal, verifies if can go up or down
-        if( lab[g.pos.y+1][g.pos.x] != '#' || lab[g.pos.y-1][g.pos.x] != '#') return 1;
+        if( lab[gh.pos.y+1][gh.pos.x] != '#' || lab[gh.pos.y-1][gh.pos.x] != '#') return 1;
     }
     else
     {
         // If vertical, verifies if can go right or left
-        if( lab[g.pos.y][g.pos.x+1] != '#' || lab[g.pos.y][g.pos.x-1] != '#') return 1;
+        if( lab[gh.pos.y][gh.pos.x+1] != '#' || lab[gh.pos.y][gh.pos.x-1] != '#') return 1;
     }
     return 0;
 }
 
 
 ///Verifies which are the possible directions for the ghost, and chooses one according to the preference order of the array dir[]
-void chooseDirection(pacmanInfo pac, ghost *pg, char lab[30][100])
+void chooseDirection(pacmanInfo pac, ghost *gh, char lab[30][100])
 {
     int i, d;
-    ghost g = *pg;
+    ghost g = *gh;
 
     //Iterates in each of the possible directions
     for(i=0; i<4; i++)
@@ -201,7 +203,7 @@ void chooseDirection(pacmanInfo pac, ghost *pg, char lab[30][100])
                     dir[d].y != (g.mov.y * -1) )
             {
                 // Modifies the directions in the ghost
-                pg->mov = dir[d];
+                gh->mov = dir[d];
                 d = 5;
             }
         }
@@ -210,7 +212,7 @@ void chooseDirection(pacmanInfo pac, ghost *pg, char lab[30][100])
 
 
 ///Returns an ordered ascending array, according to the cartesian distance between the ghost and the pacman
-void chasePacman(pacmanInfo pac, ghost g, char lab[30][100])
+void chasePacman(pacmanInfo pac, ghost gh, char lab[30][100])
 {
     int d, i, t;
 
@@ -218,11 +220,11 @@ void chasePacman(pacmanInfo pac, ghost g, char lab[30][100])
     int dists[4];
     for(i=0; i<4; i++)
     {
-        // Cartesian Distance (Pithagoras)
-        dists[i] = pow( pac.pos.y - g.pos.y + dir[i].y, 2) + pow(pac.pos.x - g.pos.x + dir[i].x, 2);
+        // Cartesian Distance - no Sqr (Pithagoras)
+        dists[i] = pow( pac.pos.y - gh.pos.y + dir[i].y, 2) + pow(pac.pos.x - gh.pos.x + dir[i].x, 2);
     }
 
-    //Sorts the array according to its distances
+    //Sorts the array dir according to the array dists, making an ascending distance order
     for(d=0; d<4; d++)
     {
         for(i=0; i<4; i++)
@@ -247,23 +249,23 @@ void chasePacman(pacmanInfo pac, ghost g, char lab[30][100])
 
 ///Test if the ghost is inside or outside of the map limits
 //If outside, returns 1
-int testGhostLimits(ghost *fantasma)
+int testGhostLimits(ghost *gh)
 {
-    if (fantasma->pos.x < 0)
+    if (gh->pos.x < 0)
     {
-        fantasma->pos.x = WIDTH-1;
+        gh->pos.x = WIDTH-1;
     }
-    else if(fantasma->pos.x > (WIDTH-1))
+    else if(gh->pos.x > (WIDTH-1))
     {
-        fantasma->pos.x=0;
+        gh->pos.x=0;
     }
-    else if(fantasma->pos.y < 0)
+    else if(gh->pos.y < 0)
     {
-        fantasma->pos.y = HEIGHT-1;
+        gh->pos.y = HEIGHT-1;
     }
-    else if(fantasma->pos.y > (HEIGHT-1))
+    else if(gh->pos.y > (HEIGHT-1))
     {
-        fantasma->pos.y = 0;
+        gh->pos.y = 0;
     }
     else
     {
@@ -275,19 +277,19 @@ int testGhostLimits(ghost *fantasma)
 
 
 ///Checks if the actual ghost and the pacman are in the same spot
-int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
+int checkGhostCollision(pacmanInfo pac, int *points, ghostsInfo *ghosts)
 {
     int i;
 
-    for(i=0; i<fantasmas->quant; i++)
+    for(i=0; i < ghosts->quant; i++)
     {
-        ghost g = fantasmas->unid[i];
-        if(g.alive==1 && pac.pos.x-1 == g.pos.x && pac.pos.y-1 == g.pos.y) //If ghost alive, and the same position as the pacman
+        ghost gh = ghosts->unid[i];
+        if(gh.alive==1 && (pac.pos.x-1 == gh.pos.x) && (pac.pos.y-1 == gh.pos.y)) //If ghost alive, and the same position as the pacman
         {
             if(pac.pacDotActive) //If pacman has powers, kills the ghost
             {
-                fantasmas->unid[i].alive = 0;
-                fantasmas->unid[i].deathTime = clock();
+                ghosts->unid[i].alive = 0;
+                ghosts->unid[i].deathTime = clock();
                 (*points)+=200;
 
                 textcolor(BRANCO);
@@ -302,18 +304,18 @@ int checkGhostCollision(pacmanInfo pac, int *points, ghosts *fantasmas)
 
 
 /// Revives the first found dead ghost
-void reviveGhosts(ghosts *ghosts, int speed)
+void reviveGhosts(ghostsInfo *ghostsInfo, int speed)
 {
 
     int i;
 
-    for(i=0; i < ghosts->quant; i++)
+    for(i=0; i < ghostsInfo->quant; i++)
     {
-        if( !ghosts->unid[i].alive && (( clock() - ghosts->unid[i].deathTime) > RESPAWN) )
+        if( !ghostsInfo->unid[i].alive && (( clock() - ghostsInfo->unid[i].deathTime) > RESPAWN) )
         {
-            ghosts->unid[i].pos = ghosts->unid[i].origin;
-            ghosts->unid[i].reviveTime=4000/speed; //4 seconds blinking
-            ghosts->unid[i].alive = 2;
+            ghostsInfo->unid[i].pos = ghostsInfo->unid[i].origin;
+            ghostsInfo->unid[i].reviveTime=4000/speed; //4 seconds to revive
+            ghostsInfo->unid[i].alive = 2; //Revive status
             return;
         }
     }
@@ -322,20 +324,21 @@ void reviveGhosts(ghosts *ghosts, int speed)
 
 
 ///Returns how many sides are free to the ghost walk
-int freeSides(ghost g, char lab[30][100])
+int freeSides(ghost gh, char lab[30][100])
 {
     int sum = 0;
 
     //Test each of the possible directions
-    if( lab[g.pos.y][ g.pos.x + 1] != '#') sum++;
-    if( lab[g.pos.y][ g.pos.x - 1] != '#') sum++;
-    if( lab[ g.pos.y + 1][g.pos.x] != '#') sum++;
-    if( lab[ g.pos.y - 1][g.pos.x] != '#') sum++;
+    if( lab[gh.pos.y][ gh.pos.x + 1] != '#') sum++;
+    if( lab[gh.pos.y][ gh.pos.x - 1] != '#') sum++;
+    if( lab[ gh.pos.y + 1][gh.pos.x] != '#') sum++;
+    if( lab[ gh.pos.y - 1][gh.pos.x] != '#') sum++;
+
     return sum;
 }
 
 
-///Unsorts the array of directions, randomically
+///Randomize the directions array
 void shuffleDir()
 {
     coord t; //Auxiliar

@@ -12,7 +12,7 @@
 
 ///Variaveis Globais
 pacmanInfo pacman; //Pacman informations
-ghosts fantasmas; //Ghost informations
+ghostsInfo ghosts; //Ghost informations
 char lab[30][100]; //Variable whose stores the maze
 clock_t pacStartTimer, ghostsTime; //Game timers
 
@@ -42,7 +42,10 @@ int main()
     if(pacman.lives!=-2) //If the options in menu wasn't to exit the game
     {
         system("cls"); //Cleans the screen
-        startLab(lab, &totalPacDots, &pacman, &fantasmas, map); // Set the initial positions of the game
+        if(startLab(lab, &totalPacDots, &pacman, &ghosts, map))  // Set the initial positions of the game
+        {
+            return EXIT_FAILURE;//If lab couldn't be loaded, finished the game with a failure
+        }
         startGameMenu(); //Start message
         initialTimer=clock();
     }
@@ -90,7 +93,7 @@ int main()
 
     gotoXY(1,40);
     textcolor(PRETO);
-    return EXIT_SUCCESS; //End of the program
+    return EXIT_SUCCESS; //Sucessful end of the program
 
 }
 
@@ -105,7 +108,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
     clock_t lastReviveTry = 0; //Last time the ghosts tried to respawn
 
     system("cls");
-    if(showLab(lab, &pacman, &fantasmas))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
+    if(showLab(lab, &pacman, &ghosts))  //Loads the maze, pac's, pacDots's, powerPellets' & ghost's coordinates in the memory
     {
         printf("ERROR!");
         system("Pause");
@@ -143,7 +146,7 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
         }
 
 
-        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &fantasmas, speed, condition))  //Controls pacman
+        if(!pacmanControl(eatenPacDots, points, &pacman, &pacStartTimer, lab, &ghosts, speed, condition))  //Controls pacman
         {
             pacman.next.coordinates='s';
             pacman.next.up_down='0';
@@ -154,11 +157,11 @@ void gameStart(int *points, int *eatenPacDots, int totalPacDots, int difficulty,
         // Respawn the ghosts
         if( (clock() - lastReviveTry) > RESPAWN)
         {
-            reviveGhosts(&fantasmas, speed);
+            reviveGhosts(&ghosts, speed);
             lastReviveTry = clock();
         }
 
-        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &fantasmas, speed, difficulty)) //Controls the ghosts
+        if(key!='j' && !ghostsControl(points, pacman, &ghostsTime, lab, &ghosts, speed, difficulty)) //Controls the ghosts
         {
             pacman.next.coordinates='s';
             pacman.next.up_down='0';
@@ -332,14 +335,22 @@ void gameLost(void)
 void beepWin(void)
 {
 
-    Beep(784,60);   Sleep(30);
-    Beep(784,60);   Sleep(30);
-    Beep(784,60);   Sleep(120);
-    Beep(784,120);  Sleep(150);
-    Beep(1150,220); Sleep(50);
-    Beep(1150,100); Sleep(50);
-    Beep(1567,500); Sleep(100);
-    Beep(1567,500); Sleep(100);
+    Beep(784,60);
+    Sleep(30);
+    Beep(784,60);
+    Sleep(30);
+    Beep(784,60);
+    Sleep(120);
+    Beep(784,120);
+    Sleep(150);
+    Beep(1150,220);
+    Sleep(50);
+    Beep(1150,100);
+    Sleep(50);
+    Beep(1567,500);
+    Sleep(100);
+    Beep(1567,500);
+    Sleep(100);
 
     return;
 
@@ -349,22 +360,38 @@ void beepWin(void)
 void beepLost(void)
 {
 
-    Beep(880,40);  Sleep(20);
-    Beep(587,40);  Sleep(20);
-    Beep(830,40);  Sleep(20);
-    Beep(587,40);  Sleep(20);
-    Beep(783,40);  Sleep(20);
-    Beep(587,40);  Sleep(20);
-    Beep(739,40);  Sleep(20);
-    Beep(587,40);  Sleep(20);
-    Beep(698,40);  Sleep(20);
-    Beep(587,40);  Sleep(20);
-    Beep(659,40);  Sleep(20);
-    Beep(587,40);  Sleep(20);
-    Beep(659,40);  Sleep(20);
-    Beep(587,40);  Sleep(20);
-    Beep(880,100); Sleep(100);
-    Beep(880,100); Sleep(100);
+    Beep(880,40);
+    Sleep(20);
+    Beep(587,40);
+    Sleep(20);
+    Beep(830,40);
+    Sleep(20);
+    Beep(587,40);
+    Sleep(20);
+    Beep(783,40);
+    Sleep(20);
+    Beep(587,40);
+    Sleep(20);
+    Beep(739,40);
+    Sleep(20);
+    Beep(587,40);
+    Sleep(20);
+    Beep(698,40);
+    Sleep(20);
+    Beep(587,40);
+    Sleep(20);
+    Beep(659,40);
+    Sleep(20);
+    Beep(587,40);
+    Sleep(20);
+    Beep(659,40);
+    Sleep(20);
+    Beep(587,40);
+    Sleep(20);
+    Beep(880,100);
+    Sleep(100);
+    Beep(880,100);
+    Sleep(100);
 
     return;
 }

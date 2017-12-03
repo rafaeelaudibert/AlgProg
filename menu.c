@@ -219,7 +219,6 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
             textcolor(color);
             printf("> DEFAULT");
             break;
-
         }
 
         if(key=='d') //Changes the values
@@ -232,7 +231,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     gotoXY(48,31);
                     printf("DIFFICULTY");
@@ -265,18 +264,18 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     gotoXY(50,31);
                     printf("SPEED");
                     gotoXY(44,32);
-                    printf("Between 20 and 150");
+                    printf("Between 20 and 180");
                     gotoXY(43,34);
                     printf("The lower the speed");
                     gotoXY(43,35);
                     printf("The faster the game");
 
-                    if(*speed<20 || *speed>150) //Invalid value
+                    if(*speed<20 || *speed>180) //Invalid value
                     {
                         gotoXY(41,34);
                         printf("                         ");
@@ -287,7 +286,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(52,33);
                     scanf("%d", speed);
                 }
-                while(*speed<20 || *speed>150); //Compatibility check
+                while(*speed<20 || *speed>180); //Compatibility check
 
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
@@ -298,7 +297,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     if(*map<1 || *map>3) //Invalid value
                     {
@@ -324,7 +323,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     if(*up<65 || (*up>90 && *up<97) || *up>122) //Invalid value
                     {
@@ -357,7 +356,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     if(*down<65 || (*down>90 && *down<97) || *down>122) //Invalid value
                     {
@@ -390,7 +389,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     if(*left<65 || (*left>90 && *left<97) || *left>122) //Invalid value
                     {
@@ -423,7 +422,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     if(*right<65 || (*right>90 && *right<97) || *right>122) //Invalid value
                     {
@@ -456,7 +455,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 {
                     fflush(stdin);
                     textcolor(BRANCO);
-                    printsSelectOptions();
+                    optionsCanvas();
 
                     if(*stop<65 || (*stop>90 && *stop<97) || *stop>122) //Invalid value
                     {
@@ -609,7 +608,7 @@ void credits(void)
             printf("                                                     ");
         }
 
-        scrollCounter==24 ? pacMusic() : Sleep(250); //Pauses the game for a longer time when needed
+        scrollCounter==24 ? pacMusic() : Sleep(200); //Pauses the game for a longer time when needed
 
     }
 
@@ -713,7 +712,7 @@ void printsOptions(int *difficulty, int *speed, int *map, char *up, char *down, 
 
 
 ///Prints the canvas of the Option Selection
-void printsSelectOptions(void)
+void optionsCanvas(void)
 {
 
     gotoXY(37,29);
@@ -745,27 +744,27 @@ char detectKeyMenu(void)
 {
     char key;
 
-    if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState(0x57)) //Tecla para cima ou tecla 'W'
+    if (GetAsyncKeyState(0x57)) //'W' key
     {
         key = 'w';
     }
-    else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState(0x58)) //Tecla para baixo ou tecla 'X'
+    else if (GetAsyncKeyState(0x58)) //'X' key
     {
         key = 'x';
     }
-    else if (GetAsyncKeyState(0x44)) //Tecla 'D'
+    else if (GetAsyncKeyState(0x44)) //'D' key
     {
         key = 'd';
     }
-    else if (GetAsyncKeyState(0x41)) //Tecla 'A'
+    else if (GetAsyncKeyState(0x41)) //'A' key
     {
         key = 'a';
     }
-    else if(GetAsyncKeyState(VK_RETURN)) //Tecla Enter
+    else if(GetAsyncKeyState(VK_RETURN)) //'Return' key
     {
         key='e';
     }
-    else //Senão retorna uma letra que não significa nada
+    else //Else, random key, with no meaning
     {
         key='z';
     }

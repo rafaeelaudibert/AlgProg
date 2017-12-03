@@ -24,7 +24,7 @@ void checkPacDots(int* pacdots, int* points, char lab[HEIGHT][WIDTH], pacmanInfo
 }
 
 ///Checks PowerPellets colision with pacman
-void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas, int speed)
+void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghostsInfo *ghosts, int speed)
 {
 
     int i; //Counter
@@ -36,8 +36,8 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman,
         Beep(1000, 50);
         pacman->pacDotActive=5000000/CLOCKS_PER_SEC/speed; //Sets a counter to 5 seconds
 
-        for(i=0; i<fantasmas->quant; i++){
-            fantasmas->unid[i].key='w'; //Sets the ghosts printing character to 'w'
+        for(i=0; i < ghosts->quant; i++){
+            ghosts->unid[i].key='w'; //Sets the ghosts printing character to 'w'
         }
         textcolor(BRANCO);
         gotoXY(36, 32);
@@ -57,8 +57,8 @@ void checkPowerPellets(int* points, char lab[HEIGHT][WIDTH], pacmanInfo *pacman,
         gotoXY(29,33);
         printf("                                             ");
 
-        for(i=0; i < fantasmas->quant; i++){
-            fantasmas->unid[i].key='W'; //Changes the character of the ghost back to 'W'
+        for(i=0; i < ghosts->quant; i++){
+            ghosts->unid[i].key='W'; //Changes the character of the ghost back to 'W'
         }
     }
 }

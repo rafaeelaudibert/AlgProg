@@ -62,7 +62,7 @@ int readLab(char lab[HEIGHT][WIDTH], int labOption)
 
 
 ///Starts and load all the structs
-int startLab(char lab[HEIGHT][WIDTH], int *qtPacDots, pacmanInfo *pacman, ghosts *fantasmas, int labOption)
+int startLab(char lab[HEIGHT][WIDTH], int *qtPacDots, pacmanInfo *pacman, ghostsInfo *fantasmas, int labOption)
 {
     int i, j; //Matrix counter
 
@@ -126,7 +126,7 @@ int startLab(char lab[HEIGHT][WIDTH], int *qtPacDots, pacmanInfo *pacman, ghosts
 
 
 ///Prints the lab in the screen
-int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghosts *fantasmas)
+int showLab(char lab[HEIGHT][WIDTH], pacmanInfo *pacman, ghostsInfo *fantasmas)
 {
 
     int i, j;

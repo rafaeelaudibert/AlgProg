@@ -7,7 +7,7 @@
 #include "auxiliars.h"
 
 //Pacman Controller
-int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghosts* fantasmas, int speed, int condition)
+int pacmanControl(int* qtde_pacdots, int* points, pacmanInfo* pacman, clock_t* pacStartTimer, char lab[HEIGHT][WIDTH], ghostsInfo* fantasmas, int speed, int condition)
 {
     float correcaoVelocidade= pacman->last.coordinates=='y' ? 1.4 : 1; //Letter distorction correction
     clock_t pacEndTimer=clock(); //Verifies actual system time
