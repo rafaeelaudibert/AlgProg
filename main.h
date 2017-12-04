@@ -55,7 +55,7 @@ enum colors
 #define HEIGHT 30                   //Bottom map limit (Size in the vertical)
 #define WIDTH 100                   //Right map limit (Size in the horizontal)
 #define CURSOR 0                    //0 - no cursor; 1 - box cursor; 2 - normal cursor
-#define QT_MAP 3                    //Quantity of available maps
+#define QT_MAP 4                    //Quantity of available maps
 #define MAX_RANDOM 10               //Random function will generate a number in the interval [0,MAX_RANDOM]
 #define MAX_GHOSTS 5                //Maximum number of ghosts in the lab
 #define RESPAWN 7000                //After this much of clocks, the game tries to revive a Ghost, if there is one already dead

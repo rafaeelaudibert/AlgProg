@@ -677,3 +677,90 @@
 
 1512264782 source:c:\users\rafae\documents\github\algprog\recursos.rc
 
+1512400819 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\auxiliars.c
+	"main.h"
+	"structs.h"
+	"auxiliars.h"
+
+1512404620 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\main.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<ctype.h>
+	<time.h>
+	<conio.h>
+	<string.h>
+	<math.h>
+
+1512402374 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\structs.h
+
+1512400819 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\auxiliars.h
+
+1512403624 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\ghosts.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"objects.h"
+	"auxiliars.h"
+
+1512400819 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\ghosts.h
+
+1512400820 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\objects.h
+
+1512404620 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\labirinto.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"auxiliars.h"
+	"labirinto.h"
+
+1512400820 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\labirinto.h
+
+1512405228 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\main.c
+	"main.h"
+	"structs.h"
+	"labirinto.h"
+	"pacman.h"
+	"ghosts.h"
+	"objects.h"
+	"messages.h"
+	"auxiliars.h"
+	"menu.h"
+	"resources.h"
+
+1512400821 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\pacman.h
+
+1512400820 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\messages.h
+
+1512400820 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\menu.h
+
+1512400821 c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\resources.h
+
+1512404290 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\messages.c
+	"main.h"
+	"structs.h"
+	"messages.h"
+	"auxiliars.h"
+
+1512400820 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\objects.c
+	"main.h"
+	"structs.h"
+	"objects.h"
+	"auxiliars.h"
+
+1512404523 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\pacman.c
+	"main.h"
+	"structs.h"
+	"ghosts.h"
+	"pacman.h"
+	"objects.h"
+	"auxiliars.h"
+
+1512400821 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\recursos.rc
+
+1512403020 source:c:\users\rbaudibert\downloads\pacmanrafa\algprog-master\menu.c
+	"main.h"
+	"structs.h"
+	"auxiliars.h"
+	"menu.h"
+

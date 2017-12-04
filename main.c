@@ -25,11 +25,12 @@ int main()
     int totalPacDots, eatenPacDots=0; //PacDots quantities
     clock_t initialTimer; //Start timer
 
+    //Menu options
     int difficulty, speed, map;  //Controllers of the game
     char up, down, right, left, stop; //Shortcuts of movement
 
     //Initial definitions
-    system("mode 100, 38"); //Defines CMD's screen size
+    system("mode 101, 38"); //Defines CMD's screen size
     system("title Pacman - AlgProg - 2017/2"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR' (main.h)
     srand(time(NULL)); // Feeds the rand seed with the system time
@@ -426,7 +427,7 @@ char detectKey(char up, char down, char right, char left, char stop)
     {
         key = 'b';
     }
-    else if (GetAsyncKeyState(VK_TAB))  //BackSpace - TOP SECRET
+    else if (GetAsyncKeyState(VK_TAB))  //Tab - TOP SECRET
     {
         key = 't';
     }

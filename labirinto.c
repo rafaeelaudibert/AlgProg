@@ -26,6 +26,12 @@ int readLab(char lab[HEIGHT][WIDTH], int labOption)
     case 3:
         strcpy(url, "data/labirintoProfessor.txt");
         break;
+    case 4:
+        strcpy(url, "data/labirintoNoLab.txt");
+        break;
+    default:
+        strcpy(url, "nolab.txt");
+        break;
     }
 
     //Pointer to the file read

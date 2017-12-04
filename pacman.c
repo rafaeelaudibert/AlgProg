@@ -143,6 +143,7 @@ void testWalls(pacmanInfo *pacman, char lab[HEIGHT][WIDTH], int *points){
 
     if(lab[pacman->pos.y-1][pacman->pos.x-1]=='#' && (pacman->pos.y > TOP-1 && pacman->pos.y < HEIGHT+1) && (pacman->pos.x > LEFT-1 && pacman->pos.x < WIDTH+1)){
         *points+=5000;
+        //lab[pacman->pos.y-1][pacman->pos.x-1]=' '; 4fun
 
         textcolor(BRANCO);
         gotoXY(36, 32);

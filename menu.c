@@ -299,7 +299,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     textcolor(BRANCO);
                     optionsCanvas();
 
-                    if(*map<1 || *map>3) //Invalid value
+                    if(*map<1 || *map>QT_MAP) //Invalid value
                     {
                         gotoXY(46,35);
                         printf("Invalid value");
@@ -308,11 +308,11 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(51,31);
                     printf("MAP");
                     gotoXY(45,32);
-                    printf("Between 1 and 3");
+                    printf("Between 1 and %d", QT_MAP);
                     gotoXY(52,34);
                     scanf("%d", map);
                 }
-                while(*map<0 || *map>3); //Compatibility check
+                while(*map<0 || *map>QT_MAP); //Compatibility check
 
                 system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
@@ -453,7 +453,6 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
             case 8:
                 do
                 {
-                    fflush(stdin);
                     textcolor(BRANCO);
                     optionsCanvas();
 
@@ -474,7 +473,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(44,32);
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
-                    scanf("%c", stop);
+                    scanf(" %c", stop);
                     *stop=toupper(*stop);
                 }
                 while(*stop<65 || (*stop>90 && *stop<97) || *stop>122 || *stop==*up || *stop==*down || *stop==*left || *stop==*right); //Compatibility check
@@ -772,5 +771,3 @@ char detectKeyMenu(void)
     return key;
 
 }
-
-

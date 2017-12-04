@@ -314,7 +314,7 @@ void reviveGhosts(ghostsInfo *ghostsInfo, int speed)
         if( !ghostsInfo->unid[i].alive && (( clock() - ghostsInfo->unid[i].deathTime) > RESPAWN) )
         {
             ghostsInfo->unid[i].pos = ghostsInfo->unid[i].origin;
-            ghostsInfo->unid[i].reviveTime=4000/speed; //4 seconds to revive
+            ghostsInfo->unid[i].reviveTime=4000000/speed/CLOCKS_PER_SEC; //4 seconds to revive
             ghostsInfo->unid[i].alive = 2; //Revive status
             return;
         }

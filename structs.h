@@ -13,7 +13,7 @@ struct
     coord origin;
     coord mov;
     char key;
-    int alive;
+    int alive; //0 - Dead, 1 - Alive, 2 - Respawning
     int reviveTime;
     clock_t deathTime;
 }typedef ghost; //Stores ONE ghost Information
