@@ -12,6 +12,7 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
     int colorCounter=3500, color=VERMELHO; //Colors
     char key; //Key pressed
 
+    fflush(stdin);
     printsHeader(); //Prints the menu message
 
     while(menuFlag)
@@ -19,7 +20,6 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
         if(kbhit()) //When a key is stroked
         {
             key=tolower(detectKeyMenu()); //Detects pressed key
-            getch(); //Just one 'stroke' of the key each time
 
             switch(key) //Verifies if we should go up or down in the options
             {
@@ -132,7 +132,6 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
         if(kbhit()) //When a key is stroked
         {
             key=tolower(detectKeyMenu()); //Detects pressed key
-            getch(); //Just one 'stroke' of the key each time
 
             switch(key) //Verifies if we should go up or down in the options
             {
@@ -646,15 +645,15 @@ void pacMusic(void)
     Beep(739.99,100); Sleep(50);
     Beep(622.25,200); Sleep(50);
     Sleep(100);
-    Beep(622.25,70);  Sleep(20);
-    Beep(659.25,70);  Sleep(20);
-    Beep(698.46,80);  Sleep(20);
-    Beep(698.46,70);  Sleep(20);
-    Beep(739.99,70);  Sleep(20);
-    Beep(793.99,80);  Sleep(20);
-    Beep(793.99,70);  Sleep(20);
-    Beep(830.61,70);  Sleep(20);
-    Beep(880.23,80);  Sleep(20);
+    Beep(622.25,70); Sleep(20);
+    Beep(659.25,70); Sleep(20);
+    Beep(698.46,80); Sleep(20);
+    Beep(698.46,70); Sleep(20);
+    Beep(739.99,70); Sleep(20);
+    Beep(793.99,80); Sleep(20);
+    Beep(793.99,70); Sleep(20);
+    Beep(830.61,70); Sleep(20);
+    Beep(880.23,80); Sleep(20);
     Sleep(50);
     Beep(987.77,100); Sleep(20);
     Sleep(500);
@@ -745,19 +744,43 @@ char detectKeyMenu(void)
 
     if (GetAsyncKeyState(0x57)) //'W' key
     {
+        getch();
         key = 'w';
+    }
+    else if(GetAsyncKeyState(VK_UP))
+    {
+        key = 'w';
+        Sleep(150);
     }
     else if (GetAsyncKeyState(0x58)) //'X' key
     {
+        getch();
         key = 'x';
+    }
+    else if(GetAsyncKeyState(VK_DOWN))
+    {
+        key = 'x';
+        Sleep(150);
     }
     else if (GetAsyncKeyState(0x44)) //'D' key
     {
+        getch();
         key = 'd';
+    }
+    else if(GetAsyncKeyState(VK_RIGHT))
+    {
+        key = 'd';
+        Sleep(150);
     }
     else if (GetAsyncKeyState(0x41)) //'A' key
     {
+        getch();
         key = 'a';
+    }
+    else if(GetAsyncKeyState(VK_LEFT))
+    {
+        key = 'a';
+        Sleep(150);
     }
     else if(GetAsyncKeyState(VK_RETURN)) //'Return' key
     {

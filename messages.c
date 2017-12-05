@@ -151,6 +151,8 @@ void highscores(int points, clock_t duration)
 
     colorHeader(); //Makes the header colorful, and switching colors
 
+    main();
+
     return;
 
 }

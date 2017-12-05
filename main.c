@@ -30,7 +30,7 @@ int main()
     char up, down, right, left, stop; //Shortcuts of movement
 
     //Initial definitions
-    system("mode 101, 38"); //Defines CMD's screen size
+    system("mode 100, 38"); //Defines CMD's screen size
     system("title Pacman - AlgProg - 2017/2"); //Defines CMD's title
     cursorType(CURSOR); //Sets the cursor according to a value declared in the constant 'CURSOR' (main.h)
     srand(time(NULL)); // Feeds the rand seed with the system time

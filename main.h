@@ -15,6 +15,7 @@
 #ifndef MAIN_FUNCTIONS_H_
 #define MAIN_FUNCTIONS_H_
 
+int main(void);
 void gameStart(int*, int*, int, int, int, int, char, char, char, char, char); ///Starts the game
 void gamePause(void); ///Pauses the game
 void gameEnd(void); ///Finishes the game, when given up by the player
