@@ -89,6 +89,7 @@ int main()
     if(pacman.lives!=-2)
     {
         highscores(points, (clock()-initialTimer)); //Highscore Table
+        main(); //Restart the game
     }
 
 
@@ -423,11 +424,11 @@ char detectKey(char up, char down, char right, char left, char stop)
     {
         key = 's';
     }
-    else if (GetAsyncKeyState(VK_BACK))  //BackSpace - TOP SECRET
+    else if (GetAsyncKeyState(VK_F1))  //F1 - TOP SECRET
     {
         key = 'b';
     }
-    else if (GetAsyncKeyState(VK_TAB))  //Tab - TOP SECRET
+    else if (GetAsyncKeyState(VK_F2))  //F2 - TOP SECRET
     {
         key = 't';
     }

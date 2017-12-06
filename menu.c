@@ -2,6 +2,7 @@
 #include "main.h"
 #include "structs.h"
 #include "auxiliars.h"
+#include "messages.h"
 #include "menu.h"
 
 ///Main Menu
@@ -35,13 +36,13 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
                 break;
             }
 
-            if (menuOption>4) //Limits
+            if (menuOption>5) //Limits
             {
                 menuOption=1;
             }
             else if(menuOption<1)
             {
-                menuOption=4;
+                menuOption=5;
             }
         }
 
@@ -57,34 +58,42 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
         switch(menuOption) //The actual selection
         {
         case 1:
-            gotoXY(46,15);
+            gotoXY(45,15);
             textcolor(color);
-            printf(">    PLAY");
+            printf(">>    PLAY");
             break;
         case 2:
-            gotoXY(46,19);
+            gotoXY(45,19);
             textcolor(color);
-            printf(">   OPTIONS");
+            printf(">>   OPTIONS");
             break;
         case 3:
-            gotoXY(46,21);
+            gotoXY(45,21);
             textcolor(color);
-            printf(">   CREDITS");
+            printf(">>   CREDITS");
             break;
         case 4:
-            gotoXY(46,23);
+            gotoXY(45,23);
             textcolor(color);
-            printf(">    EXIT");
+            printf(">>  HIGHSCORES");
+            break;
+        case 5:
+            gotoXY(45,27);
+            textcolor(color);
+            printf(">>    EXIT");
             break;
 
         }
 
-        if(key=='d') //If 'd' was pressed, verifies what function must be called
+        if(key=='d' || key=='e') //If 'd' was pressed, verifies what function must be called
         {
             switch(menuOption)
             {
             case 1:
                 menuFlag=0; //Closes the menu and enters in the game
+                if(key=='e'){ //If enter is pressed, we need to take the second press of it
+                    getch();
+                }
                 break;
             case 2:
                 options(difficulty, speed, map, up, down, right, left, stop); //Menu Options
@@ -93,6 +102,13 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
                 credits(); //Call Credits
                 break;
             case 4:
+                if(key=='e'){ //If enter is pressed, we need to take the second press of it
+                    getch();
+                }
+                highscores(0, 0); //Highscores, with no values
+                printsHeader();
+                break;
+            case 5:
                 menuFlag=0; //Closes the menu
                 endGame=-2; //Ends the game
                 break;
@@ -122,8 +138,8 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
     int menuFlag=1, menuOption=1; //Flags
     int colorCounter=3500, color=VERMELHO; //Colors
     char key; //Pressed key
+    char temporary='m'; //Temporary key, used to change values, initialized with a random value
 
-    system("cls");
     printsOptions(difficulty, speed, map, up, down, right, left, stop);
 
     //Loop of iterations of the menu
@@ -169,54 +185,54 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
         switch(menuOption) //The actual selection
         {
         case 1:
-            gotoXY(37,6);
+            gotoXY(36,6);
             textcolor(color);
-            printf("> DIFFICULTY:              %3d\n", *difficulty);
+            printf(">> DIFFICULTY:              %3d\n", *difficulty);
             break;
         case 2:
-            gotoXY(37,7);
+            gotoXY(36,7);
             textcolor(color);
-            printf("> SPEED:                   %3d\n", *speed);
+            printf(">> DELAY:                   %3d\n", *speed);
             break;
         case 3:
-            gotoXY(37,8);
+            gotoXY(36,8);
             textcolor(color);
-            printf("> MAP:                     %3d\n", *map);
+            printf(">> MAP:                     %3d\n", *map);
             break;
         case 4:
-            gotoXY(37,17);
+            gotoXY(36,17);
             textcolor(color);
-            printf("> UP:                      %3c\n", *up);
+            printf(">> UP:                      %3c\n", *up);
             break;
         case 5:
-            gotoXY(37,18);
+            gotoXY(36,18);
             textcolor(color);
-            printf("> DOWN:                    %3c\n", *down);
+            printf(">> DOWN:                    %3c\n", *down);
             break;
         case 6:
-            gotoXY(37,19);
+            gotoXY(36,19);
             textcolor(color);
-            printf("> LEFT:                    %3c\n", *left);
+            printf(">> LEFT:                    %3c\n", *left);
             break;
         case 7:
-            gotoXY(37,20);
+            gotoXY(36,20);
             textcolor(color);
-            printf("> RIGHT:                   %3c\n", *right);
+            printf(">> RIGHT:                   %3c\n", *right);
             break;
         case 8:
-            gotoXY(37,21);
+            gotoXY(36,21);
             textcolor(color);
-            printf("> STOP:                    %3c\n", *stop);
+            printf(">> STOP:                    %3c\n", *stop);
             break;
         case 9:
-            gotoXY(37,25);
+            gotoXY(36,25);
             textcolor(color);
-            printf("> SAVE");
+            printf(">> SAVE");
             break;
         case 10:
-            gotoXY(58,25);
+            gotoXY(57,25);
             textcolor(color);
-            printf("> DEFAULT");
+            printf(">> DEFAULT");
             break;
         }
 
@@ -254,7 +270,6 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 }
                 while(*difficulty<0 || *difficulty>10); //Compatibility check
 
-                system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -266,11 +281,11 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     optionsCanvas();
 
                     gotoXY(50,31);
-                    printf("SPEED");
+                    printf("DELAY");
                     gotoXY(44,32);
                     printf("Between 20 and 180");
                     gotoXY(43,34);
-                    printf("The lower the speed");
+                    printf("The lower the delay");
                     gotoXY(43,35);
                     printf("The faster the game");
 
@@ -287,7 +302,6 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 }
                 while(*speed<20 || *speed>180); //Compatibility check
 
-                system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -313,7 +327,6 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                 }
                 while(*map<0 || *map>QT_MAP); //Compatibility check
 
-                system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -324,16 +337,10 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     textcolor(BRANCO);
                     optionsCanvas();
 
-                    if(*up<65 || (*up>90 && *up<97) || *up>122) //Invalid value
+                    if(temporary<65 || (temporary>90 && temporary<97) || temporary>122) //Invalid value
                     {
                         gotoXY(46,34);
                         printf("Invalid value");
-                    }
-
-                    if(*up==*down || *up==*left || *up==*right || *up==*stop) //Shortcut already used
-                    {
-                        gotoXY(42,34);
-                        printf("Shortcut already used");
                     }
 
                     gotoXY(52,31);
@@ -341,12 +348,32 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(44,32);
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
-                    scanf("%c", up);
-                    *up=toupper(*up);
-                }
-                while((*up<65 || (*up>90 && *up<97) || *up>122) || *up==*down || *up==*left || *up==*right || *up==*stop); //Compatibility check
+                    scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
-                system("cls");
+                    //Changing values
+                    if(temporary==*down)
+                    {
+                        *down=*up;
+                    }
+                    else if(temporary==*left)
+                    {
+                        *left=*up;
+                    }
+                    else if(temporary==*right)
+                    {
+                        *right=*up;
+                    }
+                    else if(temporary==*stop)
+                    {
+                        *stop=*up;
+                    }
+
+                }
+                while(temporary<65 || (temporary>90 && temporary<97) || temporary>122); //Compatibility check
+                *up=toupper(temporary); //Assigning the right value
+
+                fflush(stdin);
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -357,16 +384,10 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     textcolor(BRANCO);
                     optionsCanvas();
 
-                    if(*down<65 || (*down>90 && *down<97) || *down>122) //Invalid value
+                    if(temporary<65 || (temporary>90 && temporary<97) || temporary>122) //Invalid value
                     {
                         gotoXY(46,34);
                         printf("Invalid value");
-                    }
-
-                    if(*down==*up || *down==*left || *down==*right || *down==*stop) //Shortcut already used
-                    {
-                        gotoXY(42,34);
-                        printf("Shortcut already used");
                     }
 
                     gotoXY(51,31);
@@ -374,12 +395,32 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(44,32);
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
-                    scanf("%c", down);
-                    *down=toupper(*down);
-                }
-                while(*down<65 || (*down>90 && *down<97) || *down>122 || *down==*up || *down==*left || *down==*right || *down==*stop); //Compatibility check
+                    scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
-                system("cls");
+                    //Changing values
+                    if(temporary==*up)
+                    {
+                        *up=*down;
+                    }
+                    else if(temporary==*left)
+                    {
+                        *left=*down;
+                    }
+                    else if(temporary==*right)
+                    {
+                        *right=*down;
+                    }
+                    else if(temporary==*stop)
+                    {
+                        *stop=*down;
+                    }
+
+                }
+                while(temporary<65 || (temporary>90 && temporary<97) || temporary>122); //Compatibility check
+                *down=toupper(temporary); //Assigning the right value
+
+                fflush(stdin);
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -390,16 +431,10 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     textcolor(BRANCO);
                     optionsCanvas();
 
-                    if(*left<65 || (*left>90 && *left<97) || *left>122) //Invalid value
+                    if(temporary<65 || (temporary>90 && temporary<97) || temporary>122) //Invalid value
                     {
                         gotoXY(46,34);
                         printf("Invalid value");
-                    }
-
-                    if(*left==*up || *left==*down || *left==*right || *left==*stop) //Shortcut already used
-                    {
-                        gotoXY(42,34);
-                        printf("Shortcut already used");
                     }
 
                     gotoXY(51,31);
@@ -407,12 +442,32 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(44,32);
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
-                    scanf("%c", left);
-                    *left=toupper(*left);
-                }
-                while(*left<65 || (*left>90 && *left<97) || *left>122 || *left==*up || *left==*down || *left==*right || *left==*stop); //Compatibility check
+                    scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
-                system("cls");
+                    //Changing values
+                    if(temporary==*up)
+                    {
+                        *up=*left;
+                    }
+                    else if(temporary==*down)
+                    {
+                        *down=*left;
+                    }
+                    else if(temporary==*right)
+                    {
+                        *right=*left;
+                    }
+                    else if(temporary==*stop)
+                    {
+                        *stop=*left;
+                    }
+
+                }
+                while(temporary<65 || (temporary>90 && temporary<97) || temporary>122); //Compatibility check
+                *left=toupper(temporary); //Assigning the right value
+
+                fflush(stdin);
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -423,16 +478,10 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     textcolor(BRANCO);
                     optionsCanvas();
 
-                    if(*right<65 || (*right>90 && *right<97) || *right>122) //Invalid value
+                    if(temporary<65 || (temporary>90 && temporary<97) || temporary>122) //Invalid value
                     {
                         gotoXY(46,34);
                         printf("Invalid value");
-                    }
-
-                    if(*right==*up || *right==*down || *right==*left || *right==*stop) //Shortcut already used
-                    {
-                        gotoXY(42,34);
-                        printf("Shortcut already used");
                     }
 
                     gotoXY(51,31);
@@ -440,12 +489,32 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(44,32);
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
-                    scanf("%c", right);
-                    *right=toupper(*right);
-                }
-                while(*right<65 || (*right>90 && *right<97) || *right>122 || *right==*up || *right==*down || *right==*left || *right==*stop); //Compatibility check
+                    scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
-                system("cls");
+                    //Changing values
+                    if(temporary==*up)
+                    {
+                        *up=*right;
+                    }
+                    else if(temporary==*down)
+                    {
+                        *down=*right;
+                    }
+                    else if(temporary==*left)
+                    {
+                        *left=*right;
+                    }
+                    else if(temporary==*stop)
+                    {
+                        *stop=*right;
+                    }
+
+                }
+                while(temporary<65 || (temporary>90 && temporary<97) || temporary>122); //Compatibility check
+                *right=toupper(temporary); //Assigning the right value
+
+                fflush(stdin);
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -455,16 +524,10 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     textcolor(BRANCO);
                     optionsCanvas();
 
-                    if(*stop<65 || (*stop>90 && *stop<97) || *stop>122) //Invalid value
+                    if(temporary<65 || (temporary>90 && temporary<97) || temporary>122) //Invalid value
                     {
                         gotoXY(46,34);
                         printf("Invalid value");
-                    }
-
-                    if(*stop==*up || *stop==*down || *stop==*left || *stop==*right) //Shortcut already used
-                    {
-                        gotoXY(42,34);
-                        printf("Shortcut already used");
                     }
 
                     gotoXY(51,31);
@@ -472,26 +535,44 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     gotoXY(44,32);
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
-                    scanf(" %c", stop);
-                    *stop=toupper(*stop);
-                }
-                while(*stop<65 || (*stop>90 && *stop<97) || *stop>122 || *stop==*up || *stop==*down || *stop==*left || *stop==*right); //Compatibility check
+                    scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
-                system("cls");
+                    //Changing values
+                    if(temporary==*up)
+                    {
+                        *up=*stop;
+                    }
+                    else if(temporary==*down)
+                    {
+                        *down=*stop;
+                    }
+                    else if(temporary==*right)
+                    {
+                        *right=*stop;
+                    }
+                    else if(temporary==*left)
+                    {
+                        *left=*stop;
+                    }
+
+                }
+                while(temporary<65 || (temporary>90 && temporary<97) || temporary>122); //Compatibility check
+                *stop=toupper(temporary); //Assigning the right value
+
+                fflush(stdin);
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
             case 9:
                 menuOption++; //Goes to the default button
                 colorCounter=3500;
-                system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
             case 10:
                 menuOption--; //Goes to the save button
                 colorCounter=3500;
-                system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -506,14 +587,12 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
             case 9:
                 menuOption++; //Goes to default button
                 colorCounter=3500;
-                system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
             case 10:
                 menuOption--; //Goes to save button
                 colorCounter=3500;
-                system("cls");
                 printsOptions(difficulty, speed, map, up, down, right, left, stop);
                 key='z';
                 break;
@@ -547,6 +626,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
 
     //Save the values in the file, and shows the saved message
     writeSettings(*difficulty, *speed, *map, *up, *down, *right, *left, *stop);
+    getch(); //Receives the enter
     textcolor(BRANCO);
     gotoXY(43,29);
     printf("SAVED CONFIGURATIONS!");
@@ -645,17 +725,17 @@ void pacMusic(void)
     Beep(739.99,100); Sleep(50);
     Beep(622.25,200); Sleep(50);
     Sleep(100);
-    Beep(622.25,70); Sleep(20);
-    Beep(659.25,70); Sleep(20);
-    Beep(698.46,80); Sleep(20);
-    Beep(698.46,70); Sleep(20);
-    Beep(739.99,70); Sleep(20);
-    Beep(793.99,80); Sleep(20);
-    Beep(793.99,70); Sleep(20);
-    Beep(830.61,70); Sleep(20);
-    Beep(880.23,80); Sleep(20);
+    Beep(622.25,70);  Sleep(20);
+    Beep(659.25,70);  Sleep(20);
+    Beep(698.46,80);  Sleep(20);
+    Beep(698.46,70);  Sleep(20);
+    Beep(739.99,70);  Sleep(20);
+    Beep(793.99,80);  Sleep(20);
+    Beep(793.99,70);  Sleep(20);
+    Beep(830.61,70);  Sleep(20);
+    Beep(880.23,80);  Sleep(20);
     Sleep(50);
-    Beep(987.77,100); Sleep(20);
+    Beep(987.7,100);  Sleep(20);
     Sleep(500);
 
     return;
@@ -666,15 +746,35 @@ void pacMusic(void)
 void printsHeader(void)
 {
 
+    system("cls");
     textcolor(BRANCO);
-    gotoXY(1,10);
-    printf("                                                 PACMAN\n\n\n");
-    printf("                                    ################################\n\n");
-    printf("                                                  PLAY               \n\n\n\n");
-    printf("                                                 OPTIONS              \n\n");
-    printf("                                                 CREDITS              \n\n");
-    printf("                                                  EXIT               \n\n");
-    printf("                                    ################################\n\n");
+
+    gotoXY(31,8);
+    printf(" _ __   __ _  ___ _ __ ___   __ _ _ __  ");
+    gotoXY(31,9);
+    printf("| '_ \\ / _` |/ __| '_ ` _ \\ / _` | '_  \\ ");
+    gotoXY(31,10);
+    printf("| |_) | (_| | (__| | | | | | (_| | | | |");
+    gotoXY(31, 11);
+    printf("| .__/ \\__,_|\\___|_| |_| |_|\\__,_|_| |_|");
+    gotoXY(31,12);
+    printf("| |");
+    gotoXY(31,13);
+    printf("|_|");
+    gotoXY(37,13);
+    printf("################################");
+    gotoXY(37,15);
+    printf("              PLAY               ");
+    gotoXY(37,19);
+    printf("             OPTIONS              ");
+    gotoXY(37,21);
+    printf("             CREDITS              ");
+    gotoXY(37,23);
+    printf("            HIGHSCORES             ");
+    gotoXY(37,27);
+    printf("              EXIT               ");
+    gotoXY(37,29);
+    printf("################################");
     return;
 }
 
@@ -683,13 +783,14 @@ void printsHeader(void)
 void printsOptions(int *difficulty, int *speed, int *map, char *up, char *down, char *right, char *left, char *stop)
 {
 
+    system("cls");
     textcolor(BRANCO);
     gotoXY(1,1);
     printf("\n                                    ################################\n");
     printf("                                               MAP OPTIONS\n");
     printf("                                    ################################\n\n");
     printf("                                      DIFFICULTY:              %3d\n", *difficulty);
-    printf("                                      SPEED:                   %3d\n", *speed);
+    printf("                                      DELAY:                   %3d\n", *speed);
     printf("                                      MAP:                     %3d\n\n", *map);
     printf("                                    ################################\n\n");
     printf("\n");

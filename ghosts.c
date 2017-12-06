@@ -251,21 +251,21 @@ void chasePacman(pacmanInfo pac, ghost gh, char lab[30][100])
 //If outside, returns 1
 int testGhostLimits(ghost *gh)
 {
-    if (gh->pos.x < 0)
+    if (gh->pos.x < LEFT-1)
     {
         gh->pos.x = WIDTH-1;
     }
     else if(gh->pos.x > (WIDTH-1))
     {
-        gh->pos.x=0;
+        gh->pos.x=LEFT-1;
     }
-    else if(gh->pos.y < 0)
+    else if(gh->pos.y < TOP-1)
     {
         gh->pos.y = HEIGHT-1;
     }
     else if(gh->pos.y > (HEIGHT-1))
     {
-        gh->pos.y = 0;
+        gh->pos.y = TOP-1;
     }
     else
     {
