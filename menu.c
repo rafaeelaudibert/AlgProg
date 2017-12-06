@@ -177,7 +177,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
         case 2:
             gotoXY(36,7);
             textcolor(color);
-            printf(">> SPEED:                   %3d\n", *speed);
+            printf(">> DELAY:                   %3d\n", *speed);
             break;
         case 3:
             gotoXY(36,8);
@@ -267,11 +267,11 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     optionsCanvas();
 
                     gotoXY(50,31);
-                    printf("SPEED");
+                    printf("DELAY");
                     gotoXY(44,32);
                     printf("Between 20 and 180");
                     gotoXY(43,34);
-                    printf("The lower the speed");
+                    printf("The lower the delay");
                     gotoXY(43,35);
                     printf("The faster the game");
 
@@ -337,6 +337,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
                     scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
                     //Changing values
                     if(temporary==*down)
@@ -383,6 +384,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
                     scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
                     //Changing values
                     if(temporary==*up)
@@ -428,6 +430,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
                     scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
                     //Changing values
                     if(temporary==*up)
@@ -473,6 +476,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
                     scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
                     //Changing values
                     if(temporary==*up)
@@ -517,6 +521,7 @@ void options(int *difficulty, int *speed, int *map, char *up, char *down, char *
                     printf("Between 'A' and 'Z'");
                     gotoXY(52,33);
                     scanf("%c", &temporary);//Stores the value temporarily
+                    temporary=toupper(temporary);
 
                     //Changing values
                     if(temporary==*up)
