@@ -137,6 +137,9 @@ void cursorType(int cursor)
         cursorInfo.dwSize = 10; //Normal underscore cursor
         cursorInfo.bVisible = TRUE;
         break;
+    default:
+        cursorType(2);
+        return;
     }
     SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 }

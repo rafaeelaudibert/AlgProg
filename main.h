@@ -66,9 +66,9 @@ enum colors
 #ifndef LAB_CHARS_H_
 #define LAB_CHARS_H_
 
-#define PAREDE 219                  //219 to print █, 35 to print #
+#define PAREDE 35                   //219 to print █, 35 to print #
 #define PAC 67                      //67 to print C
-#define PACDOT 250                  //250 to print ·, 111 to print o
-#define POWERPELLET 184             //184 to print ©, 169 to print ®, 42 to print *
+#define PACDOT 111                  //250 to print ·, 111 to print o
+#define POWERPELLET 42              //184 to print ©, 169 to print ®, 42 to print *
 
 #endif // LAB_CHARS_H_

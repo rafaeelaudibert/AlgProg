@@ -150,8 +150,7 @@ void highscores(int points, clock_t duration)
     fclose(arq);
 
     colorHeader(); //Makes the header colorful, and switching colors
-
-    main();
+    getch();
 
     return;
 
@@ -197,7 +196,7 @@ void readHighscore(FILE* arq, SCORE Highscores[10])
 }
 
 
-///Reads the new Highscore file, with the match data included in it
+///Writes the new Highscore file, with the match data included in it
 void writeHighscore(FILE* arq, SCORE Highscores[10])
 {
 
@@ -340,7 +339,8 @@ void dataManipulation(SCORE Highscores[10], ACTUAL_GAME data, clock_t duration)
     gotoXY(32,20);
     printf("______________________________________");
     gotoXY(32,21);
-    printf("Press any key to close the game window");
+    printf("  Press any key to return to the menu");
+
 
     return;
 }

@@ -2,6 +2,7 @@
 #include "main.h"
 #include "structs.h"
 #include "auxiliars.h"
+#include "messages.h"
 #include "menu.h"
 
 ///Main Menu
@@ -35,13 +36,13 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
                 break;
             }
 
-            if (menuOption>4) //Limits
+            if (menuOption>5) //Limits
             {
                 menuOption=1;
             }
             else if(menuOption<1)
             {
-                menuOption=4;
+                menuOption=5;
             }
         }
 
@@ -74,17 +75,25 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
         case 4:
             gotoXY(45,23);
             textcolor(color);
+            printf(">>  HIGHSCORES");
+            break;
+        case 5:
+            gotoXY(45,27);
+            textcolor(color);
             printf(">>    EXIT");
             break;
 
         }
 
-        if(key=='d') //If 'd' was pressed, verifies what function must be called
+        if(key=='d' || key=='e') //If 'd' was pressed, verifies what function must be called
         {
             switch(menuOption)
             {
             case 1:
                 menuFlag=0; //Closes the menu and enters in the game
+                if(key=='e'){ //If enter is pressed, we need to take the second press of it
+                    getch();
+                }
                 break;
             case 2:
                 options(difficulty, speed, map, up, down, right, left, stop); //Menu Options
@@ -93,6 +102,13 @@ int menu(int *difficulty, int *speed, int *map, char *up, char *down, char *righ
                 credits(); //Call Credits
                 break;
             case 4:
+                if(key=='e'){ //If enter is pressed, we need to take the second press of it
+                    getch();
+                }
+                highscores(0, 0); //Highscores, with no values
+                printsHeader();
+                break;
+            case 5:
                 menuFlag=0; //Closes the menu
                 endGame=-2; //Ends the game
                 break;
@@ -730,6 +746,7 @@ void pacMusic(void)
 void printsHeader(void)
 {
 
+    system("cls");
     textcolor(BRANCO);
 
     gotoXY(31,8);
@@ -753,8 +770,10 @@ void printsHeader(void)
     gotoXY(37,21);
     printf("             CREDITS              ");
     gotoXY(37,23);
+    printf("            HIGHSCORES             ");
+    gotoXY(37,27);
     printf("              EXIT               ");
-    gotoXY(37,25);
+    gotoXY(37,29);
     printf("################################");
     return;
 }
