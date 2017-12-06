@@ -731,14 +731,31 @@ void printsHeader(void)
 {
 
     textcolor(BRANCO);
-    gotoXY(1,10);
-    printf("                                                 PACMAN\n\n\n");
-    printf("                                    ################################\n\n");
-    printf("                                                  PLAY               \n\n\n\n");
-    printf("                                                 OPTIONS              \n\n");
-    printf("                                                 CREDITS              \n\n");
-    printf("                                                  EXIT               \n\n");
-    printf("                                    ################################\n\n");
+
+    gotoXY(31,8);
+    printf(" _ __   __ _  ___ _ __ ___   __ _ _ __  ");
+    gotoXY(31,9);
+    printf("| '_ \\ / _` |/ __| '_ ` _ \\ / _` | '_  \\ ");
+    gotoXY(31,10);
+    printf("| |_) | (_| | (__| | | | | | (_| | | | |");
+    gotoXY(31, 11);
+    printf("| .__/ \\__,_|\\___|_| |_| |_|\\__,_|_| |_|");
+    gotoXY(31,12);
+    printf("| |");
+    gotoXY(31,13);
+    printf("|_|");
+    gotoXY(37,13);
+    printf("################################");
+    gotoXY(37,15);
+    printf("              PLAY               ");
+    gotoXY(37,19);
+    printf("             OPTIONS              ");
+    gotoXY(37,21);
+    printf("             CREDITS              ");
+    gotoXY(37,23);
+    printf("              EXIT               ");
+    gotoXY(37,25);
+    printf("################################");
     return;
 }
 
